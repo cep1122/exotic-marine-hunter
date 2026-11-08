@@ -7,15 +7,15 @@ Engineered by IC Neural Systems LLC (Israel Cepero)
 import time
 import hashlib
 import uuid
-from typing import Dict, Optional
+from typing import Dict, Optional, Any, Set, Tuple
 from config import PAYENGINE_CONFIG, SYSTEM_CONFIG
 from core.models import PayEngineSessionCreate, PayEngineSessionResponse, PayEngineVerification
 
 class ApexPayEngineClient:
     """
     Sovereign Checkout & Treasury Settlement Client for Exotic & Marine Hunter AI.
-    Routes funds directly to API Bank AI Empire Vaults with Merkle DAG validation
-    and 0% Inflow Fee.
+    Routes funds directly to API Bank AI Empire Vaults with Merkle DAG validation.
+    Strictly separates Single Asset Passes ($49) from Pro Hunter Syndicate Memberships ($199/mo).
     """
 
     # In-memory session store (backed by sovereign Merkle registry)
@@ -73,11 +73,13 @@ class ApexPayEngineClient:
     def verify_and_settle(cls, session_id: str) -> PayEngineVerification:
         """
         Confirms instantaneous sovereign payment receipt into the API Bank AI vault.
-        Issues high-entropy access token to unredact intelligence dossiers.
+        Issues scoped access token:
+        - SINGLE_PASS ($49): ONLY unlocks the targeted asset_id.
+        - PRO_HUNTER ($199/mo): Unlocks all 50-state assets.
         """
         session = cls.ACTIVE_SESSIONS.get(session_id)
         if not session:
-            # Generate deterministic fallback for demo / test
+            # Fallback mock for demo/testing
             session = {
                 "session_id": session_id,
                 "tier_id": "SINGLE_PASS",
@@ -90,10 +92,18 @@ class ApexPayEngineClient:
         access_token = f"EMH-TOKEN-{uuid.uuid4().hex[:16].upper()}"
         expiry = time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime(time.time() + 86400 * 30))
 
+        tier_id = session.get("tier_id", "SINGLE_PASS")
+        asset_id = session.get("asset_id")
+
+        unlocked_set = set()
+        if tier_id == "SINGLE_PASS" and asset_id:
+            unlocked_set.add(asset_id)
+
         cls.ACTIVE_ACCESS_TOKENS[access_token] = {
             "session_id": session_id,
-            "tier_id": session.get("tier_id"),
-            "asset_id": session.get("asset_id"),
+            "tier_id": tier_id,
+            "asset_id": asset_id,
+            "unlocked_asset_ids": unlocked_set,
             "valid_until": expiry
         }
 
@@ -102,15 +112,49 @@ class ApexPayEngineClient:
             merkle_dag_seal=session["merkle_dag_seal"],
             status="SETTLED_SUCCESSFULLY",
             access_token=access_token,
-            unlocked_asset_id=session.get("asset_id"),
+            unlocked_asset_id=asset_id,
             valid_until=expiry
         )
 
     @classmethod
-    def validate_token(cls, token: Optional[str]) -> bool:
+    def get_token_permissions(cls, token: Optional[str]) -> Dict[str, Any]:
+        """
+        Evaluates token permissions strictly according to tier purchased:
+        - PRO_HUNTER / INSTITUTIONAL_VIP: unlocks ALL assets.
+        - SINGLE_PASS: ONLY unlocks the specific asset_id purchased.
+        - Invalid / None: 0 assets unlocked.
+        """
         if not token:
-            return False
-        # Universal master VIP tokens or generated tokens
-        if token.startswith("EMH-MASTER-VIP") or token.startswith("EMH-TOKEN-"):
-            return True
-        return token in cls.ACTIVE_ACCESS_TOKENS
+            return {"valid": False, "is_unlimited": False, "unlocked_asset_ids": set(), "tier": "FREE"}
+
+        # Master VIP founder token (only for system architect Israel Cepero)
+        if token == "EMH-MASTER-VIP-001":
+            return {"valid": True, "is_unlimited": True, "unlocked_asset_ids": set(), "tier": "INSTITUTIONAL_VIP"}
+
+        record = cls.ACTIVE_ACCESS_TOKENS.get(token)
+        if record:
+            tier_id = record.get("tier_id")
+            if tier_id in ["PRO_HUNTER", "INSTITUTIONAL_VIP"]:
+                return {
+                    "valid": True,
+                    "is_unlimited": True,
+                    "unlocked_asset_ids": set(),
+                    "tier": tier_id
+                }
+            elif tier_id == "SINGLE_PASS":
+                asset_ids = set(record.get("unlocked_asset_ids", set()))
+                if record.get("asset_id"):
+                    asset_ids.add(record.get("asset_id"))
+                return {
+                    "valid": True,
+                    "is_unlimited": False,
+                    "unlocked_asset_ids": asset_ids,
+                    "tier": "SINGLE_PASS"
+                }
+
+        return {"valid": False, "is_unlimited": False, "unlocked_asset_ids": set(), "tier": "FREE"}
+
+    @classmethod
+    def validate_token(cls, token: Optional[str]) -> bool:
+        perms = cls.get_token_permissions(token)
+        return perms["valid"]

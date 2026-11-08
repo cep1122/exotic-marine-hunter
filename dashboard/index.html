@@ -669,7 +669,14 @@
                 if (data.tier === 'UNLOCKED_PRO_HUNTER') {
                     document.getElementById('unlocked-badge-container').innerHTML = `
                         <div class="flex items-center space-x-2 px-3 py-1 bg-emerald-950/60 border border-emerald-500/50 rounded-lg text-emerald-400 text-xs font-mono">
-                            <span>🔓 Pro Hunter License Active (50 States Unlocked)</span>
+                            <span>🔓 Membresía Pro Hunter Activa (Acceso Ilimitado 50 Estados)</span>
+                        </div>
+                    `;
+                } else if (data.tier === 'PARTIAL_UNLOCKED' && data.unlocked_asset_ids && data.unlocked_asset_ids.length > 0) {
+                    document.getElementById('unlocked-badge-container').innerHTML = `
+                        <div class="flex items-center space-x-2 px-3 py-1 bg-amber-950/60 border border-amber-500/50 rounded-lg text-amber-300 text-xs font-mono">
+                            <span>🏷️ Pase Individual Activo (${data.unlocked_asset_ids.length} Expediente Desbloqueado)</span>
+                            <button onclick="openCheckoutModal('PRO_HUNTER')" class="ml-2 text-obsidian bg-amber-400 hover:bg-amber-300 font-bold px-2 py-0.5 rounded text-[10px] transition">Actualizar a Pro Ilimitado ($199/mes)</button>
                         </div>
                     `;
                 } else {

@@ -264,7 +264,20 @@ async def get_pipeline(
     authorization: Optional[str] = Header(None)
 ):
     access_token = token or (authorization.replace("Bearer ", "") if authorization else None)
-    is_authorized = ApexPayEngineClient.validate_token(access_token)
+    perms = ApexPayEngineClient.get_token_permissions(access_token)
+
+    # Check if this token belongs to an authenticated user in the database
+    user_id = AUTH_SESSIONS.get(access_token)
+    if user_id:
+        user = DB.get_user_by_id(user_id)
+        if user and user.get("role") in ["PRO_HUNTER", "INSTITUTIONAL_VIP"]:
+            perms["is_unlimited"] = True
+            perms["valid"] = True
+            perms["tier"] = user.get("role")
+        else:
+            unlocked_records = DB.get_user_unlocked_assets(user_id)
+            for rec in unlocked_records:
+                perms["unlocked_asset_ids"].add(rec["asset_id"])
 
     search_filter = None
     if any([category, county, state, seizure_type, auction_platform, q]):
@@ -279,20 +292,31 @@ async def get_pipeline(
 
     leads = AuctionRailsFeeder.filter_pipeline(search_filter)
 
-    if is_authorized:
+    if perms["is_unlimited"]:
+        # FULL UNLIMITED PRO ACCESS ($199/mo)
         return {
             "tier": "UNLOCKED_PRO_HUNTER",
+            "unlocked_asset_ids": [l.id for l in leads],
             "count": len(leads),
             "access_token": access_token,
             "leads": leads
         }
     else:
-        masked = [AuctionRailsFeeder.mask_lead_for_free_tier(lead) for lead in leads]
+        # STRICT SINGLE-PASS ACCESS: Only unmask specific assets the user actually paid for!
+        result_leads = []
+        unlocked_set = perms["unlocked_asset_ids"]
+        for lead in leads:
+            if lead.id in unlocked_set:
+                result_leads.append(lead)
+            else:
+                result_leads.append(AuctionRailsFeeder.mask_lead_for_free_tier(lead))
+
         return {
-            "tier": "MASKED_PUBLIC_PREVIEW",
-            "count": len(masked),
+            "tier": "PARTIAL_UNLOCKED" if unlocked_set else "MASKED_PUBLIC_PREVIEW",
+            "unlocked_asset_ids": list(unlocked_set),
+            "count": len(result_leads),
             "notice": "Proprietary VINs, HINs, dockets and custodians are protected. Unlock with APEX PayEngine ($49 Single Pass or $199 Pro).",
-            "leads": masked
+            "leads": result_leads
         }
 
 @app.get("/api/pipeline/{asset_id}")
@@ -302,14 +326,27 @@ async def get_asset_dossier(
     authorization: Optional[str] = Header(None)
 ):
     access_token = token or (authorization.replace("Bearer ", "") if authorization else None)
-    is_authorized = ApexPayEngineClient.validate_token(access_token)
+    perms = ApexPayEngineClient.get_token_permissions(access_token)
+
+    user_id = AUTH_SESSIONS.get(access_token)
+    if user_id:
+        user = DB.get_user_by_id(user_id)
+        if user and user.get("role") in ["PRO_HUNTER", "INSTITUTIONAL_VIP"]:
+            perms["is_unlimited"] = True
+            perms["valid"] = True
+        else:
+            unlocked_records = DB.get_user_unlocked_assets(user_id)
+            for rec in unlocked_records:
+                perms["unlocked_asset_ids"].add(rec["asset_id"])
 
     leads = AuctionRailsFeeder.get_seed_inventory()
     match = next((l for l in leads if l.id == asset_id), None)
     if not match:
         raise HTTPException(status_code=404, detail=f"Asset ID '{asset_id}' not found in active forfeiture dockets.")
 
-    if not is_authorized:
+    is_unlocked = perms["is_unlimited"] or (asset_id in perms["unlocked_asset_ids"])
+
+    if not is_unlocked:
         masked = AuctionRailsFeeder.mask_lead_for_free_tier(match)
         return {
             "unlocked": False,
@@ -330,15 +367,21 @@ async def get_asset_dossier(
 
 @app.post("/api/search")
 async def search_assets(filters: SearchFilter, token: Optional[str] = Query(None)):
-    is_authorized = ApexPayEngineClient.validate_token(token)
+    perms = ApexPayEngineClient.get_token_permissions(token)
     filtered = AuctionRailsFeeder.filter_pipeline(filters)
 
-    if is_authorized:
+    if perms["is_unlimited"]:
         return {"count": len(filtered), "leads": filtered}
     else:
+        unlocked_set = perms["unlocked_asset_ids"]
+        results = [
+            l if l.id in unlocked_set else AuctionRailsFeeder.mask_lead_for_free_tier(l)
+            for l in filtered
+        ]
         return {
-            "count": len(filtered),
-            "leads": [AuctionRailsFeeder.mask_lead_for_free_tier(l) for l in filtered]
+            "count": len(results),
+            "unlocked_asset_ids": list(unlocked_set),
+            "leads": results
         }
 
 @app.get("/api/auctions/directory")
