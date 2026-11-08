@@ -155,3 +155,26 @@ class LegalDisclosure(BaseModel):
     admiralty_law_notice: str
     u_c_c_article_9_compliance: str
     disclaimer: str
+
+class UserRegisterRequest(BaseModel):
+    email: str
+    password: str
+    full_name: str
+    role: str = "PRO_HUNTER"
+
+class UserLoginRequest(BaseModel):
+    email: str
+    password: str
+
+class UserAuthResponse(BaseModel):
+    token: str
+    user_id: str
+    email: str
+    full_name: str
+    role: str
+    api_bank_wallet_id: str
+    wallet_balance: float
+    message: str
+
+class WatchlistToggleRequest(BaseModel):
+    asset_id: str

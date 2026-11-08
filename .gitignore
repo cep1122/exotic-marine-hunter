@@ -8,5 +8,9 @@ venv/
 .pytest_cache/
 .coverage
 htmlcov/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
 
 .vercel

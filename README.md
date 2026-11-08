@@ -87,31 +87,46 @@ Integrated directly into the **API Bank AI Empire Sovereign Ledger**:
 
 ## 5. Argus Cyber Sentinel v3.0 Defense Layer
 
+- **Anti-SQL Injection Shield (Argus WAF):** Deep pattern scanner intercepting union-based, error-based, boolean-blind, and stacked SQL injection attacks with 403 Forbidden blocking and security audit logging.
+- **100% Parameterized Statements:** All SQLite queries execute with strict prepared statement binding.
 - **Anti-Clonador Shield:** Rejects automated scrapers and code downloaders (`HTTrack`, `Scrapy`, `Wget`, `Curl`, `Selenium`, `Puppeteer`).
 - **Anti-Spy Shield:** Intercepts reconnaissance targeting sensitive files (`.env`, `.git`, `wp-config.php`, directory traversal `../`).
-- **Security Headers:** Strict Transport Security (`HSTS`), `Content-Security-Policy`, `X-Frame-Options: SAMEORIGIN`, `X-Content-Type-Options: nosniff`.
+- **Security Headers:** Strict Transport Security (`HSTS`), `Content-Security-Policy`, `X-Frame-Options: SAMEORIGIN`, `X-Content-Type-Options: nosniff`, `X-Encryption-Standard`, `X-SQLi-Protection`.
 - **IP Compliance:** Blocks OFAC sanctioned jurisdictions.
 
 ---
 
-## 6. Project Architecture
+## 6. Database & Encrypted Evidence Storage
+
+- **Persistence Engine (`core/database.py`):** Thread-safe SQLite WAL mode with parameterized queries managing Users, Unlocked Dossiers, Watchlists, and Security Audit Logs.
+- **Evidence Storage (`core/storage.py`):** Military-grade AES-256-GCM encrypted document vault storing USMS Form 102 decrees, USCG Form 1340 abstracts of title, SAMS certified marine surveys, and statutory tow lien affidavits.
+- **Investor Portal:** Complete authentication (register/login with PBKDF2-HMAC-SHA256, 100k rounds), saved watchlist management, and unredacted dossier downloads.
+
+---
+
+## 7. Project Architecture
 
 ```
 exotic-marine-hunter/
 ├── api/
-│   └── main.py                 # FastAPI gateway & REST endpoints
+│   ├── main.py                 # FastAPI gateway & REST endpoints
+│   └── index.py                # Vercel serverless entrypoint
 ├── core/
 │   ├── auction_rails.py        # Government & Admiralty feed ingestion
-│   ├── models.py               # Pydantic schemas, Enums, PayEngine data models
+│   ├── crypto_vault_256.py     # AES-256-GCM & SHA-256 Merkle DAG engine
+│   ├── database.py             # Thread-safe SQLite persistence layer
+│   ├── models.py               # Pydantic schemas, Enums, PayEngine & Auth models
 │   ├── payengine_client.py     # APEX PayEngine checkout & Merkle seals
-│   ├── security.py             # Argus Sentinel v3.0 anti-scraping middleware
+│   ├── security.py             # Argus Sentinel v3.0 anti-scraping & SQLi WAF
+│   ├── storage.py              # AES-256-GCM encrypted evidence document vault
 │   └── underwriting.py         # MAB & profit spread algorithmic engine
 ├── dashboard/
-│   └── index.html              # Ultra-luxury glassmorphic executive terminal
+│   └── index.html              # Luxury glassmorphic terminal & Investor Portal
 ├── tests/
-│   └── test_exotic_hunter.py   # 12 automated verification tests (100% passing)
+│   └── test_exotic_hunter.py   # 17 automated verification tests (100% passing)
 ├── config.py                   # System, BuyBox & PayEngine configurations
 ├── requirements.txt            # Python dependencies
+├── vercel.json                 # Vercel serverless routing & headers
 └── README.md                   # System documentation
 ```
 

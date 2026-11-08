@@ -45,9 +45,9 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
         .glass-card-gold {
-            background: rgba(30, 27, 20, 0.75);
+            background: rgba(30, 27, 20, 0.85);
             backdrop-filter: blur(16px);
-            border: 1px solid rgba(245, 158, 11, 0.25);
+            border: 1px solid rgba(245, 158, 11, 0.3);
         }
         .neon-glow-gold {
             box-shadow: 0 0 25px -5px rgba(245, 158, 11, 0.35);
@@ -88,14 +88,22 @@
             <div class="flex items-center space-x-3">
                 <div class="hidden md:flex items-center space-x-2 text-xs font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-800/60 px-3 py-1.5 rounded-lg">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span>Argus Sentinel: Shield Active</span>
+                    <span>Argus WAF: SQLi & Anti-Spy Shield Active</span>
                 </div>
                 <div class="hidden lg:flex items-center space-x-2 text-xs font-mono text-cyan-400 bg-cyan-950/40 border border-cyan-800/60 px-3 py-1.5 rounded-lg">
-                    <span>Vault: VAULT-EXOTIC-MARINE</span>
+                    <span>AES-256-GCM Vault</span>
                 </div>
                 <button onclick="openDirectoryModal()" class="px-3.5 py-1.5 text-xs font-medium text-slate-300 bg-slate-800/70 hover:bg-slate-700 border border-slate-700 rounded-lg transition">
                     Gov & Admiralty Rails
                 </button>
+                
+                <!-- Dynamic User Portal Button in Header -->
+                <div id="user-header-container">
+                    <button onclick="openUserPortalModal('LOGIN')" class="px-3.5 py-1.5 text-xs font-semibold text-cyan-300 bg-cyan-950/60 hover:bg-cyan-900/60 border border-cyan-700/60 rounded-lg transition flex items-center space-x-1.5">
+                        <span>👤 Inversionista / Acceso</span>
+                    </button>
+                </div>
+
                 <button onclick="openCheckoutModal('PRO_HUNTER')" class="px-4 py-1.5 text-xs font-bold text-obsidian bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 rounded-lg shadow-md shadow-amber-500/20 transition flex items-center space-x-1.5">
                     <span>⚡ Unlock Pro Access ($199)</span>
                 </button>
@@ -114,7 +122,7 @@
                     <span class="text-amber-400 text-lg">💰</span>
                 </div>
                 <div class="mt-3">
-                    <div class="text-2xl font-bold font-mono text-white" id="stat-pipeline-value">$14,894,000</div>
+                    <div class="text-2xl font-bold font-mono text-white" id="stat-pipeline-value">$14,899,000</div>
                     <p class="text-xs text-slate-400 mt-1">Across 6 Seized Vessels & Exotics</p>
                 </div>
             </div>
@@ -125,30 +133,30 @@
                     <span class="text-emerald-400 text-lg">📈</span>
                 </div>
                 <div class="mt-3">
-                    <div class="text-2xl font-bold font-mono text-emerald-400" id="stat-net-spread">$6,412,600</div>
+                    <div class="text-2xl font-bold font-mono text-emerald-400" id="stat-net-spread">$8,633,700</div>
                     <p class="text-xs text-slate-400 mt-1">Pre-Auction Equity Cushion</p>
                 </div>
             </div>
 
             <div class="glass-card p-5 rounded-2xl border-slate-800 flex flex-col justify-between">
                 <div class="flex justify-between items-start">
-                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">Avg. MAB Wholesale Discount</span>
-                    <span class="text-cyan-400 text-lg">⚖️</span>
+                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">Underwriting Database</span>
+                    <span class="text-cyan-400 text-lg">🗄️</span>
                 </div>
                 <div class="mt-3">
-                    <div class="text-2xl font-bold font-mono text-cyan-400">54.2% Below Retail</div>
-                    <p class="text-xs text-slate-400 mt-1">Institutional 65% MAB Baseline</p>
+                    <div class="text-2xl font-bold font-mono text-cyan-400">SQLite WAL Prepared</div>
+                    <p class="text-xs text-slate-400 mt-1">Zero SQL Injection Vulnerability</p>
                 </div>
             </div>
 
             <div class="glass-card p-5 rounded-2xl border-slate-800 flex flex-col justify-between">
                 <div class="flex justify-between items-start">
-                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">APEX PayEngine Inflow Fee</span>
-                    <span class="text-purple-400 text-lg">⚡</span>
+                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">Evidence Storage</span>
+                    <span class="text-purple-400 text-lg">🔒</span>
                 </div>
                 <div class="mt-3">
-                    <div class="text-2xl font-bold font-mono text-purple-400">0.00% Zero Inflow</div>
-                    <p class="text-xs text-slate-400 mt-1">Direct to Sovereign Vault</p>
+                    <div class="text-2xl font-bold font-mono text-purple-400">AES-256-GCM Vault</div>
+                    <p class="text-xs text-slate-400 mt-1">USMS Form 102 & USCG Form 1340</p>
                 </div>
             </div>
         </section>
@@ -161,6 +169,9 @@
                 <button onclick="filterCategory('SUPERYACHT')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">🛥️ Superyachts (Sunseeker / Azimut)</button>
                 <button onclick="filterCategory('SPORTFISHER')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">🎣 Sportfishers (Viking)</button>
                 <button onclick="filterCategory('LUXURY_AIRCRAFT')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">✈️ Private Jets (Citation)</button>
+                <button onclick="filterWatchlistOnly()" id="btn-watchlist-filter" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-amber-300 hover:bg-slate-700 transition flex items-center space-x-1">
+                    <span>⭐ Mi Watchlist</span>
+                </button>
             </div>
 
             <div class="flex items-center space-x-3 w-full md:w-auto">
@@ -199,6 +210,7 @@
                 <p class="mt-1">Federal Admiralty Rule C & U.S.C. § 2461 Forfeiture Title Disclosures apply. Notarized by LEX AI Sovereign Sentry.</p>
             </div>
             <div class="flex space-x-6 text-slate-400">
+                <button onclick="openUserPortalModal('PROFILE')" class="hover:text-amber-400">Portal de Usuario</button>
                 <button onclick="openLegalModal()" class="hover:text-amber-400">Legal Disclosures</button>
                 <button onclick="openDirectoryModal()" class="hover:text-amber-400">Auction Directory</button>
                 <a href="https://apibankaiempire.com" target="_blank" class="hover:text-amber-400">API Bank AI Empire</a>
@@ -282,39 +294,149 @@
         </div>
     </div>
 
-    <!-- MODAL 2: Government & Admiralty Rails Directory -->
+    <!-- MODAL 2: Comprehensive User Portal (Login, Register, Unlocked Dossiers, Watchlist & Security) -->
+    <div id="user-portal-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-card max-w-2xl w-full rounded-2xl p-6 space-y-5 relative border border-slate-700 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <button onclick="closeUserPortalModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white text-lg font-mono">✕</button>
+            
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-lg bg-cyan-950 border border-cyan-500/40 flex items-center justify-center text-cyan-400 font-bold text-lg">
+                    🛡️
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">Portal de Inversionista & Bóveda Soberana</h3>
+                    <p class="text-xs text-slate-400">Autenticación Segura, Almacenamiento Cifrado y Lista de Vigilancia Personal.</p>
+                </div>
+            </div>
+
+            <!-- Portal Tabs -->
+            <div class="flex border-b border-slate-800 space-x-4 text-xs font-medium text-slate-400">
+                <button onclick="switchPortalTab('LOGIN')" id="tab-btn-login" class="pb-2.5 text-amber-400 border-b-2 border-amber-400 font-bold">Acceso / Login</button>
+                <button onclick="switchPortalTab('REGISTER')" id="tab-btn-register" class="pb-2.5 hover:text-white">Registro</button>
+                <button onclick="switchPortalTab('DOSSIERS')" id="tab-btn-dossiers" class="pb-2.5 hover:text-white">Mis Dossiers</button>
+                <button onclick="switchPortalTab('WATCHLIST')" id="tab-btn-watchlist" class="pb-2.5 hover:text-white">Watchlist</button>
+                <button onclick="switchPortalTab('SECURITY')" id="tab-btn-security" class="pb-2.5 hover:text-white">Seguridad & WAF</button>
+            </div>
+
+            <!-- TAB 1: LOGIN -->
+            <div id="portal-tab-login" class="space-y-4">
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">Email Institucional</label>
+                        <input type="email" id="login-email" value="architect@icneuralsystems.com" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">Contraseña</label>
+                        <input type="password" id="login-password" value="Sovereign2026!" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                    </div>
+                    <button onclick="handleLogin()" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-yellow-400 text-obsidian font-bold text-xs rounded-xl shadow-md transition">
+                        Iniciar Sesión
+                    </button>
+                </div>
+                <div class="p-3 rounded-lg bg-amber-950/20 border border-amber-500/30 text-xs text-amber-300 flex justify-between items-center">
+                    <span>💡 Cuenta Demo Predeterminada: Israel Cepero (Principal)</span>
+                    <button onclick="autoLoginDemo()" class="underline font-bold text-amber-400">Acceder en 1 Clic</button>
+                </div>
+            </div>
+
+            <!-- TAB 2: REGISTER -->
+            <div id="portal-tab-register" class="space-y-4 hidden">
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">Nombre Completo o Entidad</label>
+                        <input type="text" id="reg-name" placeholder="Ej. Alexander Vance (Capital Group)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">Email Corporativo</label>
+                        <input type="email" id="reg-email" placeholder="inversionista@fondo.com" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">Contraseña Segura (PBKDF2-HMAC-SHA256)</label>
+                        <input type="password" id="reg-password" placeholder="••••••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">Rol de Operación</label>
+                        <select id="reg-role" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                            <option value="PRO_HUNTER">Pro Hunter Syndicate ($199/mo)</option>
+                            <option value="INSTITUTIONAL_VIP">Institutional VIP Fleet ($599/mo)</option>
+                            <option value="GUEST">Guest Explorer</option>
+                        </select>
+                    </div>
+                    <button onclick="handleRegister()" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-yellow-400 text-obsidian font-bold text-xs rounded-xl shadow-md transition">
+                        Crear Cuenta & Provisionar Bóveda API Bank
+                    </button>
+                </div>
+            </div>
+
+            <!-- TAB 3: UNLOCKED DOSSIERS -->
+            <div id="portal-tab-dossiers" class="space-y-3 hidden">
+                <div class="text-xs text-slate-400">Activos y expedientes que has desbloqueado con acceso total y títulos sin redactar:</div>
+                <div id="user-dossiers-list" class="space-y-2">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- TAB 4: WATCHLIST -->
+            <div id="portal-tab-watchlist" class="space-y-3 hidden">
+                <div class="text-xs text-slate-400">Tus confiscaciones y subastas marítimas guardadas en la base de datos:</div>
+                <div id="user-watchlist-list" class="space-y-2">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- TAB 5: SECURITY AUDIT & WAF LOGS -->
+            <div id="portal-tab-security" class="space-y-3 hidden">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-slate-400">Registros de Seguridad en Tiempo Real (Argus WAF + SQLite):</span>
+                    <span class="text-emerald-400 font-mono">100% Parameterized Statements</span>
+                </div>
+                <div id="user-security-logs" class="space-y-1.5 font-mono text-[11px] max-h-60 overflow-y-auto custom-scrollbar p-3 bg-slate-950 rounded-xl border border-slate-800">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: Decrypted Evidence Document Viewer Modal -->
+    <div id="document-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-card max-w-xl w-full rounded-2xl p-6 space-y-4 relative border border-slate-700">
+            <button onclick="closeDocumentModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white text-lg font-mono">✕</button>
+            <div class="flex items-center space-x-2">
+                <span class="px-2 py-0.5 text-[10px] font-mono bg-cyan-950 text-cyan-300 border border-cyan-800 rounded">AES-256-GCM DECRYPTED</span>
+                <span class="text-xs font-mono text-slate-400" id="doc-type-label"></span>
+            </div>
+            <h3 class="text-lg font-bold text-white" id="doc-filename-label">Evidence Document</h3>
+            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 font-mono text-xs text-slate-300 leading-relaxed max-h-64 overflow-y-auto custom-scrollbar" id="doc-content-box">
+                Loading encrypted payload...
+            </div>
+            <div class="flex justify-between text-[11px] font-mono text-slate-500">
+                <span>SHA-256 Checksum: <span id="doc-checksum-label" class="text-slate-400"></span></span>
+                <span class="text-emerald-400">✓ Authenticated at Rest</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: Auction Directory -->
     <div id="directory-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="glass-card max-w-2xl w-full rounded-2xl p-6 space-y-5 relative border border-slate-700 max-h-[90vh] overflow-y-auto custom-scrollbar">
             <button onclick="closeDirectoryModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white text-lg font-mono">✕</button>
-            
             <div>
                 <span class="text-xs font-mono font-bold text-cyan-400 uppercase">Federal & Maritime Auction Directory</span>
                 <h3 class="text-xl font-bold text-white mt-1">Verified Auction & Storage Lien Rails</h3>
                 <p class="text-xs text-slate-400">Official repositories and contracting auction houses where seized assets are sold.</p>
             </div>
-
-            <div class="space-y-3" id="directory-list">
-                <!-- Dynamically populated -->
-            </div>
-
-            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-400 space-y-1.5">
-                <p class="font-semibold text-white">Statutory Clear Title Transfer Laws:</p>
-                <p>• <strong>U.S. Marshals Service (DOJ):</strong> Transfers judicial title free & clear via Form USM-102.</p>
-                <p>• <strong>Federal Admiralty Rule C in Rem:</strong> Extinguishes all maritime liens upon judicial confirmation (46 U.S.C. § 31326).</p>
-                <p>• <strong>Florida Statute § 713.78:</strong> Grants statutory certificate of title after statutory notice period for tow/storage debt.</p>
-            </div>
+            <div class="space-y-3" id="directory-list"></div>
         </div>
     </div>
 
-    <!-- MODAL 3: Legal Disclosures -->
+    <!-- MODAL 5: Legal Disclosures -->
     <div id="legal-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="glass-card max-w-lg w-full rounded-2xl p-6 space-y-4 relative border border-slate-700">
             <button onclick="closeLegalModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white text-lg font-mono">✕</button>
             <h3 class="text-lg font-bold text-white">Legal & Maritime Sovereignty Disclosures</h3>
             <div class="text-xs text-slate-300 space-y-3 leading-relaxed">
                 <p><strong>Operating Entity:</strong> IC Neural Systems LLC, organized under the laws of the State of Florida. Principal Systems Architect: Israel Cepero.</p>
-                <p><strong>Maritime & Admiralty Claims:</strong> Seized vessels indexed herein are subject to Federal Supplemental Rules for Admiralty or Maritime Claims (Rule C & Rule E). All bids are subject to U.S. District Court confirmation.</p>
-                <p><strong>Anti-Cloning & IP Rights:</strong> The algorithmic underwriting models, MAB formulas, and ingestion pipelines are proprietary trade secrets of IC Neural Systems LLC protected by Argus Cyber Shield v3.0.</p>
+                <p><strong>Database & Storage Standard:</strong> Database queries executed strictly via parameterized SQLite WAL statements with Argus SQLi WAF filtering. Title and inspection evidence encrypted with AES-256-GCM.</p>
             </div>
         </div>
     </div>
@@ -324,14 +446,142 @@
         let allLeads = [];
         let currentFilter = 'ALL';
         let activeToken = localStorage.getItem('AEMH_ACCESS_TOKEN') || null;
+        let currentUser = null;
+        let userWatchlistIds = [];
+        let showWatchlistOnly = false;
         let selectedTierId = 'SINGLE_PASS';
         let selectedAmount = 49;
         let targetedAssetId = null;
         let selectedPaymentMethod = 'CARD';
 
         async function init() {
+            if (activeToken) {
+                await fetchUserProfile();
+            } else {
+                renderUserHeaderLoggedOut();
+            }
             await fetchPipeline();
             await fetchDirectory();
+        }
+
+        async function fetchUserProfile() {
+            try {
+                const res = await fetch(`/api/user/profile?token=${encodeURIComponent(activeToken)}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    currentUser = data.user;
+                    userWatchlistIds = data.watchlist_asset_ids || [];
+                    renderUserHeaderLoggedIn();
+                } else {
+                    activeToken = null;
+                    localStorage.removeItem('AEMH_ACCESS_TOKEN');
+                    renderUserHeaderLoggedOut();
+                }
+            } catch (err) {
+                renderUserHeaderLoggedOut();
+            }
+        }
+
+        function renderUserHeaderLoggedIn() {
+            document.getElementById('user-header-container').innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <button onclick="openUserPortalModal('PROFILE')" class="px-3 py-1.5 text-xs font-semibold text-amber-300 bg-amber-950/60 hover:bg-amber-900/60 border border-amber-600/50 rounded-lg transition flex items-center space-x-1.5">
+                        <span>👤 ${currentUser.full_name.split(' ')[0]}</span>
+                        <span class="text-[10px] font-mono px-1.5 py-0.2 bg-amber-500 text-obsidian rounded font-bold">${currentUser.role === 'INSTITUTIONAL_VIP' ? 'VIP' : 'PRO'}</span>
+                    </button>
+                    <button onclick="handleLogout()" title="Cerrar Sesión" class="text-xs text-slate-400 hover:text-white px-2 py-1">✕</button>
+                </div>
+            `;
+        }
+
+        function renderUserHeaderLoggedOut() {
+            document.getElementById('user-header-container').innerHTML = `
+                <button onclick="openUserPortalModal('LOGIN')" class="px-3.5 py-1.5 text-xs font-semibold text-cyan-300 bg-cyan-950/60 hover:bg-cyan-900/60 border border-cyan-700/60 rounded-lg transition flex items-center space-x-1.5">
+                    <span>👤 Inversionista / Acceso</span>
+                </button>
+            `;
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || "Error en inicio de sesión");
+
+                activeToken = data.token;
+                localStorage.setItem('AEMH_ACCESS_TOKEN', activeToken);
+                await fetchUserProfile();
+                await fetchPipeline();
+                closeUserPortalModal();
+            } catch (err) {
+                alert(err.message);
+            }
+        }
+
+        async function autoLoginDemo() {
+            document.getElementById('login-email').value = "architect@icneuralsystems.com";
+            document.getElementById('login-password').value = "Sovereign2026!";
+            await handleLogin();
+        }
+
+        async function handleRegister() {
+            const full_name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            const role = document.getElementById('reg-role').value;
+
+            try {
+                const res = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ full_name, email, password, role })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || "Error en registro");
+
+                activeToken = data.token;
+                localStorage.setItem('AEMH_ACCESS_TOKEN', activeToken);
+                await fetchUserProfile();
+                await fetchPipeline();
+                closeUserPortalModal();
+            } catch (err) {
+                alert(err.message);
+            }
+        }
+
+        function handleLogout() {
+            activeToken = null;
+            currentUser = null;
+            userWatchlistIds = [];
+            localStorage.removeItem('AEMH_ACCESS_TOKEN');
+            renderUserHeaderLoggedOut();
+            fetchPipeline();
+        }
+
+        async function toggleWatchlist(assetId) {
+            try {
+                const res = await fetch('/api/user/watchlist/toggle', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ asset_id: assetId })
+                });
+                const data = await res.json();
+                if (data.is_saved) {
+                    if (!userWatchlistIds.includes(assetId)) userWatchlistIds.push(assetId);
+                } else {
+                    userWatchlistIds = userWatchlistIds.filter(id => id !== assetId);
+                }
+                renderLeads();
+            } catch (err) {
+                console.error("Watchlist error:", err);
+            }
         }
 
         async function fetchPipeline() {
@@ -350,6 +600,8 @@
                             <span>🔓 Pro Hunter License Active</span>
                         </div>
                     `;
+                } else {
+                    document.getElementById('unlocked-badge-container').innerHTML = '';
                 }
 
                 renderLeads();
@@ -363,6 +615,7 @@
             const search = document.getElementById('search-input').value.toLowerCase();
             
             let filtered = allLeads.filter(lead => {
+                if (showWatchlistOnly && !userWatchlistIds.includes(lead.id)) return false;
                 const matchesCat = (currentFilter === 'ALL' || lead.category === currentFilter);
                 const matchesSearch = !search || 
                     lead.title.toLowerCase().includes(search) ||
@@ -393,6 +646,7 @@
                 const mab = lead.maximum_allowable_bid_mab || (lead.underwriting ? lead.underwriting.maximum_allowable_bid_mab : 0);
                 const roi = lead.roi_percentage || (lead.underwriting ? lead.underwriting.roi_percentage : 0);
                 const img = (lead.images && lead.images.length > 0) ? lead.images[0] : 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=1200&q=80';
+                const isWatchlisted = userWatchlistIds.includes(lead.id);
 
                 return `
                 <div class="glass-card rounded-2xl overflow-hidden border border-slate-800 hover:border-amber-500/50 transition duration-300 flex flex-col justify-between group">
@@ -406,6 +660,10 @@
                                 <span class="px-2 py-0.5 text-[10px] font-mono font-bold uppercase rounded bg-amber-500 text-obsidian">${lead.category.replace('_', ' ')}</span>
                                 <span class="px-2 py-0.5 text-[10px] font-mono rounded bg-slate-900/90 text-cyan-300 border border-cyan-800/60">${lead.deal_stage ? lead.deal_stage.replace(/_/g, ' ') : 'PRE-AUCTION'}</span>
                             </div>
+
+                            <button onclick="toggleWatchlist('${lead.id}')" title="Guardar en Watchlist" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-slate-900/80 backdrop-blur border border-slate-700 flex items-center justify-center text-sm ${isWatchlisted ? 'text-amber-400' : 'text-slate-400 hover:text-white'} transition">
+                                ${isWatchlisted ? '★' : '☆'}
+                            </button>
 
                             <div class="absolute bottom-3 left-3 right-3 flex justify-between items-end">
                                 <div>
@@ -469,7 +727,7 @@
                     </div>
 
                     <!-- Card Action Footer -->
-                    <div class="p-5 pt-0">
+                    <div class="p-5 pt-0 space-y-2">
                         ${isMasked ? `
                         <button onclick="openCheckoutModal('SINGLE_PASS', '${lead.id}', '${lead.title.replace(/'/g, "\\'")}')" class="w-full py-2.5 px-4 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-obsidian font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center space-x-2">
                             <span>🔑 Unlock Unredacted Dossier ($49)</span>
@@ -479,6 +737,9 @@
                             ✓ Unredacted Sovereign Access Granted
                         </div>
                         `}
+                        <button onclick="viewAssetEvidence('${lead.id}')" class="w-full py-1.5 text-[11px] font-mono text-slate-400 hover:text-cyan-300 transition">
+                            📑 Ver Evidencia Cifrada (AES-256)
+                        </button>
                     </div>
                 </div>
                 `;
@@ -486,6 +747,7 @@
         }
 
         function filterCategory(cat) {
+            showWatchlistOnly = false;
             currentFilter = cat;
             document.querySelectorAll('.category-btn').forEach(btn => {
                 btn.classList.remove('bg-amber-500', 'text-obsidian', 'font-semibold');
@@ -496,6 +758,17 @@
             renderLeads();
         }
 
+        function filterWatchlistOnly() {
+            showWatchlistOnly = !showWatchlistOnly;
+            const btn = document.getElementById('btn-watchlist-filter');
+            if (showWatchlistOnly) {
+                btn.className = "category-btn px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-amber-500 text-obsidian shadow-sm transition";
+            } else {
+                btn.className = "category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-amber-300 hover:bg-slate-700 transition";
+            }
+            renderLeads();
+        }
+
         function handleSearch() {
             renderLeads();
         }
@@ -503,14 +776,139 @@
         function resetFilters() {
             document.getElementById('search-input').value = '';
             currentFilter = 'ALL';
+            showWatchlistOnly = false;
             renderLeads();
         }
 
-        // Modal Handlers
+        // USER PORTAL TAB SWITCHING
+        function openUserPortalModal(tab = 'LOGIN') {
+            document.getElementById('user-portal-modal').classList.remove('hidden');
+            if (currentUser && tab === 'LOGIN') {
+                tab = 'DOSSIERS';
+            }
+            switchPortalTab(tab);
+        }
+
+        function closeUserPortalModal() {
+            document.getElementById('user-portal-modal').classList.add('hidden');
+        }
+
+        async function switchPortalTab(tab) {
+            ['login', 'register', 'dossiers', 'watchlist', 'security'].forEach(t => {
+                document.getElementById(`portal-tab-${t}`).classList.add('hidden');
+                document.getElementById(`tab-btn-${t}`).className = "pb-2.5 text-slate-400 hover:text-white";
+            });
+
+            document.getElementById(`portal-tab-${tab.toLowerCase()}`).classList.remove('hidden');
+            document.getElementById(`tab-btn-${tab.toLowerCase()}`).className = "pb-2.5 text-amber-400 border-b-2 border-amber-400 font-bold";
+
+            if (tab === 'DOSSIERS') await loadUserDossiers();
+            if (tab === 'WATCHLIST') await loadUserWatchlist();
+            if (tab === 'SECURITY') await loadSecurityLogs();
+        }
+
+        async function loadUserDossiers() {
+            const list = document.getElementById('user-dossiers-list');
+            try {
+                const res = await fetch(`/api/user/dossiers?token=${encodeURIComponent(activeToken || '')}`);
+                const data = await res.json();
+                if (!data.leads || data.leads.length === 0) {
+                    list.innerHTML = `<div class="p-6 text-center text-slate-500 text-xs font-mono">No tienes dossiers desbloqueados aún.</div>`;
+                    return;
+                }
+                list.innerHTML = data.leads.map(lead => `
+                    <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 flex justify-between items-center">
+                        <div>
+                            <span class="text-xs font-bold text-white">${lead.title}</span>
+                            <div class="text-[11px] font-mono text-emerald-400">${lead.identifier_type}: ${lead.identifier_value}</div>
+                        </div>
+                        <button onclick="viewAssetEvidence('${lead.id}')" class="px-3 py-1 bg-cyan-950 text-cyan-300 border border-cyan-700 rounded text-xs">
+                            Ver Documentos AES-256
+                        </button>
+                    </div>
+                `).join('');
+            } catch (err) {
+                list.innerHTML = `<div class="text-xs text-red-400">Error cargando dossiers.</div>`;
+            }
+        }
+
+        async function loadUserWatchlist() {
+            const list = document.getElementById('user-watchlist-list');
+            try {
+                const res = await fetch(`/api/user/watchlist?token=${encodeURIComponent(activeToken || '')}`);
+                const data = await res.json();
+                if (!data.watchlist || data.watchlist.length === 0) {
+                    list.innerHTML = `<div class="p-6 text-center text-slate-500 text-xs font-mono">Tu lista de vigilancia está vacía. Haz clic en ☆ en cualquier tarjeta para guardarla.</div>`;
+                    return;
+                }
+                list.innerHTML = data.watchlist.map(lead => `
+                    <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 flex justify-between items-center">
+                        <div>
+                            <span class="text-xs font-bold text-white">${lead.title}</span>
+                            <div class="text-[11px] font-mono text-amber-400">Spread: +$${lead.underwriting.projected_net_spread.toLocaleString()}</div>
+                        </div>
+                        <button onclick="toggleWatchlist('${lead.id}')" class="text-xs text-red-400 hover:underline">Quitar</button>
+                    </div>
+                `).join('');
+            } catch (err) {
+                list.innerHTML = `<div class="text-xs text-red-400">Error cargando watchlist.</div>`;
+            }
+        }
+
+        async function loadSecurityLogs() {
+            const list = document.getElementById('user-security-logs');
+            try {
+                const res = await fetch('/api/security/audit-logs');
+                const data = await res.json();
+                list.innerHTML = data.logs.map(log => `
+                    <div class="flex justify-between py-1 border-b border-slate-900">
+                        <span class="${log.status === 'BLOCKED' ? 'text-red-400' : 'text-emerald-400'}">${log.action} (${log.status})</span>
+                        <span class="text-slate-500">${log.ip_address} • ${new Date(log.timestamp * 1000).toLocaleTimeString()}</span>
+                    </div>
+                `).join('');
+            } catch (err) {
+                list.innerHTML = `Error cargando auditoría.`;
+            }
+        }
+
+        // VIEW EVIDENCE DOCUMENT MODAL
+        async function viewAssetEvidence(assetId) {
+            try {
+                const res = await fetch(`/api/assets/${assetId}/documents`);
+                const data = await res.json();
+                if (!data.documents || data.documents.length === 0) {
+                    alert("No title documents recorded yet for this asset.");
+                    return;
+                }
+                const firstDoc = data.documents[0];
+                const decRes = await fetch(`/api/documents/${firstDoc.id}/download`);
+                const docData = await decRes.json();
+
+                document.getElementById('doc-type-label').textContent = docData.document_type;
+                document.getElementById('doc-filename-label').textContent = docData.filename;
+                document.getElementById('doc-content-box').textContent = docData.decrypted_content;
+                document.getElementById('doc-checksum-label').textContent = docData.sha256_checksum.substring(0, 16) + '...';
+
+                document.getElementById('document-modal').classList.remove('hidden');
+            } catch (err) {
+                alert("Error retrieving encrypted evidence: " + err.message);
+            }
+        }
+
+        function closeDocumentModal() {
+            document.getElementById('document-modal').classList.add('hidden');
+        }
+
+        // CHECKOUT & SETTLEMENT
         function openCheckoutModal(tierId, assetId = null, assetTitle = null) {
             selectedTierId = tierId;
             targetedAssetId = assetId;
             selectTier(tierId, tierId === 'SINGLE_PASS' ? 49 : 199);
+
+            if (currentUser) {
+                document.getElementById('buyer-name').value = currentUser.full_name;
+                document.getElementById('buyer-email').value = currentUser.email;
+            }
 
             if (assetTitle) {
                 document.getElementById('modal-subtitle').textContent = `Target: ${assetTitle}`;
@@ -562,7 +960,6 @@
             btn.innerHTML = `<span class="animate-pulse">Hashing Merkle DAG & Settling in Vault...</span>`;
 
             try {
-                // 1. Create Checkout Session
                 const createRes = await fetch('/api/payengine/checkout-session', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -578,11 +975,9 @@
                 const session = await createRes.json();
                 if (!createRes.ok) throw new Error(session.detail || "Settlement failed");
 
-                // 2. Instant Verification into Sovereign Vault
-                const verifyRes = await fetch(`/api/payengine/verify/${session.session_id}`, { method: 'POST' });
+                const verifyRes = await fetch(`/api/payengine/verify/${session.session_id}?token=${encodeURIComponent(activeToken || '')}`, { method: 'POST' });
                 const verification = await verifyRes.json();
 
-                // Save token & refresh
                 activeToken = verification.access_token;
                 localStorage.setItem('AEMH_ACCESS_TOKEN', activeToken);
 

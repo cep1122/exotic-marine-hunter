@@ -270,5 +270,86 @@ class TestExoticMarineHunter(unittest.TestCase):
         res = self.client.get("/api/health", headers={"User-Agent": "Mozilla/5.0"})
         self.assertEqual(res.headers.get("X-Encryption-Standard"), "AES-256-GCM / SHA-256 Merkle DAG")
 
+    def test_14_database_user_auth_and_profile(self):
+        """Verify SQLite user registration, PBKDF2 password hashing, and authentication"""
+        import uuid
+        email = f"investor_{uuid.uuid4().hex[:6]}@syndicate.com"
+        reg_payload = {
+            "email": email,
+            "password": "SecurePassword123!",
+            "full_name": "Marcus Aurelius Vance",
+            "role": "PRO_HUNTER"
+        }
+        res_reg = self.client.post("/api/auth/register", json=reg_payload, headers={"User-Agent": "Mozilla/5.0"})
+        self.assertEqual(res_reg.status_code, 200)
+        data = res_reg.json()
+        self.assertTrue(data["token"].startswith("EMH-TOKEN-"))
+        self.assertEqual(data["email"], email)
+
+        # Duplicate email prevention
+        res_dup = self.client.post("/api/auth/register", json=reg_payload, headers={"User-Agent": "Mozilla/5.0"})
+        self.assertEqual(res_dup.status_code, 400)
+
+        # Wrong password rejection
+        res_fail = self.client.post("/api/auth/login", json={"email": email, "password": "WrongPassword!"}, headers={"User-Agent": "Mozilla/5.0"})
+        self.assertEqual(res_fail.status_code, 401)
+
+        # Valid login
+        res_login = self.client.post("/api/auth/login", json={"email": email, "password": "SecurePassword123!"}, headers={"User-Agent": "Mozilla/5.0"})
+        self.assertEqual(res_login.status_code, 200)
+        token = res_login.json()["token"]
+
+        # User profile retrieval
+        res_prof = self.client.get(f"/api/user/profile?token={token}", headers={"User-Agent": "Mozilla/5.0"})
+        self.assertEqual(res_prof.status_code, 200)
+        self.assertEqual(res_prof.json()["user"]["email"], email)
+
+    def test_15_sqli_waf_protection(self):
+        """Verify Argus SQLi WAF blocks SQL injection attempts with 403 Forbidden"""
+        sqli_attacks = [
+            "/api/pipeline?search=1' OR '1'='1",
+            "/api/pipeline?category=EXOTIC' UNION SELECT * FROM users--",
+            "/api/pipeline?id=1; DROP TABLE users;",
+            "/api/pipeline?test=1' AND SLEEP(5)--"
+        ]
+        for attack in sqli_attacks:
+            res = self.client.get(attack, headers={"User-Agent": "Mozilla/5.0"})
+            self.assertEqual(res.status_code, 403)
+            self.assertIn("ARGUS_SQLI_SHIELD_BLOCK", res.json()["error"])
+
+    def test_16_encrypted_document_storage(self):
+        """Verify evidence document storage with AES-256-GCM encryption & decryption"""
+        asset_id = "AEMH-2026-F8-01"
+        res_docs = self.client.get(f"/api/assets/{asset_id}/documents", headers={"User-Agent": "Mozilla/5.0"})
+        self.assertEqual(res_docs.status_code, 200)
+        docs = res_docs.json()["documents"]
+        self.assertGreaterEqual(len(docs), 1)
+
+        first_doc_id = docs[0]["id"]
+        res_down = self.client.get(f"/api/documents/{first_doc_id}/download", headers={"User-Agent": "Mozilla/5.0"})
+        self.assertEqual(res_down.status_code, 200)
+        doc_data = res_down.json()
+        self.assertIn("UNITED STATES DISTRICT COURT", doc_data["decrypted_content"])
+        self.assertTrue(len(doc_data["sha256_checksum"]) == 64)
+
+    def test_17_user_watchlist_toggle(self):
+        """Verify database-backed watchlist toggle and retrieval"""
+        asset_id = "AEMH-2026-SUN-74"
+        # Toggle add
+        res_add = self.client.post("/api/user/watchlist/toggle", json={"asset_id": asset_id}, headers={"User-Agent": "Mozilla/5.0"})
+        self.assertEqual(res_add.status_code, 200)
+        self.assertTrue(res_add.json()["is_saved"])
+
+        # Check in list
+        res_list = self.client.get("/api/user/watchlist", headers={"User-Agent": "Mozilla/5.0"})
+        self.assertEqual(res_list.status_code, 200)
+        matched = [w for w in res_list.json()["watchlist"] if w["id"] == asset_id]
+        self.assertGreaterEqual(len(matched), 1)
+
+        # Toggle remove
+        res_rem = self.client.post("/api/user/watchlist/toggle", json={"asset_id": asset_id}, headers={"User-Agent": "Mozilla/5.0"})
+        self.assertEqual(res_rem.status_code, 200)
+        self.assertFalse(res_rem.json()["is_saved"])
+
 if __name__ == "__main__":
     unittest.main()
