@@ -462,5 +462,53 @@ class TestExoticMarineHunter(unittest.TestCase):
             self.assertIsNone(other.get("custodian"))
             self.assertIn("*", other.get("identifier_masked", ""))
 
+    def test_19_password_reset_flow(self):
+        """Verifies 6-digit OTP password reset via email and subsequent login"""
+        from core.database import DB
+
+        # 1. Non-existent email fails
+        res_non = self.client.post("/api/auth/forgot-password", json={"email": "nonexistent@fake.com"}, headers={"User-Agent": "Mozilla/5.0"})
+        self.assertEqual(res_non.status_code, 400)
+
+        # 2. Registered user requests reset code
+        test_email = "architect@icneuralsystems.com"
+        res_req = self.client.post("/api/auth/forgot-password", json={"email": test_email}, headers={"User-Agent": "Mozilla/5.0"})
+        self.assertEqual(res_req.status_code, 200)
+        self.assertEqual(res_req.json()["status"], "SENT")
+
+        # 3. Retrieve the generated code from database for assertion
+        with DB.get_connection() as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT code FROM password_resets WHERE email = ?", (test_email,))
+            row = cur.fetchone()
+            self.assertIsNotNone(row)
+            code = row["code"]
+            self.assertEqual(len(code), 6)
+            self.assertTrue(code.isdigit())
+
+        # 4. Bad code fails
+        res_bad = self.client.post("/api/auth/reset-password", json={"email": test_email, "code": "000000", "new_password": "NewSecret2026!"}, headers={"User-Agent": "Mozilla/5.0"})
+        self.assertEqual(res_bad.status_code, 400)
+        self.assertIn("incorrecto", res_bad.json()["detail"])
+
+        # 5. Correct code updates password
+        new_pass = "UpdatedSovereign2026!"
+        res_ok = self.client.post("/api/auth/reset-password", json={"email": test_email, "code": code, "new_password": new_pass}, headers={"User-Agent": "Mozilla/5.0"})
+        self.assertEqual(res_ok.status_code, 200)
+        self.assertEqual(res_ok.json()["status"], "SUCCESS")
+
+        # 6. Login with new password succeeds
+        res_login = self.client.post("/api/auth/login", json={"email": test_email, "password": new_pass}, headers={"User-Agent": "Mozilla/5.0"})
+        self.assertEqual(res_login.status_code, 200)
+        self.assertTrue(res_login.json()["token"].startswith("EMH-TOKEN-"))
+
+        # 7. Old password no longer works
+        res_old = self.client.post("/api/auth/login", json={"email": test_email, "password": "Sovereign2026!"}, headers={"User-Agent": "Mozilla/5.0"})
+        self.assertEqual(res_old.status_code, 401)
+
+        # Reset back to Sovereign2026! for clean state
+        code_reset, _ = DB.create_password_reset_code(test_email)
+        DB.verify_and_reset_password(test_email, code_reset, "Sovereign2026!")
+
 if __name__ == "__main__":
     unittest.main()

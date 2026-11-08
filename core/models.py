@@ -208,3 +208,12 @@ class UserAuthResponse(BaseModel):
 
 class WatchlistToggleRequest(BaseModel):
     asset_id: str
+
+class ForgotPasswordRequest(BaseModel):
+    email: str
+
+class ResetPasswordRequest(BaseModel):
+    email: str
+    code: str
+    new_password: str
+

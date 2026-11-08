@@ -24,7 +24,9 @@ from core.models import (
     UserRegisterRequest,
     UserLoginRequest,
     UserAuthResponse,
-    WatchlistToggleRequest
+    WatchlistToggleRequest,
+    ForgotPasswordRequest,
+    ResetPasswordRequest
 )
 from core.auction_rails import AuctionRailsFeeder, AuctionRailsDirectory
 from core.underwriting import ExoticMarineUnderwriter
@@ -33,6 +35,7 @@ from core.security import ArgusSentinelShield
 from core.database import DB
 from core.storage import DOCUMENT_STORAGE
 from core.crypto_vault_256 import CRYPTO_VAULT_256
+from core.email_service import send_password_reset_email
 
 app = FastAPI(
     title=SYSTEM_CONFIG.app_name,
@@ -136,7 +139,7 @@ async def register_user(req: UserRegisterRequest):
 async def login_user(req: UserLoginRequest):
     user = DB.authenticate_user(req.email, req.password)
     if not user:
-        raise HTTPException(status_code=401, detail="Invalid credentials. Verify your institutional email and password.")
+        raise HTTPException(status_code=401, detail="Credenciales inválidas. Verifique su correo institucional y contraseña.")
 
     token = f"EMH-TOKEN-{os.urandom(8).hex().upper()}"
     AUTH_SESSIONS[token] = user["id"]
@@ -153,8 +156,34 @@ async def login_user(req: UserLoginRequest):
         role=user["role"],
         api_bank_wallet_id=user["api_bank_wallet_id"],
         wallet_balance=user["wallet_balance"],
-        message="Authentication successful. Pro Hunter privileges activated."
+        message="Inicio de sesión exitoso. Privilegios activados."
     )
+
+@app.post("/api/auth/forgot-password")
+async def forgot_password(req: ForgotPasswordRequest):
+    try:
+        code, full_name = DB.create_password_reset_code(req.email)
+        # Send institutional email with 6-digit OTP
+        email_sent = send_password_reset_email(req.email, full_name, code)
+        return {
+            "status": "SENT",
+            "email": req.email,
+            "email_dispatched": email_sent,
+            "message": f"Código de verificación de 6 dígitos enviado exitosamente a {req.email}."
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.post("/api/auth/reset-password")
+async def reset_password(req: ResetPasswordRequest):
+    try:
+        DB.verify_and_reset_password(req.email, req.code, req.new_password)
+        return {
+            "status": "SUCCESS",
+            "message": "Contraseña actualizada exitosamente. Ya puede iniciar sesión con su nueva clave."
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @app.get("/api/user/profile")
 async def get_user_profile(token: Optional[str] = Query(None), authorization: Optional[str] = Header(None)):

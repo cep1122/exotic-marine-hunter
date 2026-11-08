@@ -120,6 +120,16 @@ class DatabaseManager:
             );
             """)
 
+            # 5b. Password Resets OTP Table
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS password_resets (
+                email TEXT PRIMARY KEY,
+                code TEXT NOT NULL,
+                expires_at INTEGER NOT NULL,
+                created_at INTEGER NOT NULL
+            );
+            """)
+
             # 6. Master Asset Leads Pipeline Table
             cursor.execute("""
             CREATE TABLE IF NOT EXISTS asset_leads (
@@ -313,6 +323,69 @@ class DatabaseManager:
             if not row:
                 return None
             return dict(row)
+
+    def create_password_reset_code(self, email: str) -> Tuple[str, str]:
+        """Generates a secure 6-digit OTP code for password recovery."""
+        import secrets
+        email_clean = email.strip().lower()
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT id, full_name FROM users WHERE email = ?", (email_clean,))
+            user = cursor.fetchone()
+            if not user:
+                raise ValueError(f"No existe ninguna cuenta de inversionista registrada con el correo '{email_clean}'.")
+
+            # Generate random 6-digit number
+            code = f"{secrets.randbelow(900000) + 100000}"
+            now = int(time.time())
+            expires_at = now + 900  # 15 minutes
+
+            cursor.execute("""
+            INSERT OR REPLACE INTO password_resets (email, code, expires_at, created_at)
+            VALUES (?, ?, ?, ?)
+            """, (email_clean, code, expires_at, now))
+            conn.commit()
+
+            return code, user["full_name"]
+
+    def verify_and_reset_password(self, email: str, code: str, new_password: str) -> bool:
+        """Validates OTP code and resets user password with PBKDF2-HMAC-SHA256."""
+        email_clean = email.strip().lower()
+        code_clean = code.strip()
+
+        if len(new_password) < 6:
+            raise ValueError("La nueva contraseña debe tener al menos 6 caracteres.")
+
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT code, expires_at FROM password_resets WHERE email = ?", (email_clean,))
+            reset_row = cursor.fetchone()
+
+            if not reset_row:
+                raise ValueError("No se ha solicitado ningún código de recuperación para este correo o ya fue utilizado.")
+
+            now = int(time.time())
+            if reset_row["expires_at"] < now:
+                cursor.execute("DELETE FROM password_resets WHERE email = ?", (email_clean,))
+                conn.commit()
+                raise ValueError("El código de recuperación ha expirado (validez de 15 minutos). Solicite uno nuevo.")
+
+            if reset_row["code"] != code_clean:
+                raise ValueError("El código de verificación de 6 dígitos ingresado es incorrecto.")
+
+            # Generate new salt and hash
+            salt = uuid.uuid4().hex
+            pwd_hash = self._hash_password(new_password, salt)
+
+            cursor.execute("""
+            UPDATE users SET password_hash = ?, salt = ? WHERE email = ?
+            """, (pwd_hash, salt, email_clean))
+
+            # Invalidate the used OTP code
+            cursor.execute("DELETE FROM password_resets WHERE email = ?", (email_clean,))
+            conn.commit()
+
+            return True
 
     # Watchlist Methods
     def toggle_watchlist(self, user_id: str, asset_id: str) -> Dict[str, Any]:

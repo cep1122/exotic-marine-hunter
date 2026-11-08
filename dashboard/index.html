@@ -445,22 +445,77 @@
 
             <!-- TAB 1: LOGIN -->
             <div id="portal-tab-login" class="space-y-4">
+                <div id="login-error-alert" class="hidden p-3 rounded-xl bg-rose-950/40 border border-rose-500/50 text-xs text-rose-300">
+                    <span id="login-error-msg"></span>
+                </div>
                 <div class="space-y-3">
                     <div>
                         <label class="block text-xs text-slate-300 mb-1">Email Institucional</label>
-                        <input type="email" id="login-email" value="architect@icneuralsystems.com" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                        <input type="email" id="login-email" placeholder="inversionista@fondo.com" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
                     </div>
                     <div>
-                        <label class="block text-xs text-slate-300 mb-1">Contraseña</label>
-                        <input type="password" id="login-password" value="Sovereign2026!" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="block text-xs text-slate-300">Contraseña</label>
+                            <button type="button" onclick="showForgotPasswordView()" class="text-[11px] text-amber-400 hover:text-amber-300 hover:underline transition">¿Olvidaste tu contraseña?</button>
+                        </div>
+                        <div class="relative">
+                            <input type="password" id="login-password" placeholder="••••••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 pr-10 text-xs text-white focus:outline-none focus:border-amber-400">
+                            <button type="button" onclick="togglePasswordVisibility('login-password', 'eye-btn-login')" id="eye-btn-login" class="absolute right-2.5 top-2 text-slate-400 hover:text-amber-400 p-0.5 rounded transition" title="Mostrar/Ocultar contraseña">
+                                <svg class="w-4 h-4 eye-open" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            </button>
+                        </div>
                     </div>
-                    <button onclick="handleLogin()" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-yellow-400 text-obsidian font-bold text-xs rounded-xl shadow-md transition">
+                    <button onclick="handleLogin()" id="btn-login-submit" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-obsidian font-bold text-xs rounded-xl shadow-md transition">
                         Iniciar Sesión
                     </button>
                 </div>
-                <div class="p-3 rounded-lg bg-amber-950/20 border border-amber-500/30 text-xs text-amber-300 flex justify-between items-center">
-                    <span>💡 Cuenta Demo Predeterminada: Israel Cepero (Principal)</span>
-                    <button onclick="autoLoginDemo()" class="underline font-bold text-amber-400">Acceder en 1 Clic</button>
+            </div>
+
+            <!-- TAB 1b: RESTABLECER CONTRASEÑA (CÓDIGO AL EMAIL) -->
+            <div id="portal-tab-forgot" class="space-y-4 hidden">
+                <div class="p-3 rounded-xl bg-amber-950/30 border border-amber-500/40 text-xs text-amber-200">
+                    🔒 <strong>Recuperación de Cuenta:</strong> Ingrese su correo institucional para recibir un código de seguridad de 6 dígitos emitido por el oráculo de acceso.
+                </div>
+
+                <div id="reset-alert-box" class="hidden p-3 rounded-xl text-xs"></div>
+
+                <!-- PASO 1: Solicitar código -->
+                <div id="reset-step-1" class="space-y-3">
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">Email Registrado de la Cuenta</label>
+                        <input type="email" id="reset-email" placeholder="inversionista@fondo.com" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                    </div>
+                    <button type="button" id="btn-send-code" onclick="handleRequestResetCode()" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-obsidian font-bold text-xs rounded-xl shadow-md transition">
+                        Enviar Código de Verificación al Email
+                    </button>
+                    <div class="text-center pt-1">
+                        <button type="button" onclick="switchPortalTab('LOGIN')" class="text-xs text-slate-400 hover:text-white transition">← Volver al Inicio de Sesión</button>
+                    </div>
+                </div>
+
+                <!-- PASO 2: Ingresar código y nueva clave -->
+                <div id="reset-step-2" class="space-y-3 hidden">
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">Código de Seguridad (6 Dígitos)</label>
+                        <input type="text" id="reset-code" maxlength="6" placeholder="000000" class="w-full bg-slate-900 border border-amber-500/60 rounded-lg px-3 py-2.5 text-center text-lg font-mono font-bold tracking-[8px] text-amber-300 focus:outline-none focus:border-amber-400">
+                        <p class="text-[11px] text-slate-400 mt-1">El código fue enviado a su bandeja de entrada y expira en 15 minutos.</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">Nueva Contraseña</label>
+                        <div class="relative">
+                            <input type="password" id="reset-new-password" placeholder="Mínimo 6 caracteres" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 pr-10 text-xs text-white focus:outline-none focus:border-amber-400">
+                            <button type="button" onclick="togglePasswordVisibility('reset-new-password', 'eye-btn-reset')" id="eye-btn-reset" class="absolute right-2.5 top-2 text-slate-400 hover:text-amber-400 p-0.5 rounded transition" title="Mostrar/Ocultar contraseña">
+                                <svg class="w-4 h-4 eye-open" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" id="btn-save-new-password" onclick="handleConfirmResetPassword()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-obsidian font-bold text-xs rounded-xl shadow-md transition">
+                        Guardar Nueva Contraseña y Acceder
+                    </button>
+                    <div class="flex justify-between items-center pt-1 text-xs text-slate-400">
+                        <button type="button" onclick="handleRequestResetCode()" class="text-amber-400 hover:underline">Reenviar código</button>
+                        <button type="button" onclick="switchPortalTab('LOGIN')" class="hover:text-white transition">← Cancelar y volver</button>
+                    </div>
                 </div>
             </div>
 
@@ -477,7 +532,12 @@
                     </div>
                     <div>
                         <label class="block text-xs text-slate-300 mb-1">Contraseña Segura (PBKDF2-HMAC-SHA256)</label>
-                        <input type="password" id="reg-password" placeholder="••••••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                        <div class="relative">
+                            <input type="password" id="reg-password" placeholder="••••••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 pr-10 text-xs text-white focus:outline-none focus:border-amber-400">
+                            <button type="button" onclick="togglePasswordVisibility('reg-password', 'eye-btn-reg')" id="eye-btn-reg" class="absolute right-2.5 top-2 text-slate-400 hover:text-amber-400 p-0.5 rounded transition" title="Mostrar/Ocultar contraseña">
+                                <svg class="w-4 h-4 eye-open" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            </button>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-xs text-slate-300 mb-1">Rol de Operación</label>
@@ -648,9 +708,202 @@
             `;
         }
 
+        function togglePasswordVisibility(inputId, btnId) {
+            const input = document.getElementById(inputId);
+            const btn = document.getElementById(btnId);
+            if (!input) return;
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                if (btn) {
+                    btn.innerHTML = `<svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>`;
+                    btn.title = "Ocultar contraseña";
+                }
+            } else {
+                input.type = 'password';
+                if (btn) {
+                    btn.innerHTML = `<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>`;
+                    btn.title = "Mostrar contraseña";
+                }
+            }
+        }
+
+        function showForgotPasswordView() {
+            ['login', 'register', 'dossiers', 'watchlist', 'security'].forEach(t => {
+                const el = document.getElementById(`portal-tab-${t}`);
+                if (el) el.classList.add('hidden');
+                const btn = document.getElementById(`tab-btn-${t}`);
+                if (btn) btn.className = "pb-2.5 text-slate-400 hover:text-white";
+            });
+            const forgotTab = document.getElementById('portal-tab-forgot');
+            if (forgotTab) forgotTab.classList.remove('hidden');
+
+            const loginEmail = document.getElementById('login-email').value.trim();
+            if (loginEmail) {
+                document.getElementById('reset-email').value = loginEmail;
+            }
+
+            document.getElementById('reset-step-1').classList.remove('hidden');
+            document.getElementById('reset-step-2').classList.add('hidden');
+            const alertBox = document.getElementById('reset-alert-box');
+            if (alertBox) alertBox.classList.add('hidden');
+        }
+
+        async function handleRequestResetCode() {
+            const emailInput = document.getElementById('reset-email');
+            const email = emailInput ? emailInput.value.trim() : '';
+            const alertBox = document.getElementById('reset-alert-box');
+            const btn = document.getElementById('btn-send-code');
+
+            if (alertBox) alertBox.classList.add('hidden');
+
+            if (!email || !email.includes('@')) {
+                if (alertBox) {
+                    alertBox.className = "p-3 rounded-xl bg-rose-950/40 border border-rose-500/50 text-xs text-rose-300";
+                    alertBox.textContent = "Por favor ingrese un correo institucional válido.";
+                    alertBox.classList.remove('hidden');
+                }
+                return;
+            }
+
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<span class="animate-pulse">Emitiendo código OTP y enviando a su correo...</span>`;
+            }
+
+            try {
+                const res = await fetch('/api/auth/forgot-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email })
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.detail || "Error al solicitar el código de recuperación.");
+                }
+
+                if (alertBox) {
+                    alertBox.className = "p-3 rounded-xl bg-emerald-950/50 border border-emerald-500/50 text-xs text-emerald-300 font-mono";
+                    alertBox.innerHTML = `✓ ${data.message}`;
+                    alertBox.classList.remove('hidden');
+                }
+
+                document.getElementById('reset-step-1').classList.add('hidden');
+                document.getElementById('reset-step-2').classList.remove('hidden');
+                document.getElementById('reset-code').focus();
+
+            } catch (err) {
+                if (alertBox) {
+                    alertBox.className = "p-3 rounded-xl bg-rose-950/40 border border-rose-500/50 text-xs text-rose-300";
+                    alertBox.textContent = err.message;
+                    alertBox.classList.remove('hidden');
+                }
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = "Enviar Código de Verificación al Email";
+                }
+            }
+        }
+
+        async function handleConfirmResetPassword() {
+            const email = document.getElementById('reset-email').value.trim();
+            const code = document.getElementById('reset-code').value.trim();
+            const newPassword = document.getElementById('reset-new-password').value;
+            const alertBox = document.getElementById('reset-alert-box');
+            const btn = document.getElementById('btn-save-new-password');
+
+            if (alertBox) alertBox.classList.add('hidden');
+
+            if (!code || code.length !== 6) {
+                if (alertBox) {
+                    alertBox.className = "p-3 rounded-xl bg-rose-950/40 border border-rose-500/50 text-xs text-rose-300";
+                    alertBox.textContent = "Ingrese el código de verificación completo de 6 dígitos recibido por correo.";
+                    alertBox.classList.remove('hidden');
+                }
+                return;
+            }
+
+            if (!newPassword || newPassword.length < 6) {
+                if (alertBox) {
+                    alertBox.className = "p-3 rounded-xl bg-rose-950/40 border border-rose-500/50 text-xs text-rose-300";
+                    alertBox.textContent = "La nueva contraseña debe tener al menos 6 caracteres.";
+                    alertBox.classList.remove('hidden');
+                }
+                return;
+            }
+
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<span class="animate-pulse">Cifrando con PBKDF2 y actualizando contraseña...</span>`;
+            }
+
+            try {
+                const res = await fetch('/api/auth/reset-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, code: code, new_password: newPassword })
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.detail || "Fallo al restablecer la contraseña.");
+                }
+
+                if (alertBox) {
+                    alertBox.className = "p-3 rounded-xl bg-emerald-950/50 border border-emerald-500/50 text-xs text-emerald-300 font-mono";
+                    alertBox.innerHTML = `✓ ${data.message}`;
+                    alertBox.classList.remove('hidden');
+                }
+
+                document.getElementById('login-email').value = email;
+                document.getElementById('login-password').value = newPassword;
+
+                setTimeout(() => {
+                    switchPortalTab('LOGIN');
+                    const loginAlert = document.getElementById('login-error-alert');
+                    if (loginAlert) {
+                        loginAlert.className = "p-3 rounded-xl bg-emerald-950/50 border border-emerald-500/50 text-xs text-emerald-300 font-mono";
+                        document.getElementById('login-error-msg').textContent = "✓ Contraseña actualizada exitosamente. Haga clic en Iniciar Sesión.";
+                        loginAlert.classList.remove('hidden');
+                    }
+                }, 1500);
+
+            } catch (err) {
+                if (alertBox) {
+                    alertBox.className = "p-3 rounded-xl bg-rose-950/40 border border-rose-500/50 text-xs text-rose-300";
+                    alertBox.textContent = err.message;
+                    alertBox.classList.remove('hidden');
+                }
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = "Guardar Nueva Contraseña y Acceder";
+                }
+            }
+        }
+
         async function handleLogin() {
-            const email = document.getElementById('login-email').value;
+            const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
+            const alertEl = document.getElementById('login-error-alert');
+            const errorMsg = document.getElementById('login-error-msg');
+            const btn = document.getElementById('btn-login-submit');
+
+            if (alertEl) alertEl.classList.add('hidden');
+
+            if (!email || !password) {
+                if (alertEl) {
+                    alertEl.className = "p-3 rounded-xl bg-rose-950/40 border border-rose-500/50 text-xs text-rose-300";
+                    errorMsg.textContent = "Ingrese su correo institucional y contraseña.";
+                    alertEl.classList.remove('hidden');
+                }
+                return;
+            }
+
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<span class="animate-pulse">Autenticando con el enclave seguro...</span>`;
+            }
 
             try {
                 const res = await fetch('/api/auth/login', {
@@ -659,7 +912,7 @@
                     body: JSON.stringify({ email, password })
                 });
                 const data = await res.json();
-                if (!res.ok) throw new Error(data.detail || "Error en inicio de sesión");
+                if (!res.ok) throw new Error(data.detail || "Credenciales de acceso inválidas.");
 
                 activeToken = data.token;
                 localStorage.setItem('AEMH_ACCESS_TOKEN', activeToken);
@@ -667,14 +920,17 @@
                 await fetchPipeline();
                 closeUserPortalModal();
             } catch (err) {
-                alert(err.message);
+                if (alertEl) {
+                    alertEl.className = "p-3 rounded-xl bg-rose-950/40 border border-rose-500/50 text-xs text-rose-300";
+                    errorMsg.textContent = err.message;
+                    alertEl.classList.remove('hidden');
+                }
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = "Iniciar Sesión";
+                }
             }
-        }
-
-        async function autoLoginDemo() {
-            document.getElementById('login-email').value = "architect@icneuralsystems.com";
-            document.getElementById('login-password').value = "Sovereign2026!";
-            await handleLogin();
         }
 
         async function handleRegister() {
@@ -994,6 +1250,8 @@
 
         // USER PORTAL TAB SWITCHING
         function openUserPortalModal(tab = 'LOGIN') {
+            const loginErr = document.getElementById('login-error-alert');
+            if (loginErr) loginErr.classList.add('hidden');
             document.getElementById('user-portal-modal').classList.remove('hidden');
             if (currentUser && tab === 'LOGIN') {
                 tab = 'DOSSIERS';
@@ -1006,13 +1264,20 @@
         }
 
         async function switchPortalTab(tab) {
+            const forgotTab = document.getElementById('portal-tab-forgot');
+            if (forgotTab) forgotTab.classList.add('hidden');
+
             ['login', 'register', 'dossiers', 'watchlist', 'security'].forEach(t => {
-                document.getElementById(`portal-tab-${t}`).classList.add('hidden');
-                document.getElementById(`tab-btn-${t}`).className = "pb-2.5 text-slate-400 hover:text-white";
+                const el = document.getElementById(`portal-tab-${t}`);
+                if (el) el.classList.add('hidden');
+                const btn = document.getElementById(`tab-btn-${t}`);
+                if (btn) btn.className = "pb-2.5 text-slate-400 hover:text-white";
             });
 
-            document.getElementById(`portal-tab-${tab.toLowerCase()}`).classList.remove('hidden');
-            document.getElementById(`tab-btn-${tab.toLowerCase()}`).className = "pb-2.5 text-amber-400 border-b-2 border-amber-400 font-bold";
+            const target = document.getElementById(`portal-tab-${tab.toLowerCase()}`);
+            if (target) target.classList.remove('hidden');
+            const targetBtn = document.getElementById(`tab-btn-${tab.toLowerCase()}`);
+            if (targetBtn) targetBtn.className = "pb-2.5 text-amber-400 border-b-2 border-amber-400 font-bold";
 
             if (tab === 'DOSSIERS') await loadUserDossiers();
             if (tab === 'WATCHLIST') await loadUserWatchlist();
