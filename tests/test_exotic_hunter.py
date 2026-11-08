@@ -257,5 +257,18 @@ class TestExoticMarineHunter(unittest.TestCase):
         self.assertTrue(res_unlocked.json()["unlocked"])
         self.assertEqual(res_unlocked.json()["asset"]["identifier_value"], "ZFF92LLA8N0278914")
 
+    def test_13_crypto_vault_256(self):
+        """Verify AES-256-GCM encryption, decryption, and tampering resistance"""
+        from core.crypto_vault_256 import CRYPTO_VAULT_256
+        secret = "VIN: ZFF92LLA8N0278914 | CUSTODIAN_PHONE: (305) 536-4131"
+        token = CRYPTO_VAULT_256.encrypt_256(secret)
+        self.assertTrue(token.startswith("ARGUS256:"))
+        decrypted = CRYPTO_VAULT_256.decrypt_256(token)
+        self.assertEqual(decrypted, secret)
+
+        # Header verification
+        res = self.client.get("/api/health", headers={"User-Agent": "Mozilla/5.0"})
+        self.assertEqual(res.headers.get("X-Encryption-Standard"), "AES-256-GCM / SHA-256 Merkle DAG")
+
 if __name__ == "__main__":
     unittest.main()

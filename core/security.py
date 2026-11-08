@@ -103,5 +103,6 @@ class ArgusSentinelShield(BaseHTTPMiddleware):
         response.headers["X-Sentinel-Defended-By"] = "Argus Cyber Shield v3.0 / IC Neural Systems LLC"
         response.headers["X-Notarized-By"] = "LEX AI Sovereign Legal Sentry"
         response.headers["X-Legal-Entity"] = "IC Neural Systems LLC (Israel Cepero)"
+        response.headers["X-Encryption-Standard"] = "AES-256-GCM / SHA-256 Merkle DAG"
 
         return response
