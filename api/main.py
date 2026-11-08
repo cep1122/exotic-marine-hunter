@@ -44,14 +44,23 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-DASHBOARD_FILE = Path(__file__).resolve().parent.parent / "dashboard" / "index.html"
+def get_dashboard_html() -> str:
+    possible_paths = [
+        os.path.join(os.path.dirname(__file__), "..", "dashboard", "index.html"),
+        os.path.join(os.path.dirname(__file__), "dashboard", "index.html"),
+        os.path.join(os.getcwd(), "dashboard", "index.html"),
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "dashboard", "index.html"),
+    ]
+    for p in possible_paths:
+        if os.path.exists(p):
+            with open(p, "r", encoding="utf-8") as f:
+                return f.read()
+    return "<h1>Exotic & Marine Hunter AI Dashboard Initializing...</h1>"
 
 @app.get("/", response_class=HTMLResponse)
 @app.get("/dashboard", response_class=HTMLResponse)
 async def serve_dashboard():
-    if not DASHBOARD_FILE.exists():
-        return HTMLResponse("<h1>Exotic & Marine Hunter AI Dashboard Initializing...</h1>", status_code=200)
-    return HTMLResponse(content=DASHBOARD_FILE.read_text(encoding="utf-8"))
+    return HTMLResponse(content=get_dashboard_html())
 
 @app.get("/api/health")
 async def health_check():
