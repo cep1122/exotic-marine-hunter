@@ -314,44 +314,107 @@
 
             <!-- Buyer Details Form -->
             <div class="space-y-3">
-                <div>
-                    <label class="block text-xs font-medium text-slate-300 mb-1">Full Name / Institutional Entity</label>
-                    <input type="text" id="buyer-name" value="Israel Cepero" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-300 mb-1">Settlement Contact Email</label>
-                    <input type="email" id="buyer-email" value="architect@icneuralsystems.com" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Nombre Completo / Titular</label>
+                        <input type="text" id="buyer-name" placeholder="Nombre y Apellidos" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Correo de Facturación</label>
+                        <input type="email" id="buyer-email" placeholder="correo@ejemplo.com" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                    </div>
                 </div>
             </div>
 
-            <!-- Payment Rails -->
+            <!-- Payment Rails Selector -->
             <div class="space-y-2">
-                <span class="block text-xs font-medium text-slate-300">Select Sovereign Settlement Rail</span>
+                <span class="block text-xs font-medium text-slate-300">Seleccione Método de Pago Bancario</span>
                 <div class="grid grid-cols-3 gap-2">
-                    <button type="button" onclick="setPaymentMethod('CARD')" id="pm-card" class="px-3 py-2 text-xs font-medium rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40">💳 Credit Card</button>
-                    <button type="button" onclick="setPaymentMethod('API_BANK_VAULT')" id="pm-vault" class="px-3 py-2 text-xs font-medium rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:text-white">🏦 API Bank Vault</button>
-                    <button type="button" onclick="setPaymentMethod('FEDNOW')" id="pm-fednow" class="px-3 py-2 text-xs font-medium rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:text-white">⚡ FedNow Instant</button>
+                    <button type="button" onclick="setPaymentMethod('CARD')" id="pm-card" class="px-3 py-2 text-xs font-medium rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40">💳 Tarjeta Crédito/Débito</button>
+                    <button type="button" onclick="setPaymentMethod('BANK_ACH')" id="pm-bankach" class="px-3 py-2 text-xs font-medium rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:text-white">🏛️ Cuenta Bancaria ACH</button>
+                    <button type="button" onclick="setPaymentMethod('API_BANK_VAULT')" id="pm-apibankvault" class="px-3 py-2 text-xs font-medium rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:text-white">🏦 Bóveda API Bank</button>
                 </div>
+            </div>
+
+            <!-- Credit Card Form Fields -->
+            <div id="payment-card-fields" class="space-y-3 p-3.5 rounded-xl bg-slate-950/80 border border-slate-800">
+                <div class="flex justify-between items-center text-[11px] font-mono text-slate-400">
+                    <span>Datos de Tarjeta (Visa, Mastercard, Amex, Discover)</span>
+                    <span class="text-emerald-400">🔒 256-bit Encrypted</span>
+                </div>
+                <div>
+                    <label class="block text-[11px] text-slate-400 mb-1 font-mono">Número de Tarjeta</label>
+                    <input type="text" id="card-number" placeholder="4000 1234 5678 9010" maxlength="19" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-amber-400">
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <div>
+                        <label class="block text-[11px] text-slate-400 mb-1 font-mono">Expiración (MM/AA)</label>
+                        <input type="text" id="card-exp" placeholder="MM/AA" maxlength="5" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-amber-400">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] text-slate-400 mb-1 font-mono">CVC / CVV</label>
+                        <input type="text" id="card-cvc" placeholder="123" maxlength="4" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-amber-400">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] text-slate-400 mb-1 font-mono">ZIP Code</label>
+                        <input type="text" id="card-zip" placeholder="33101" maxlength="10" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-amber-400">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bank Account ACH Form Fields -->
+            <div id="payment-bank-fields" class="hidden space-y-3 p-3.5 rounded-xl bg-slate-950/80 border border-slate-800">
+                <div class="flex justify-between items-center text-[11px] font-mono text-slate-400">
+                    <span>Transferencia Directa ACH / Débito Bancario EE. UU.</span>
+                    <span class="text-emerald-400">🏛️ FedACH Direct</span>
+                </div>
+                <div>
+                    <label class="block text-[11px] text-slate-400 mb-1 font-mono">Nombre del Banco</label>
+                    <input type="text" id="bank-name" placeholder="ej. Chase, Bank of America, Wells Fargo" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-[11px] text-slate-400 mb-1 font-mono">Número de Ruta ABA (9 Dígitos)</label>
+                        <input type="text" id="bank-routing" placeholder="021000021" maxlength="9" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-amber-400">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] text-slate-400 mb-1 font-mono">Número de Cuenta</label>
+                        <input type="text" id="bank-account" placeholder="123456789" maxlength="17" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-amber-400">
+                    </div>
+                </div>
+            </div>
+
+            <!-- API Bank Vault Fields -->
+            <div id="payment-vault-fields" class="hidden space-y-2 p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 font-mono text-xs">
+                <div class="flex justify-between items-center text-slate-300">
+                    <span>Bóveda Institucional API Bank:</span>
+                    <span class="text-amber-400 font-bold">VAULT-EXOTIC-MARINE-PRIMARY</span>
+                </div>
+                <p class="text-[11px] text-slate-400">El cargo se debitará automáticamente del saldo líquido disponible en tu cuenta de inversionista.</p>
+            </div>
+
+            <!-- Error Alert Banner -->
+            <div id="payment-error-alert" class="hidden p-3 rounded-xl bg-red-950/90 border border-red-500/80 text-red-200 text-xs font-mono space-y-1">
+                <div class="font-bold flex items-center gap-1.5 text-red-400">
+                    <span>⚠️</span> <span>Error de Autorización Bancaria</span>
+                </div>
+                <div id="payment-error-msg">Por favor verifique los datos de su tarjeta o cuenta bancaria.</div>
             </div>
 
             <!-- Cryptographic Merkle DAG Telemetry -->
             <div class="p-3 rounded-lg bg-slate-950 border border-slate-800 font-mono text-[11px] space-y-1">
                 <div class="flex justify-between text-slate-400">
-                    <span>Treasury Destination:</span>
+                    <span>Destino de Fondos:</span>
                     <span class="text-amber-400 font-bold">VAULT-EXOTIC-MARINE-PRIMARY</span>
                 </div>
                 <div class="flex justify-between text-slate-400">
-                    <span>Inflow Fee Surcharge:</span>
-                    <span class="text-emerald-400 font-bold">0.00% (Sovereign Exemption)</span>
-                </div>
-                <div class="flex justify-between text-slate-400">
-                    <span>Notary Seal:</span>
-                    <span class="text-cyan-400 truncate max-w-[240px]">LEX AI DAG Notarized</span>
+                    <span>Seguridad de Transacción:</span>
+                    <span class="text-emerald-400 font-bold">AES-256 + Argus WAF Protected</span>
                 </div>
             </div>
 
             <button onclick="executePayEngineSettlement()" id="settle-btn" class="w-full py-3 bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-300 hover:from-amber-400 hover:to-yellow-200 text-obsidian font-bold text-sm rounded-xl shadow-lg shadow-amber-500/25 transition">
-                Settle & Unlock via APEX PayEngine ($49.00)
+                Pagar y Desbloquear Expediente ($49.00 USD)
             </button>
         </div>
     </div>
@@ -517,6 +580,27 @@
         let selectedPaymentMethod = 'CARD';
 
         async function init() {
+            // Attach Card formatting handlers
+            const cardNumInput = document.getElementById('card-number');
+            if (cardNumInput) {
+                cardNumInput.addEventListener('input', function (e) {
+                    let val = e.target.value.replace(/\D/g, '');
+                    let parts = val.match(/.{1,4}/g);
+                    e.target.value = parts ? parts.join(' ').substring(0, 19) : '';
+                });
+            }
+            const cardExpInput = document.getElementById('card-exp');
+            if (cardExpInput) {
+                cardExpInput.addEventListener('input', function (e) {
+                    let val = e.target.value.replace(/\D/g, '');
+                    if (val.length >= 2) {
+                        e.target.value = val.substring(0, 2) + '/' + val.substring(2, 4);
+                    } else {
+                        e.target.value = val;
+                    }
+                });
+            }
+
             if (activeToken) {
                 await fetchUserProfile();
             } else {
@@ -1033,15 +1117,37 @@
             targetedAssetId = assetId;
             selectTier(tierId, tierId === 'SINGLE_PASS' ? 49 : 199);
 
+            const errAlert = document.getElementById('payment-error-alert');
+            if (errAlert) errAlert.classList.add('hidden');
+
             if (currentUser) {
                 document.getElementById('buyer-name').value = currentUser.full_name;
                 document.getElementById('buyer-email').value = currentUser.email;
+            } else {
+                document.getElementById('buyer-name').value = '';
+                document.getElementById('buyer-email').value = '';
+            }
+
+            // Reset card/bank inputs for fresh entry
+            if (document.getElementById('card-number')) document.getElementById('card-number').value = '';
+            if (document.getElementById('card-exp')) document.getElementById('card-exp').value = '';
+            if (document.getElementById('card-cvc')) document.getElementById('card-cvc').value = '';
+            if (document.getElementById('card-zip')) document.getElementById('card-zip').value = '';
+            if (document.getElementById('bank-name')) document.getElementById('bank-name').value = '';
+            if (document.getElementById('bank-routing')) document.getElementById('bank-routing').value = '';
+            if (document.getElementById('bank-account')) document.getElementById('bank-account').value = '';
+
+            const btn = document.getElementById('settle-btn');
+            if (btn) {
+                btn.disabled = false;
+                btn.className = "w-full py-3 bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-300 hover:from-amber-400 hover:to-yellow-200 text-obsidian font-bold text-sm rounded-xl shadow-lg shadow-amber-500/25 transition";
+                btn.textContent = `Pagar y Desbloquear ($${selectedAmount}.00 USD)`;
             }
 
             if (assetTitle) {
-                document.getElementById('modal-subtitle').textContent = `Target: ${assetTitle}`;
+                document.getElementById('modal-subtitle').textContent = `Expediente: ${assetTitle}`;
             } else {
-                document.getElementById('modal-subtitle').textContent = 'Instant unredacted VIN/HIN, Custodian Phone/Email, Tow Yard GPS & Title Docket.';
+                document.getElementById('modal-subtitle').textContent = 'VIN/HIN oficial, Teléfono y Correo del Custodio, GPS del Depósito y Expediente Judicial.';
             }
 
             document.getElementById('checkout-modal').classList.remove('hidden');
@@ -1066,59 +1172,132 @@
                 activeCard.classList.add('border-amber-500', 'bg-amber-950/30');
             }
 
-            document.getElementById('settle-btn').textContent = `Settle & Unlock via APEX PayEngine ($${amount}.00)`;
+            document.getElementById('settle-btn').textContent = `Pagar y Desbloquear ($${amount}.00 USD)`;
         }
 
         function setPaymentMethod(pm) {
             selectedPaymentMethod = pm;
-            ['CARD', 'API_BANK_VAULT', 'FEDNOW'].forEach(method => {
-                const btn = document.getElementById(`pm-${method.toLowerCase().replace(/_/g, '')}`);
-                if (!btn) return;
-                if (method === pm) {
-                    btn.className = "px-3 py-2 text-xs font-medium rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40";
-                } else {
-                    btn.className = "px-3 py-2 text-xs font-medium rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:text-white";
+            
+            const methods = [
+                { id: 'CARD', btnId: 'pm-card' },
+                { id: 'BANK_ACH', btnId: 'pm-bankach' },
+                { id: 'API_BANK_VAULT', btnId: 'pm-apibankvault' }
+            ];
+            methods.forEach(m => {
+                const btn = document.getElementById(m.btnId);
+                if (btn) {
+                    if (m.id === pm) {
+                        btn.className = "px-3 py-2 text-xs font-medium rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40";
+                    } else {
+                        btn.className = "px-3 py-2 text-xs font-medium rounded-lg bg-slate-900 text-slate-400 border border-slate-800 hover:text-white";
+                    }
                 }
             });
+
+            const cardFields = document.getElementById('payment-card-fields');
+            const bankFields = document.getElementById('payment-bank-fields');
+            const vaultFields = document.getElementById('payment-vault-fields');
+            
+            if (cardFields) cardFields.classList.toggle('hidden', pm !== 'CARD');
+            if (bankFields) bankFields.classList.toggle('hidden', pm !== 'BANK_ACH');
+            if (vaultFields) vaultFields.classList.toggle('hidden', pm !== 'API_BANK_VAULT');
+            
+            const alertEl = document.getElementById('payment-error-alert');
+            if (alertEl) alertEl.classList.add('hidden');
         }
 
         async function executePayEngineSettlement() {
             const btn = document.getElementById('settle-btn');
+            const alertEl = document.getElementById('payment-error-alert');
+            const errorMsgEl = document.getElementById('payment-error-msg');
+            
+            alertEl.classList.add('hidden');
+            
+            const buyerName = document.getElementById('buyer-name').value.trim();
+            const buyerEmail = document.getElementById('buyer-email').value.trim();
+
+            if (!buyerName || !buyerEmail) {
+                alertEl.classList.remove('hidden');
+                errorMsgEl.textContent = "Por favor ingrese su nombre completo y correo de facturación.";
+                return;
+            }
+
+            let payload = {
+                tier_id: selectedTierId,
+                asset_id: targetedAssetId,
+                buyer_email: buyerEmail,
+                buyer_name: buyerName,
+                payment_method: selectedPaymentMethod
+            };
+
+            if (selectedPaymentMethod === 'CARD') {
+                const cardNum = document.getElementById('card-number').value.replace(/\s+/g, '');
+                const cardExp = document.getElementById('card-exp').value.trim();
+                const cardCvc = document.getElementById('card-cvc').value.trim();
+                const cardZip = document.getElementById('card-zip').value.trim();
+
+                if (!cardNum || !cardExp || !cardCvc || !cardZip) {
+                    alertEl.classList.remove('hidden');
+                    errorMsgEl.textContent = "Complete todos los datos de su tarjeta: número de 16 dígitos, fecha de expiración (MM/AA), CVC y ZIP.";
+                    return;
+                }
+                payload.card_number = cardNum;
+                payload.card_exp = cardExp;
+                payload.card_cvc = cardCvc;
+                payload.billing_zip = cardZip;
+            } else if (selectedPaymentMethod === 'BANK_ACH') {
+                const bankName = document.getElementById('bank-name').value.trim();
+                const bankRouting = document.getElementById('bank-routing').value.trim();
+                const bankAccount = document.getElementById('bank-account').value.trim();
+
+                if (!bankName || !bankRouting || !bankAccount) {
+                    alertEl.classList.remove('hidden');
+                    errorMsgEl.textContent = "Complete todos los datos bancarios: nombre del banco, número de ruta ABA (9 dígitos) y cuenta corriente.";
+                    return;
+                }
+                payload.bank_name = bankName;
+                payload.bank_routing = bankRouting;
+                payload.bank_account = bankAccount;
+            }
+
             btn.disabled = true;
-            btn.innerHTML = `<span class="animate-pulse">Hashing Merkle DAG & Settling in Vault...</span>`;
+            btn.innerHTML = `<span class="animate-pulse">Validando con la red bancaria y procesando pago...</span>`;
 
             try {
                 const createRes = await fetch('/api/payengine/checkout-session', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        tier_id: selectedTierId,
-                        asset_id: targetedAssetId,
-                        buyer_email: document.getElementById('buyer-email').value,
-                        buyer_name: document.getElementById('buyer-name').value,
-                        payment_method: selectedPaymentMethod
-                    })
+                    body: JSON.stringify(payload)
                 });
 
                 const session = await createRes.json();
-                if (!createRes.ok) throw new Error(session.detail || "Settlement failed");
+                if (!createRes.ok) {
+                    throw new Error(session.detail || "La transacción bancaria fue rechazada.");
+                }
 
                 const verifyRes = await fetch(`/api/payengine/verify/${session.session_id}?token=${encodeURIComponent(activeToken || '')}`, { method: 'POST' });
                 const verification = await verifyRes.json();
+                if (!verifyRes.ok) {
+                    throw new Error(verification.detail || "Fallo en la confirmación del pago.");
+                }
 
                 activeToken = verification.access_token;
                 localStorage.setItem('AEMH_ACCESS_TOKEN', activeToken);
 
-                btn.innerHTML = `✓ Settled! Token: ${activeToken.substring(0, 14)}...`;
+                btn.className = "w-full py-3 bg-emerald-500 text-obsidian font-bold text-sm rounded-xl transition";
+                btn.innerHTML = `✓ Pago Aprobado ($${selectedAmount}.00 USD) • Expediente Desbloqueado`;
+
                 setTimeout(() => {
                     closeCheckoutModal();
                     fetchPipeline();
-                }, 1000);
+                }, 1200);
 
             } catch (err) {
-                alert("Settlement Error: " + err.message);
+                alertEl.classList.remove('hidden');
+                errorMsgEl.textContent = err.message;
                 btn.disabled = false;
-                btn.textContent = `Retry Settle ($${selectedAmount}.00)`;
+                btn.className = "w-full py-3 bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-300 hover:from-amber-400 hover:to-yellow-200 text-obsidian font-bold text-sm rounded-xl shadow-lg shadow-amber-500/25 transition";
+                btn.textContent = `Reintentar Pago ($${selectedAmount}.00 USD)`;
             }
         }
 

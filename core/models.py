@@ -146,7 +146,19 @@ class PayEngineSessionCreate(BaseModel):
     asset_id: Optional[str] = None
     buyer_email: str
     buyer_name: str
-    payment_method: str = "CARD"  # "CARD", "API_BANK_VAULT", "FEDNOW"
+    payment_method: str = "CARD"  # "CARD", "BANK_ACH", "API_BANK_VAULT"
+    # Credit Card details
+    card_number: Optional[str] = None
+    card_exp: Optional[str] = None
+    card_cvc: Optional[str] = None
+    billing_zip: Optional[str] = None
+    # Bank ACH details
+    bank_routing: Optional[str] = None
+    bank_account: Optional[str] = None
+    bank_name: Optional[str] = None
+    # API Bank Vault details
+    vault_account_id: Optional[str] = None
+    vault_pin: Optional[str] = None
 
 class PayEngineSessionResponse(BaseModel):
     session_id: str

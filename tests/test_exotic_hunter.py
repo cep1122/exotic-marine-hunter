@@ -99,12 +99,16 @@ class TestExoticMarineHunter(unittest.TestCase):
 
     def test_05_payengine_checkout_and_unmasking(self):
         """Verify APEX PayEngine checkout session creation, Merkle DAG seal, and full unmasking"""
-        # 1. Create Checkout Session
+        # 1. Create Checkout Session with valid card credentials
         create_payload = {
             "tier_id": "PRO_HUNTER",
             "buyer_email": "vip.investor@syndicate.com",
             "buyer_name": "Sovereign Fleet Capital",
-            "payment_method": "API_BANK_VAULT"
+            "payment_method": "CARD",
+            "card_number": "4000123456789017",
+            "card_exp": "12/29",
+            "card_cvc": "888",
+            "billing_zip": "33101"
         }
         res_create = self.client.post(
             "/api/payengine/checkout-session",
@@ -230,7 +234,7 @@ class TestExoticMarineHunter(unittest.TestCase):
         self.assertEqual(res_locked.status_code, 200)
         self.assertFalse(res_locked.json()["unlocked"])
 
-        # Create single pass
+        # Create single pass with valid card credentials
         session_res = self.client.post(
             "/api/payengine/checkout-session",
             json={
@@ -238,7 +242,11 @@ class TestExoticMarineHunter(unittest.TestCase):
                 "asset_id": asset_id,
                 "buyer_email": "investor@test.com",
                 "buyer_name": "Test Investor",
-                "payment_method": "CARD"
+                "payment_method": "CARD",
+                "card_number": "4000123456789017",
+                "card_exp": "12/29",
+                "card_cvc": "456",
+                "billing_zip": "33139"
             },
             headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
         )
@@ -350,6 +358,109 @@ class TestExoticMarineHunter(unittest.TestCase):
         res_rem = self.client.post("/api/user/watchlist/toggle", json={"asset_id": asset_id}, headers={"User-Agent": "Mozilla/5.0"})
         self.assertEqual(res_rem.status_code, 200)
         self.assertFalse(res_rem.json()["is_saved"])
+
+    def test_18_strict_payment_validation_and_single_pass_isolation(self):
+        """Enforces that fake payments fail, and Single Pass ($49) strictly unlocks only 1 asset while the other 23 stay locked."""
+        # 1. Fake card fails Luhn check
+        res_fake_card = self.client.post(
+            "/api/payengine/checkout-session",
+            json={
+                "tier_id": "SINGLE_PASS",
+                "asset_id": "AEMH-2026-F8-01",
+                "buyer_email": "fake@fraud.com",
+                "buyer_name": "Fraud Bot",
+                "payment_method": "CARD",
+                "card_number": "4111111111111112",
+                "card_exp": "12/28",
+                "card_cvc": "123",
+                "billing_zip": "33101"
+            },
+            headers={"User-Agent": "Mozilla/5.0"}
+        )
+        self.assertEqual(res_fake_card.status_code, 400)
+        self.assertIn("Luhn", res_fake_card.json()["detail"])
+
+        # 2. Expired card is rejected
+        res_expired = self.client.post(
+            "/api/payengine/checkout-session",
+            json={
+                "tier_id": "SINGLE_PASS",
+                "asset_id": "AEMH-2026-F8-01",
+                "buyer_email": "expired@user.com",
+                "buyer_name": "Late User",
+                "payment_method": "CARD",
+                "card_number": "4000123456789017",
+                "card_exp": "01/20",
+                "card_cvc": "123",
+                "billing_zip": "33101"
+            },
+            headers={"User-Agent": "Mozilla/5.0"}
+        )
+        self.assertEqual(res_expired.status_code, 400)
+        self.assertIn("vencida", res_expired.json()["detail"])
+
+        # 3. Bad ABA routing number fails Federal Reserve checksum
+        res_bad_routing = self.client.post(
+            "/api/payengine/checkout-session",
+            json={
+                "tier_id": "SINGLE_PASS",
+                "asset_id": "AEMH-2026-F8-01",
+                "buyer_email": "badach@user.com",
+                "buyer_name": "ACH User",
+                "payment_method": "BANK_ACH",
+                "bank_name": "Fake Bank",
+                "bank_routing": "123456789",
+                "bank_account": "9876543210"
+            },
+            headers={"User-Agent": "Mozilla/5.0"}
+        )
+        self.assertEqual(res_bad_routing.status_code, 400)
+        self.assertIn("Reserva Federal", res_bad_routing.json()["detail"])
+
+        # 4. Valid card checkout unlocks ONLY target asset (Ferrari F8)
+        res_valid = self.client.post(
+            "/api/payengine/checkout-session",
+            json={
+                "tier_id": "SINGLE_PASS",
+                "asset_id": "AEMH-2026-F8-01",
+                "buyer_email": "verified.buyer@gmail.com",
+                "buyer_name": "Verified Collector",
+                "payment_method": "CARD",
+                "card_number": "4000123456789017",
+                "card_exp": "08/29",
+                "card_cvc": "999",
+                "billing_zip": "33139"
+            },
+            headers={"User-Agent": "Mozilla/5.0"}
+        )
+        self.assertEqual(res_valid.status_code, 200)
+        sid = res_valid.json()["session_id"]
+
+        # Verify payment
+        res_settle = self.client.post(f"/api/payengine/verify/{sid}", headers={"User-Agent": "Mozilla/5.0"})
+        self.assertEqual(res_settle.status_code, 200)
+        token = res_settle.json()["access_token"]
+
+        # Check pipeline: ONLY AEMH-2026-F8-01 must be unmasked, all others masked!
+        res_pipeline = self.client.get(f"/api/pipeline?token={token}", headers={"User-Agent": "Mozilla/5.0"})
+        self.assertEqual(res_pipeline.status_code, 200)
+        pdata = res_pipeline.json()
+        self.assertEqual(pdata["tier"], "PARTIAL_UNLOCKED")
+        self.assertEqual(pdata["unlocked_asset_ids"], ["AEMH-2026-F8-01"])
+
+        leads = pdata["leads"]
+        unmasked_lead = next(l for l in leads if l["id"] == "AEMH-2026-F8-01")
+        self.assertEqual(unmasked_lead["identifier_value"], "ZFF92LLA8N0278914")
+        self.assertIsNotNone(unmasked_lead["custodian"])
+
+        # Verify all other leads remain strictly locked & masked
+        other_leads = [l for l in leads if l["id"] != "AEMH-2026-F8-01"]
+        self.assertGreaterEqual(len(other_leads), 23)
+        for other in other_leads:
+            self.assertTrue(other.get("requires_tier_unlock"))
+            self.assertIsNone(other.get("identifier_value"))
+            self.assertIsNone(other.get("custodian"))
+            self.assertIn("*", other.get("identifier_masked", ""))
 
 if __name__ == "__main__":
     unittest.main()

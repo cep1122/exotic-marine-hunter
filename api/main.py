@@ -160,8 +160,8 @@ async def login_user(req: UserLoginRequest):
 async def get_user_profile(token: Optional[str] = Query(None), authorization: Optional[str] = Header(None)):
     access_token = token or (authorization.replace("Bearer ", "") if authorization else None)
     if not access_token or access_token not in AUTH_SESSIONS:
-        # Check master demo
-        if access_token and (access_token.startswith("EMH-MASTER-VIP") or access_token.startswith("EMH-TOKEN-")):
+        # Check master founder VIP token
+        if access_token and access_token.startswith("EMH-MASTER-VIP"):
             user_id = "USR-IC-001"
         else:
             raise HTTPException(status_code=401, detail="Authentication token required to access Investor Portal.")
@@ -410,10 +410,10 @@ async def verify_payment(
     authorization: Optional[str] = Header(None)
 ):
     verification = ApexPayEngineClient.verify_and_settle(session_id)
-    # Automatically bind unlocked dossier to user in database if asset_id present
+    # Automatically bind unlocked dossier to user in database if authenticated
     access_token = token or (authorization.replace("Bearer ", "") if authorization else None)
-    user_id = AUTH_SESSIONS.get(access_token, "USR-IC-001")
-    if verification.unlocked_asset_id:
+    user_id = AUTH_SESSIONS.get(access_token)
+    if user_id and verification.unlocked_asset_id:
         DB.record_unlocked_dossier(
             user_id=user_id,
             asset_id=verification.unlocked_asset_id,
