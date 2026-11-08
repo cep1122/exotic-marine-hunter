@@ -13,6 +13,8 @@ class AssetCategory(str, Enum):
     SPORTFISHER = "SPORTFISHER"
     CATAMARAN = "CATAMARAN"
     LUXURY_AIRCRAFT = "LUXURY_AIRCRAFT"
+    COMMERCIAL_HEAVY_DUTY = "COMMERCIAL_HEAVY_DUTY"
+    LUXURY_SUV = "LUXURY_SUV"
 
 class SeizureType(str, Enum):
     US_MARSHALS_FORFEITURE = "US_MARSHALS_FORFEITURE"
@@ -21,6 +23,9 @@ class SeizureType(str, Enum):
     MECHANIC_STORAGE_LIEN = "MECHANIC_STORAGE_LIEN"
     BANK_REPOSSESSION = "BANK_REPOSSESSION"
     CUSTOMS_BORDER_SEIZURE = "CUSTOMS_BORDER_SEIZURE"
+    COUNTY_SHERIFF_SALE = "COUNTY_SHERIFF_SALE"
+    TEXAS_STORAGE_LIEN = "TEXAS_STORAGE_LIEN"
+    CALIFORNIA_STORAGE_LIEN = "CALIFORNIA_STORAGE_LIEN"
 
 class TitleStatus(str, Enum):
     CLEAN_DMV_TITLE = "CLEAN_DMV_TITLE"
@@ -29,6 +34,8 @@ class TitleStatus(str, Enum):
     FAA_AC_FORM_8050_2 = "FAA_AC_FORM_8050_2"
     CERTIFICATE_OF_TITLE_REPOSSESSION = "CERTIFICATE_OF_TITLE_REPOSSESSION"
     STORAGE_LIEN_STATUTORY_BILL = "STORAGE_LIEN_STATUTORY_BILL"
+    TEXAS_VTR_265_LIEN_TITLE = "TEXAS_VTR_265_LIEN_TITLE"
+    GSA_STANDARD_FORM_97 = "GSA_STANDARD_FORM_97"
 
 class DealStage(str, Enum):
     PRE_AUCTION_LIEN_NOTICE = "PRE_AUCTION_LIEN_NOTICE"
@@ -42,7 +49,10 @@ class AuctionPlatform(str, Enum):
     CWS_MARKETING = "CWS Marketing Group (U.S. Treasury / IRS / CBP)"
     NATIONAL_LIQUIDATORS = "National Liquidators (YachtAuctions.com / Admiralty)"
     GSA_AUCTIONS = "GSA Federal Surplus & Seized Property"
-    COUNTY_MUNICIPAL_TOW = "Florida Stat. 713.78 & Calif. 3071 Statutory Impounds"
+    COUNTY_MUNICIPAL_TOW = "Florida Stat. 713.78 & Marina Liens"
+    APPLE_TOWING_CO = "Apple Towing Co. (Texas Gov & Seizure Auctions)"
+    GOVDEALS_AUCTIONS = "GovDeals Liquidity Services (Police & Municipal)"
+    FLORIDA_SHERIFF_SALES = "Florida County Sheriff Foreclosure Sales"
 
 class CustodianContact(BaseModel):
     facility_name: str
@@ -73,12 +83,14 @@ class AssetLead(BaseModel):
     make: str
     model: str
     year: int
-    identifier_type: str  # "VIN", "HIN" (Hull Identification No), "N-NUMBER" (Aircraft)
+    identifier_type: str  # "VIN", "HIN", "N-NUMBER", "EQUIP-SN"
     identifier_value: str
     identifier_masked: str
     location_port_city: str
+    county: str = "Federal Jurisdiction"
     state: str
     docket_or_case_number: str
+    court_docket_authority: str = "U.S. District Court"
     seizure_type: SeizureType
     deal_stage: DealStage
     auction_platform: AuctionPlatform
@@ -101,8 +113,10 @@ class AssetMaskedPreview(BaseModel):
     identifier_type: str
     identifier_masked: str
     location_port_city: str
+    county: str = "Federal Jurisdiction"
     state: str
     docket_or_case_number_masked: str
+    court_docket_authority: str = "U.S. District Court"
     seizure_type: SeizureType
     deal_stage: DealStage
     auction_platform: str
@@ -119,9 +133,13 @@ class AssetMaskedPreview(BaseModel):
 class SearchFilter(BaseModel):
     category: Optional[AssetCategory] = None
     state: Optional[str] = None
+    county: Optional[str] = None
     make: Optional[str] = None
     min_spread: Optional[float] = None
     deal_stage: Optional[DealStage] = None
+    seizure_type: Optional[SeizureType] = None
+    auction_platform: Optional[str] = None
+    q: Optional[str] = None
 
 class PayEngineSessionCreate(BaseModel):
     tier_id: str

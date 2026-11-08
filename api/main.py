@@ -253,10 +253,31 @@ async def get_security_audit_logs(limit: int = 15):
 # =========================================================================
 
 @app.get("/api/pipeline")
-async def get_pipeline(token: Optional[str] = Query(None), authorization: Optional[str] = Header(None)):
+async def get_pipeline(
+    category: Optional[str] = Query(None),
+    county: Optional[str] = Query(None),
+    state: Optional[str] = Query(None),
+    seizure_type: Optional[str] = Query(None),
+    auction_platform: Optional[str] = Query(None),
+    q: Optional[str] = Query(None),
+    token: Optional[str] = Query(None),
+    authorization: Optional[str] = Header(None)
+):
     access_token = token or (authorization.replace("Bearer ", "") if authorization else None)
     is_authorized = ApexPayEngineClient.validate_token(access_token)
-    leads = AuctionRailsFeeder.get_seed_inventory()
+
+    search_filter = None
+    if any([category, county, state, seizure_type, auction_platform, q]):
+        search_filter = SearchFilter(
+            category=category,
+            county=county,
+            state=state,
+            seizure_type=seizure_type,
+            auction_platform=auction_platform,
+            q=q
+        )
+
+    leads = AuctionRailsFeeder.filter_pipeline(search_filter)
 
     if is_authorized:
         return {

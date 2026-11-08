@@ -161,24 +161,86 @@
             </div>
         </section>
 
-        <!-- Search & Category Filters -->
-        <section class="glass-card p-5 rounded-2xl border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <!-- Advanced Multi-Axis Search & Jurisdictional Filters -->
+        <section class="glass-card p-5 rounded-2xl border-slate-800 space-y-4">
+            <!-- Row 1: Primary Category Pills -->
             <div class="flex flex-wrap items-center gap-2" id="category-pills">
-                <button onclick="filterCategory('ALL')" class="category-btn active px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-amber-500 text-obsidian shadow-sm transition">All Assets</button>
-                <button onclick="filterCategory('EXOTIC_CAR')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">🏎️ Supercars (Ferrari / Lambo)</button>
-                <button onclick="filterCategory('SUPERYACHT')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">🛥️ Superyachts (Sunseeker / Azimut)</button>
-                <button onclick="filterCategory('SPORTFISHER')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">🎣 Sportfishers (Viking)</button>
-                <button onclick="filterCategory('LUXURY_AIRCRAFT')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">✈️ Private Jets (Citation)</button>
+                <button onclick="filterCategory('ALL')" class="category-btn active px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-amber-500 text-obsidian shadow-sm transition">Todos los Activos</button>
+                <button onclick="filterCategory('EXOTIC_CAR')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">🏎️ Supercars (Ferrari / Porsche / Lambo)</button>
+                <button onclick="filterCategory('SUPERYACHT')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">🛥️ Superyates (Azimut / Sunseeker / Pershing)</button>
+                <button onclick="filterCategory('COMMERCIAL_HEAVY_DUTY')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">🚛 Flota Pesada (Volvo / Peterbilt / Cat)</button>
+                <button onclick="filterCategory('LUXURY_AIRCRAFT')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">✈️ Aviación Ejecutiva (Gulfstream / Citation)</button>
+                <button onclick="filterCategory('SPORTFISHER')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">🎣 Sportfishers (Viking / Cigarette)</button>
+                <button onclick="filterCategory('LUXURY_SUV')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">🚙 SUVs / 4x4 (Brabus / Urus / Dually)</button>
                 <button onclick="filterWatchlistOnly()" id="btn-watchlist-filter" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-amber-300 hover:bg-slate-700 transition flex items-center space-x-1">
                     <span>⭐ Mi Watchlist</span>
                 </button>
             </div>
 
-            <div class="flex items-center space-x-3 w-full md:w-auto">
-                <div class="relative w-full md:w-72">
-                    <input type="text" id="search-input" onkeyup="handleSearch()" placeholder="Search VIN, HIN, Model, Port..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400">
+            <!-- Row 2: Jurisdictional County, Legal Process & Auction Rail Selectors -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-3 border-t border-slate-800/80 font-mono text-xs">
+                <!-- County & State Selector -->
+                <div>
+                    <label class="text-[10px] text-slate-400 block mb-1 uppercase font-bold tracking-wider">🏛️ Condado / Jurisdicción</label>
+                    <select id="county-filter" onchange="renderLeads()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400">
+                        <option value="ALL">Todos los Condados & Estados</option>
+                        <option value="Miami-Dade">Miami-Dade County, FL</option>
+                        <option value="Broward">Broward County (Ft. Lauderdale), FL</option>
+                        <option value="Palm Beach">Palm Beach County, FL</option>
+                        <option value="Monroe">Monroe County (Florida Keys), FL</option>
+                        <option value="Hillsborough">Hillsborough County (Tampa), FL</option>
+                        <option value="Duval">Duval County (Jacksonville), FL</option>
+                        <option value="Harris">Harris County (Houston), TX</option>
+                        <option value="Dallas">Dallas County, TX</option>
+                        <option value="Bexar">Bexar County (San Antonio), TX</option>
+                        <option value="Hidalgo">Hidalgo County (McAllen / Border), TX</option>
+                        <option value="Orange County">Orange County (Newport Beach), CA</option>
+                        <option value="Los Angeles">Los Angeles County (Beverly Hills), CA</option>
+                        <option value="San Diego">San Diego County, CA</option>
+                        <option value="Clark">Clark County (Las Vegas), NV</option>
+                    </select>
                 </div>
-                <button onclick="resetFilters()" class="text-xs text-slate-400 hover:text-white px-2 py-1.5">Reset</button>
+
+                <!-- Legal Process & Court Authority Selector -->
+                <div>
+                    <label class="text-[10px] text-slate-400 block mb-1 uppercase font-bold tracking-wider">⚖️ Proceso Judicial / Estatuto</label>
+                    <select id="process-filter" onchange="renderLeads()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400">
+                        <option value="ALL">Todos los Procesos Legales</option>
+                        <option value="MECHANIC_STORAGE_LIEN">Florida Stat. § 713.78 Tow & Storage Lien</option>
+                        <option value="ADMIRALTY_MARSHAL_ARREST">Federal Admiralty Rule C in Rem (PACER)</option>
+                        <option value="US_MARSHALS_FORFEITURE">U.S. Marshals Criminal Forfeiture (USMS)</option>
+                        <option value="TREASURY_IRS_SEIZURE">U.S. Treasury / IRS-CI Forfeiture (CWS)</option>
+                        <option value="TEXAS_STORAGE_LIEN">Texas Occupations Code § 2303 Storage Lien</option>
+                        <option value="CALIFORNIA_STORAGE_LIEN">California Civil Code § 3071 Impound Lien</option>
+                        <option value="COUNTY_SHERIFF_SALE">Sheriff's Levy & Execution Sale</option>
+                        <option value="CUSTOMS_BORDER_SEIZURE">CBP Customs & Border Seizure</option>
+                        <option value="BANK_REPOSSESSION">Bank Repossession (UCC Article 9)</option>
+                    </select>
+                </div>
+
+                <!-- Auction Rail / Platform Selector -->
+                <div>
+                    <label class="text-[10px] text-slate-400 block mb-1 uppercase font-bold tracking-wider">🔨 Portal de Subasta / Custodio</label>
+                    <select id="platform-filter" onchange="renderLeads()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400">
+                        <option value="ALL">Todos los Portales de Subasta</option>
+                        <option value="Apple Towing">Apple Towing Co. (Texas Gov / HiBid)</option>
+                        <option value="Apple Auctioneering">Apple Auctioneering Co. (USMS Official)</option>
+                        <option value="CWS Marketing">CWS Marketing Group (Treasury / CBP)</option>
+                        <option value="National Liquidators">National Liquidators (YachtAuctions.com)</option>
+                        <option value="GSA Federal">GSA Federal Surplus & Seized Property</option>
+                        <option value="GovDeals">GovDeals Liquidity Services (Police/Muni)</option>
+                        <option value="County Municipal">County Municipal Tow & Storage Yards</option>
+                    </select>
+                </div>
+
+                <!-- Universal Search & Reset -->
+                <div>
+                    <label class="text-[10px] text-slate-400 block mb-1 uppercase font-bold tracking-wider">🔍 Búsqueda Rápida</label>
+                    <div class="flex items-center space-x-2">
+                        <input type="text" id="search-input" onkeyup="handleSearch()" placeholder="VIN, HIN, Modelo, Expediente..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400">
+                        <button onclick="resetFilters()" class="text-xs text-amber-400 hover:text-white bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-700 transition">Reset</button>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -594,10 +656,20 @@
                 const data = await res.json();
                 allLeads = data.leads || [];
 
+                // Calculate Live Pipeline Telemetry
+                const totalRetail = allLeads.reduce((sum, l) => sum + (l.estimated_retail_value || (l.underwriting ? l.underwriting.estimated_retail_value : 0)), 0);
+                const totalSpread = allLeads.reduce((sum, l) => sum + (l.projected_net_spread || (l.underwriting ? l.underwriting.projected_net_spread : 0)), 0);
+
+                const pipeEl = document.getElementById('stat-pipeline-value');
+                if (pipeEl) pipeEl.textContent = `$${Math.round(totalRetail).toLocaleString()}`;
+                
+                const spreadEl = document.getElementById('stat-net-spread');
+                if (spreadEl) spreadEl.textContent = `$${Math.round(totalSpread).toLocaleString()}`;
+
                 if (data.tier === 'UNLOCKED_PRO_HUNTER') {
                     document.getElementById('unlocked-badge-container').innerHTML = `
                         <div class="flex items-center space-x-2 px-3 py-1 bg-emerald-950/60 border border-emerald-500/50 rounded-lg text-emerald-400 text-xs font-mono">
-                            <span>🔓 Pro Hunter License Active</span>
+                            <span>🔓 Pro Hunter License Active (50 States Unlocked)</span>
                         </div>
                     `;
                 } else {
@@ -612,27 +684,61 @@
 
         function renderLeads() {
             const grid = document.getElementById('deals-grid');
-            const search = document.getElementById('search-input').value.toLowerCase();
+            const search = document.getElementById('search-input') ? document.getElementById('search-input').value.toLowerCase().trim() : '';
+            const countyVal = document.getElementById('county-filter') ? document.getElementById('county-filter').value : 'ALL';
+            const processVal = document.getElementById('process-filter') ? document.getElementById('process-filter').value : 'ALL';
+            const platformVal = document.getElementById('platform-filter') ? document.getElementById('platform-filter').value : 'ALL';
             
             let filtered = allLeads.filter(lead => {
                 if (showWatchlistOnly && !userWatchlistIds.includes(lead.id)) return false;
+                
+                // 1. Category Filter
                 const matchesCat = (currentFilter === 'ALL' || lead.category === currentFilter);
+                
+                // 2. County / State Filter
+                const leadCounty = (lead.county || '').toLowerCase();
+                const leadState = (lead.state || '').toLowerCase();
+                const matchesCounty = (countyVal === 'ALL' || 
+                    leadCounty.includes(countyVal.toLowerCase()) || 
+                    leadState === countyVal.toLowerCase()
+                );
+
+                // 3. Legal Process / Seizure Type Filter
+                const leadSeizure = (lead.seizure_type || '');
+                const leadLaw = (lead.statutory_governing_law || '').toLowerCase();
+                const matchesProcess = (processVal === 'ALL' || 
+                    leadSeizure === processVal || 
+                    leadLaw.includes(processVal.toLowerCase())
+                );
+
+                // 4. Platform Filter
+                const leadPlatform = (lead.auction_platform || '').toLowerCase();
+                const matchesPlatform = (platformVal === 'ALL' || leadPlatform.includes(platformVal.toLowerCase()));
+
+                // 5. Universal Search Filter
                 const matchesSearch = !search || 
                     lead.title.toLowerCase().includes(search) ||
                     lead.make.toLowerCase().includes(search) ||
                     lead.model.toLowerCase().includes(search) ||
+                    leadCounty.includes(search) ||
                     lead.location_port_city.toLowerCase().includes(search) ||
+                    (lead.court_docket_authority && lead.court_docket_authority.toLowerCase().includes(search)) ||
+                    (lead.docket_or_case_number && lead.docket_or_case_number.toLowerCase().includes(search)) ||
                     (lead.identifier_value && lead.identifier_value.toLowerCase().includes(search)) ||
                     (lead.identifier_masked && lead.identifier_masked.toLowerCase().includes(search));
-                return matchesCat && matchesSearch;
+
+                return matchesCat && matchesCounty && matchesProcess && matchesPlatform && matchesSearch;
             });
 
-            document.getElementById('deals-count').textContent = `(${filtered.length} Active Dockets)`;
+            document.getElementById('deals-count').textContent = `(${filtered.length} Active Judicial Dockets)`;
 
             if (filtered.length === 0) {
                 grid.innerHTML = `
-                    <div class="col-span-full py-16 text-center text-slate-500 font-mono text-sm">
-                        No active forfeiture dockets match your search criteria.
+                    <div class="col-span-full py-16 text-center text-slate-500 font-mono text-sm space-y-2">
+                        <div class="text-3xl">🔍</div>
+                        <div class="text-white font-bold">No se encontraron expedientes con los filtros seleccionados.</div>
+                        <p class="text-xs text-slate-400">Intenta reiniciar los filtros para ver todos los lotes activos en EE. UU.</p>
+                        <button onclick="resetFilters()" class="mt-2 px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-obsidian font-bold text-xs rounded-lg transition">Reiniciar Filtros</button>
                     </div>
                 `;
                 return;
@@ -654,10 +760,10 @@
                         <!-- Asset Thumbnail & Badges -->
                         <div class="relative h-48 w-full overflow-hidden bg-slate-950">
                             <img src="${img}" alt="${lead.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-t from-navy-950 via-transparent to-black/40"></div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-navy-950 via-transparent to-black/50"></div>
                             
                             <div class="absolute top-3 left-3 flex flex-wrap gap-1.5">
-                                <span class="px-2 py-0.5 text-[10px] font-mono font-bold uppercase rounded bg-amber-500 text-obsidian">${lead.category.replace('_', ' ')}</span>
+                                <span class="px-2 py-0.5 text-[10px] font-mono font-bold uppercase rounded bg-amber-500 text-obsidian">${(lead.category || '').replace(/_/g, ' ')}</span>
                                 <span class="px-2 py-0.5 text-[10px] font-mono rounded bg-slate-900/90 text-cyan-300 border border-cyan-800/60">${lead.deal_stage ? lead.deal_stage.replace(/_/g, ' ') : 'PRE-AUCTION'}</span>
                             </div>
 
@@ -667,8 +773,8 @@
 
                             <div class="absolute bottom-3 left-3 right-3 flex justify-between items-end">
                                 <div>
-                                    <span class="text-[11px] font-mono text-slate-300 flex items-center gap-1">
-                                        📍 ${lead.location_port_city}, ${lead.state}
+                                    <span class="text-[11px] font-mono text-cyan-300 flex items-center gap-1 font-semibold">
+                                        🏛️ ${lead.county || lead.location_port_city}, ${lead.state}
                                     </span>
                                 </div>
                                 <span class="text-xs font-mono font-bold text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/40">
@@ -681,7 +787,8 @@
                         <div class="p-5 space-y-4">
                             <div>
                                 <h3 class="text-base font-bold text-white line-clamp-1">${lead.title}</h3>
-                                <p class="text-xs text-slate-400 font-mono mt-0.5">${lead.auction_platform || 'Federal Auction Rails'}</p>
+                                <p class="text-xs text-amber-300/90 font-mono mt-0.5 truncate">⚖️ ${lead.court_docket_authority || 'U.S. District Court'}</p>
+                                <p class="text-[11px] text-slate-400 font-mono mt-0.5 truncate">🔨 ${lead.auction_platform || 'Federal Auction Rails'}</p>
                             </div>
 
                             <!-- Underwriting Metrics Grid -->
@@ -712,14 +819,14 @@
                                 </div>
                                 ${lead.custodian ? `
                                 <div class="p-2.5 rounded bg-amber-950/20 border border-amber-500/30 text-[11px] text-amber-200 space-y-0.5">
-                                    <div class="font-bold text-amber-300">🏢 Custodian: ${lead.custodian.facility_name}</div>
-                                    <div>Contact: ${lead.custodian.contact_person} (${lead.custodian.phone})</div>
-                                    <div>Address: ${lead.custodian.physical_address}</div>
+                                    <div class="font-bold text-amber-300">🏢 Custodio: ${lead.custodian.facility_name}</div>
+                                    <div>Contacto: ${lead.custodian.contact_person} (${lead.custodian.phone})</div>
+                                    <div>Dirección: ${lead.custodian.physical_address}</div>
                                 </div>
                                 ` : `
                                 <div class="flex justify-between items-center text-slate-400">
-                                    <span>Docket & Custodian:</span>
-                                    <span class="text-amber-400/80 text-[11px]">🔒 Redacted (Pro Unlock)</span>
+                                    <span>Expediente Judicial:</span>
+                                    <span class="text-amber-400/80 text-[11px]">🔒 Redactado (Requiere Pro)</span>
                                 </div>
                                 `}
                             </div>
@@ -730,11 +837,11 @@
                     <div class="p-5 pt-0 space-y-2">
                         ${isMasked ? `
                         <button onclick="openCheckoutModal('SINGLE_PASS', '${lead.id}', '${lead.title.replace(/'/g, "\\'")}')" class="w-full py-2.5 px-4 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-obsidian font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center space-x-2">
-                            <span>🔑 Unlock Unredacted Dossier ($49)</span>
+                            <span>🔑 Desbloquear Expediente Unredacted ($49)</span>
                         </button>
                         ` : `
                         <div class="w-full py-2 px-3 bg-emerald-950/40 border border-emerald-500/40 text-emerald-300 font-mono text-center text-xs rounded-xl">
-                            ✓ Unredacted Sovereign Access Granted
+                            ✓ Acceso Soberano Unredacted Concedido
                         </div>
                         `}
                         <button onclick="viewAssetEvidence('${lead.id}')" class="w-full py-1.5 text-[11px] font-mono text-slate-400 hover:text-cyan-300 transition">
@@ -753,8 +860,10 @@
                 btn.classList.remove('bg-amber-500', 'text-obsidian', 'font-semibold');
                 btn.classList.add('bg-slate-800', 'text-slate-300');
             });
-            event.target.classList.remove('bg-slate-800', 'text-slate-300');
-            event.target.classList.add('bg-amber-500', 'text-obsidian', 'font-semibold');
+            if (event && event.target) {
+                event.target.classList.remove('bg-slate-800', 'text-slate-300');
+                event.target.classList.add('bg-amber-500', 'text-obsidian', 'font-semibold');
+            }
             renderLeads();
         }
 
@@ -774,9 +883,21 @@
         }
 
         function resetFilters() {
-            document.getElementById('search-input').value = '';
+            if (document.getElementById('search-input')) document.getElementById('search-input').value = '';
+            if (document.getElementById('county-filter')) document.getElementById('county-filter').value = 'ALL';
+            if (document.getElementById('process-filter')) document.getElementById('process-filter').value = 'ALL';
+            if (document.getElementById('platform-filter')) document.getElementById('platform-filter').value = 'ALL';
             currentFilter = 'ALL';
             showWatchlistOnly = false;
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('bg-amber-500', 'text-obsidian', 'font-semibold');
+                btn.classList.add('bg-slate-800', 'text-slate-300');
+            });
+            const firstBtn = document.querySelector('.category-btn');
+            if (firstBtn) {
+                firstBtn.classList.remove('bg-slate-800', 'text-slate-300');
+                firstBtn.classList.add('bg-amber-500', 'text-obsidian', 'font-semibold');
+            }
             renderLeads();
         }
 

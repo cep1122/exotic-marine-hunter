@@ -9,6 +9,7 @@ import sqlite3
 import hashlib
 import time
 import uuid
+import json
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Optional, Dict, List, Any, Tuple
@@ -50,7 +51,7 @@ class DatabaseManager:
             conn.close()
 
     def _init_db(self):
-        """Initializes tables with proper foreign keys and indexes."""
+        """Initializes normalized database schema with prepared constraints."""
         with self.get_connection() as conn:
             cursor = conn.cursor()
 
@@ -64,7 +65,7 @@ class DatabaseManager:
                 full_name TEXT NOT NULL,
                 role TEXT NOT NULL DEFAULT 'PRO_HUNTER',
                 api_bank_wallet_id TEXT NOT NULL,
-                wallet_balance REAL DEFAULT 150000.00,
+                wallet_balance REAL DEFAULT 0.0,
                 created_at INTEGER NOT NULL
             );
             """)
@@ -119,10 +120,49 @@ class DatabaseManager:
             );
             """)
 
+            # 6. Master Asset Leads Pipeline Table
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS asset_leads (
+                id TEXT PRIMARY KEY,
+                title TEXT NOT NULL,
+                category TEXT NOT NULL,
+                make TEXT NOT NULL,
+                model TEXT NOT NULL,
+                year INTEGER NOT NULL,
+                identifier_type TEXT NOT NULL,
+                identifier_value TEXT NOT NULL,
+                identifier_masked TEXT NOT NULL,
+                location_port_city TEXT NOT NULL,
+                county TEXT NOT NULL,
+                state TEXT NOT NULL,
+                docket_or_case_number TEXT NOT NULL,
+                court_docket_authority TEXT NOT NULL,
+                seizure_type TEXT NOT NULL,
+                deal_stage TEXT NOT NULL,
+                auction_platform TEXT NOT NULL,
+                auction_date TEXT NOT NULL,
+                estimated_retail_value REAL NOT NULL,
+                outstanding_lien_or_opening_bid REAL NOT NULL,
+                maximum_allowable_bid_mab REAL NOT NULL,
+                projected_net_spread REAL NOT NULL,
+                roi_percentage REAL NOT NULL,
+                title_status TEXT NOT NULL,
+                statutory_governing_law TEXT NOT NULL,
+                raw_json TEXT NOT NULL,
+                updated_at INTEGER NOT NULL
+            );
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_assets_county ON asset_leads(county);")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_assets_category ON asset_leads(category);")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_assets_state ON asset_leads(state);")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_assets_platform ON asset_leads(auction_platform);")
+
             conn.commit()
 
         # Seed default demonstration user if not present
         self._seed_default_user()
+        # Seed master asset catalog
+        self._sync_seed_assets()
 
     def _hash_password(self, password: str, salt: str) -> str:
         """Derives a PBKDF2-HMAC-SHA256 password hash (100,000 iterations)."""
@@ -170,6 +210,43 @@ class DatabaseManager:
                 ))
                 conn.commit()
 
+    def _sync_seed_assets(self):
+        """Populates the SQLite asset table with rich pipeline leads."""
+        try:
+            from core.auction_rails import AuctionRailsFeeder
+            leads = AuctionRailsFeeder.get_seed_inventory()
+            now = int(time.time())
+            with self.get_connection() as conn:
+                cursor = conn.cursor()
+                for lead in leads:
+                    cursor.execute("""
+                    INSERT OR REPLACE INTO asset_leads (
+                        id, title, category, make, model, year, identifier_type,
+                        identifier_value, identifier_masked, location_port_city,
+                        county, state, docket_or_case_number, court_docket_authority,
+                        seizure_type, deal_stage, auction_platform, auction_date,
+                        estimated_retail_value, outstanding_lien_or_opening_bid,
+                        maximum_allowable_bid_mab, projected_net_spread, roi_percentage,
+                        title_status, statutory_governing_law, raw_json, updated_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (
+                        lead.id, lead.title, lead.category.value, lead.make, lead.model, lead.year,
+                        lead.identifier_type, lead.identifier_value, lead.identifier_masked,
+                        lead.location_port_city, lead.county, lead.state, lead.docket_or_case_number,
+                        lead.court_docket_authority, lead.seizure_type.value, lead.deal_stage.value,
+                        lead.auction_platform.value, lead.auction_date,
+                        lead.underwriting.estimated_retail_value,
+                        lead.underwriting.outstanding_lien_or_opening_bid,
+                        lead.underwriting.maximum_allowable_bid_mab,
+                        lead.underwriting.projected_net_spread,
+                        lead.underwriting.roi_percentage,
+                        lead.title_status.value, lead.statutory_governing_law,
+                        lead.model_dump_json(), now
+                    ))
+                conn.commit()
+        except Exception:
+            pass
+
     # User Management Methods
     def register_user(self, email: str, password: str, full_name: str, role: str = "PRO_HUNTER") -> Dict[str, Any]:
         """Registers a new user using parameterized SQL."""
@@ -178,59 +255,52 @@ class DatabaseManager:
         pwd_hash = self._hash_password(password, salt)
         user_id = f"USR-{uuid.uuid4().hex[:10].upper()}"
         wallet_id = f"APEX-WALLET-{uuid.uuid4().hex[:8].upper()}"
+        initial_balance = 1000.0 if role == "PRO_HUNTER" else 0.0
         now = int(time.time())
 
         with self.get_connection() as conn:
             cursor = conn.cursor()
-            # Check existing
-            cursor.execute("SELECT id FROM users WHERE email = ?", (email_clean,))
-            if cursor.fetchone():
-                raise ValueError(f"User with email '{email_clean}' is already registered.")
-
-            cursor.execute("""
-            INSERT INTO users (id, email, password_hash, salt, full_name, role, api_bank_wallet_id, wallet_balance, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (user_id, email_clean, pwd_hash, salt, full_name.strip(), role, wallet_id, 150000.00, now))
-            conn.commit()
-
-        return {
-            "id": user_id,
-            "email": email_clean,
-            "full_name": full_name.strip(),
-            "role": role,
-            "api_bank_wallet_id": wallet_id,
-            "wallet_balance": 150000.00,
-            "created_at": now
-        }
+            try:
+                cursor.execute("""
+                INSERT INTO users (id, email, password_hash, salt, full_name, role, api_bank_wallet_id, wallet_balance, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (user_id, email_clean, pwd_hash, salt, full_name.strip(), role, wallet_id, initial_balance, now))
+                conn.commit()
+                return {
+                    "id": user_id,
+                    "email": email_clean,
+                    "full_name": full_name,
+                    "role": role,
+                    "api_bank_wallet_id": wallet_id,
+                    "wallet_balance": initial_balance
+                }
+            except sqlite3.IntegrityError:
+                raise ValueError("An account with this email address already exists.")
 
     def authenticate_user(self, email: str, password: str) -> Optional[Dict[str, Any]]:
-        """Verifies credentials via parameterized query and constant-time hash comparison."""
+        """Authenticates user with constant-time password hash comparison."""
         email_clean = email.strip().lower()
         with self.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute("""
-            SELECT id, email, password_hash, salt, full_name, role, api_bank_wallet_id, wallet_balance, created_at
+            SELECT id, email, password_hash, salt, full_name, role, api_bank_wallet_id, wallet_balance
             FROM users WHERE email = ?
             """, (email_clean,))
             row = cursor.fetchone()
             if not row:
                 return None
 
-            expected_hash = row["password_hash"]
-            computed_hash = self._hash_password(password, row["salt"])
-
-            if hashlib.sha256(expected_hash.encode()).digest() != hashlib.sha256(computed_hash.encode()).digest():
-                return None
-
-            return {
-                "id": row["id"],
-                "email": row["email"],
-                "full_name": row["full_name"],
-                "role": row["role"],
-                "api_bank_wallet_id": row["api_bank_wallet_id"],
-                "wallet_balance": row["wallet_balance"],
-                "created_at": row["created_at"]
-            }
+            expected_hash = self._hash_password(password, row["salt"])
+            if hashlib.sha256(expected_hash.encode()).digest() == hashlib.sha256(row["password_hash"].encode()).digest():
+                return {
+                    "id": row["id"],
+                    "email": row["email"],
+                    "full_name": row["full_name"],
+                    "role": row["role"],
+                    "api_bank_wallet_id": row["api_bank_wallet_id"],
+                    "wallet_balance": row["wallet_balance"]
+                }
+            return None
 
     def get_user_by_id(self, user_id: str) -> Optional[Dict[str, Any]]:
         with self.get_connection() as conn:
