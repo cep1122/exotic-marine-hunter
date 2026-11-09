@@ -38,6 +38,12 @@ from core.database import DB
 from core.storage import DOCUMENT_STORAGE
 from core.crypto_vault_256 import CRYPTO_VAULT_256
 from core.email_service import send_password_reset_email, send_forfeiture_alert_confirmation
+from core.markitdown_engine import markitdown_engine
+from core.aisoc_sentinel import aisoc_sentinel
+from core.free_llm_gateway import free_llm_gateway
+from core.youtube_agent_skill import youtube_agent_skill
+from core.coderabbit_auditor import coderabbit_auditor
+from pydantic import BaseModel
 
 app = FastAPI(
     title=SYSTEM_CONFIG.app_name,
@@ -604,3 +610,107 @@ async def get_legal_notice():
         u_c_c_article_9_compliance="Non-judicial repossessions comply with Uniform Commercial Code Article 9 and state-specific mechanic/storage lien statutes (e.g., Fla. Stat. § 713.78, Cal. Civ. Code § 3071).",
         disclaimer="Autonomous Exotic & Marine Hunter AI is an intelligence and algorithmic underwriting platform. Users are advised to conduct physical pre-bid surveys and inspect USCG Abstract of Titles prior to executing financial commitments."
     )
+
+
+# ==============================================================================
+# DEVELOPER & INVESTOR AI SUITE: 5 ADVANCED ENGINES
+# 1. Microsoft MarkItDown Ingestion
+# 2. AISOC (Autonomous AI-SOC & Automated Containment)
+# 3. Universal Free LLM Gateway (Gemini 1.5 Flash / Groq / OpenRouter Free)
+# 4. YouTube Agent Skill (Vercel Agent Skills Protocol)
+# 5. CodeRabbit PR & Security Review Engine
+# ==============================================================================
+
+class MarkItDownConvertRequest(BaseModel):
+    text: Optional[str] = None
+    file_path: Optional[str] = None
+    title: Optional[str] = "Ingested_Document"
+
+class FreeLLMGenerateRequest(BaseModel):
+    prompt: str
+    system_prompt: Optional[str] = None
+    provider: Optional[str] = "AUTO"
+
+class YouTubeAgentAnalyzeRequest(BaseModel):
+    url_or_id: str
+    context: Optional[str] = None
+
+class CodeRabbitReviewRequest(BaseModel):
+    code: str
+    filename: Optional[str] = "snippet.py"
+
+class AISOCContainIPRequest(BaseModel):
+    ip: str
+    reason: Optional[str] = "Manual containment by security operator"
+
+
+@app.post("/api/tools/markitdown/convert")
+async def convert_document_markitdown(req: MarkItDownConvertRequest):
+    """
+    Microsoft MarkItDown document conversion endpoint.
+    Converts unstructured text, CSV, or files into clean LLM-ready markdown.
+    """
+    if req.file_path and os.path.exists(req.file_path):
+        return markitdown_engine.convert_file(req.file_path)
+    if req.text:
+        return markitdown_engine.convert_raw_text(req.text, title=req.title or "Document")
+    raise HTTPException(status_code=400, detail="Either 'text' or a valid 'file_path' must be provided.")
+
+
+@app.get("/api/aisoc/telemetry")
+async def get_aisoc_telemetry():
+    """
+    AISOC (AI Security Operations Center) Real-Time Telemetry Dashboard.
+    Returns active threat level, contained IPs, and automated incident logs.
+    """
+    return aisoc_sentinel.get_soc_dashboard_telemetry()
+
+
+@app.post("/api/aisoc/contain-ip")
+async def contain_ip_address(req: AISOCContainIPRequest):
+    """
+    AISOC Automated / Manual Quarantine & Containment.
+    Quarantines an offending IP address in real-time.
+    """
+    if not req.ip:
+        raise HTTPException(status_code=400, detail="IP address is required.")
+    return aisoc_sentinel.contain_ip(req.ip, reason=req.reason or "Security quarantine")
+
+
+@app.post("/api/llm/free-generate")
+async def free_llm_completion(req: FreeLLMGenerateRequest):
+    """
+    Universal Free Multi-Provider LLM Gateway.
+    Routes queries to Gemini 1.5 Flash, GroqCloud (Llama 3.3/8B), OpenRouter Free,
+    or autonomous local deterministic fallback. Zero-cost guaranteed uptime.
+    """
+    if not req.prompt or not req.prompt.strip():
+        raise HTTPException(status_code=400, detail="Prompt cannot be empty.")
+    return free_llm_gateway.generate(req.prompt, system_prompt=req.system_prompt, provider=req.provider or "AUTO")
+
+
+@app.post("/api/tools/youtube-agent")
+async def analyze_youtube_video(req: YouTubeAgentAnalyzeRequest):
+    """
+    YouTube Agent Skill (Vercel Agent Skills Protocol).
+    Analyzes walkthrough video, checks mechanical & cosmetic stamps,
+    and returns a structured Agent Skill Protocol specification.
+    """
+    if not req.url_or_id:
+        raise HTTPException(status_code=400, detail="YouTube URL or video ID is required.")
+    res = youtube_agent_skill.analyze_video(req.url_or_id, asset_context=req.context)
+    if not res.get("success"):
+        raise HTTPException(status_code=400, detail=res.get("error", "Failed to analyze YouTube video."))
+    return res
+
+
+@app.post("/api/tools/coderabbit/review")
+async def review_code_coderabbit(req: CodeRabbitReviewRequest):
+    """
+    CodeRabbit-style Autonomous Code & PR Security Auditor.
+    Scans code for OWASP vulnerabilities, SQL injection, secrets, and anti-patterns.
+    """
+    if not req.code or not req.code.strip():
+        raise HTTPException(status_code=400, detail="Source code cannot be empty.")
+    return coderabbit_auditor.review_code(req.code, filename=req.filename or "snippet.py")
+

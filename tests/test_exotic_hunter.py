@@ -573,5 +573,71 @@ class TestExoticMarineHunter(unittest.TestCase):
         self.assertEqual(res_user_alerts.status_code, 200)
         self.assertGreaterEqual(res_user_alerts.json()["count"], 1)
 
+    def test_21_ai_suite_tools(self):
+        """
+        Validates the 5 developer & investor AI suite endpoints:
+        1. Microsoft MarkItDown ingestion
+        2. AISOC Security Telemetry & Containment
+        3. Universal Free LLM Gateway
+        4. YouTube Agent Skill Protocol
+        5. CodeRabbit PR & Security Review Engine
+        """
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+
+        # 1. MarkItDown raw conversion
+        res_md = self.client.post(
+            "/api/tools/markitdown/convert",
+            json={"text": "Vessel Name: M/Y Aurelia\nLength: 120ft\nPrice: $4,500,000", "title": "Aurelia_Specs"},
+            headers=headers
+        )
+        self.assertEqual(res_md.status_code, 200)
+        self.assertEqual(res_md.json()["status"], "SUCCESS")
+        self.assertIn("M/Y Aurelia", res_md.json()["markdown"])
+
+        # 2. AISOC Telemetry & Containment
+        res_soc = self.client.get("/api/aisoc/telemetry", headers=headers)
+        self.assertEqual(res_soc.status_code, 200)
+        self.assertEqual(res_soc.json()["soc_status"], "ONLINE_ACTIVE_SHIELD")
+
+        res_contain = self.client.post(
+            "/api/aisoc/contain-ip",
+            json={"ip": "198.51.100.44", "reason": "Automated Honeypot Containment"},
+            headers=headers
+        )
+        self.assertEqual(res_contain.status_code, 200)
+        self.assertEqual(res_contain.json()["action"], "BLOCKED")
+
+        # 3. Universal Free LLM Gateway
+        res_llm = self.client.post(
+            "/api/llm/free-generate",
+            json={"prompt": "Assess liquidation risk on 2022 Sunseeker 88ft yacht."},
+            headers=headers
+        )
+        self.assertEqual(res_llm.status_code, 200)
+        self.assertTrue(res_llm.json()["success"])
+        self.assertIn("response", res_llm.json())
+
+        # 4. YouTube Agent Skill Protocol
+        res_yt = self.client.post(
+            "/api/tools/youtube-agent",
+            json={"url_or_id": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "context": "Sunseeker Superyacht Inspection"},
+            headers=headers
+        )
+        self.assertEqual(res_yt.status_code, 200)
+        self.assertEqual(res_yt.json()["video_id"], "dQw4w9WgXcQ")
+        self.assertIn("skill_spec", res_yt.json())
+
+        # 5. CodeRabbit Code & Security Review
+        sample_code = "import os\n\ndef fetch_data():\n    api_key = 'sk_live_1234567890123456'\n    return api_key\n"
+        res_cr = self.client.post(
+            "/api/tools/coderabbit/review",
+            json={"code": sample_code, "filename": "secrets_test.py"},
+            headers=headers
+        )
+        self.assertEqual(res_cr.status_code, 200)
+        self.assertTrue(res_cr.json()["success"])
+        self.assertGreaterEqual(res_cr.json()["total_findings"], 1)
+        self.assertIn("CodeRabbit Review", res_cr.json()["report_markdown"])
+
 if __name__ == "__main__":
     unittest.main()

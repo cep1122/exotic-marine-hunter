@@ -34,37 +34,52 @@
         }
     </script>
     <style>
+        /* Ultra-Luminous Mediterranean Superyacht Wallpaper (Crystal Turquoise Azure Waters) */
         body {
-            background-color: #051937;
-            background-image: 
-                radial-gradient(ellipse at 50% 5%, rgba(56, 189, 248, 0.38) 0%, rgba(6, 182, 212, 0.18) 45%, transparent 75%),
-                linear-gradient(to bottom, rgba(2, 9, 23, 0.15) 0%, rgba(2, 9, 23, 0.25) 40%, rgba(2, 9, 23, 0.48) 100%),
-                url('https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?auto=format&fit=crop&w=2560&q=95');
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.04) 0%, rgba(0, 0, 0, 0.12) 100%), 
+                        url('https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?auto=format&fit=crop&w=2600&q=95') no-repeat center center fixed;
             background-size: cover;
-            background-position: center 25%;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            color: #FFFFFF;
+            background-position: center 20%;
+            color: #ffffff;
+            min-height: 100vh;
         }
-        .glass-card {
-            background: rgba(15, 23, 42, 0.38);
-            backdrop-filter: blur(18px) saturate(160%);
-            -webkit-backdrop-filter: blur(18px) saturate(160%);
-            border: 1px solid rgba(255, 255, 255, 0.22);
-            box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.25), inset 0 1px 1px 0 rgba(255, 255, 255, 0.35);
+
+        /* ABSOLUTELY ZERO SHADOWS ON LETTERS & NUMBERS (Crisp, High-Definition Vector Typography) */
+        *, *::before, *::after,
+        body, table, h1, h2, h3, h4, p, span, div, strong, label, input, button, td, th {
+            text-shadow: none !important;
+            filter: none !important;
         }
+
+        /* Luminous Architectural Glass Panels (Aclarado & Cristalino - Visible Luxury Marine Background) */
+        .glass-card, .glass-panel {
+            background: rgba(15, 23, 42, 0.45) !important;
+            backdrop-filter: blur(12px) !important;
+            -webkit-backdrop-filter: blur(12px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.32) !important;
+            box-shadow: 0 12px 35px 0 rgba(0, 0, 0, 0.25), inset 0 1px 1px 0 rgba(255, 255, 255, 0.20) !important;
+        }
+
         .glass-card:hover {
-            background: rgba(15, 23, 42, 0.50);
-            border-color: rgba(245, 158, 11, 0.70);
-            box-shadow: 0 15px 35px 0 rgba(6, 182, 212, 0.30), inset 0 1px 2px 0 rgba(255, 255, 255, 0.50);
+            background: rgba(15, 23, 42, 0.58) !important;
+            border: 1px solid rgba(245, 158, 11, 0.70) !important;
+            box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.35), inset 0 1px 2px 0 rgba(255, 255, 255, 0.35) !important;
         }
-        .glass-card-gold {
-            background: rgba(20, 24, 38, 0.55);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(245, 158, 11, 0.45);
-            box-shadow: 0 12px 35px 0 rgba(0, 0, 0, 0.35), inset 0 1px 1px 0 rgba(251, 191, 36, 0.35);
+
+        .glass-card-gold, .glass-panel-elevated {
+            background: rgba(15, 23, 42, 0.65) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+            border: 1px solid rgba(245, 158, 11, 0.50) !important;
+            box-shadow: 0 14px 40px 0 rgba(0, 0, 0, 0.35), inset 0 1px 1px 0 rgba(251, 191, 36, 0.30) !important;
         }
+
+        .glass-inner {
+            background: rgba(255, 255, 255, 0.10) !important;
+            backdrop-filter: blur(8px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.24) !important;
+        }
+
         .neon-glow-gold {
             box-shadow: 0 0 25px -5px rgba(245, 158, 11, 0.35);
         }
@@ -75,10 +90,10 @@
             width: 6px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
-            background: #030712;
+            background: rgba(15, 23, 42, 0.6);
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #1F2937;
+            background: rgba(245, 158, 11, 0.5);
             border-radius: 4px;
         }
     </style>
@@ -89,7 +104,7 @@
 <body class="min-h-screen antialiased flex flex-col font-sans custom-scrollbar">
 
     <!-- Top Institutional Banner -->
-    <header class="border-b border-slate-800/80 bg-slate-950/40 backdrop-blur-xl border-b border-white/15 sticky top-0 z-40">
+    <header class="border-b border-white/20 bg-black/25 sticky top-0 z-40 backdrop-blur-sm shadow-lg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             <div class="flex items-center space-x-4">
                 <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-400 to-yellow-200 flex items-center justify-center font-bold text-obsidian text-2xl shadow-lg shadow-amber-500/20">
@@ -112,6 +127,10 @@
                 <div class="hidden lg:flex items-center space-x-2 text-xs font-mono text-cyan-400 bg-cyan-950/40 border border-cyan-800/60 px-3 py-1.5 rounded-lg">
                     <span>AES-256-GCM Vault</span>
                 </div>
+                                <button onclick="openAISuiteModal()" class="px-3 py-1.5 text-xs font-semibold text-emerald-300 bg-emerald-950/50 hover:bg-emerald-900/70 border border-emerald-500/50 rounded-lg transition flex items-center space-x-1.5 shadow-sm">
+                    <span>⚡</span>
+                    <span>AI Suite</span>
+                </button>
                 <button onclick="openDirectoryModal()" data-i18n="rails_btn" class="px-3.5 py-1.5 text-xs font-medium text-slate-300 bg-slate-800/70 hover:bg-slate-700 border border-slate-700 rounded-lg transition">
                     Gov & Admiralty Rails
                 </button>
@@ -669,6 +688,118 @@
             <div class="flex justify-between text-[11px] font-mono text-slate-500">
                 <span>SHA-256 Checksum: <span id="doc-checksum-label" class="text-slate-400"></span></span>
                 <span class="text-emerald-400">✓ Authenticated at Rest</span>
+            </div>
+        </div>
+    </div>
+
+    
+    <!-- MODAL: AI SUITE (5 POWER TOOLS: MarkItDown, AISOC, Free LLM, YouTube Agent, CodeRabbit) -->
+    <div id="ai-suite-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-card max-w-4xl w-full rounded-2xl p-6 space-y-5 relative border border-white/25 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <button onclick="closeAISuiteModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl">✕</button>
+            
+            <div class="flex items-center space-x-3 border-b border-white/15 pb-4">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-400 flex items-center justify-center font-bold text-obsidian text-xl shadow-md">
+                    ⚡
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                        Developer & Investor AI Suite
+                        <span class="px-2 py-0.5 text-[10px] font-mono font-bold uppercase rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">5 Engines Live</span>
+                    </h2>
+                    <p class="text-xs text-slate-300">CodeRabbit • AISOC • Free LLM API • YouTube Agent Skill • MarkItDown</p>
+                </div>
+            </div>
+
+            <!-- Tab Buttons -->
+            <div class="flex flex-wrap gap-2 border-b border-white/10 pb-3 text-xs font-mono">
+                <button onclick="switchAITab('coderabbit')" id="tab-btn-coderabbit" class="ai-tab-btn active px-3 py-1.5 rounded-lg bg-amber-500 text-obsidian font-bold transition">🐇 CodeRabbit Review</button>
+                <button onclick="switchAITab('aisoc')" id="tab-btn-aisoc" class="ai-tab-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">🛡️ AISOC Sentinel</button>
+                <button onclick="switchAITab('freellm')" id="tab-btn-freellm" class="ai-tab-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">🧠 Free LLM Gateway</button>
+                <button onclick="switchAITab('youtube')" id="tab-btn-youtube" class="ai-tab-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">🎬 YouTube Agent Skill</button>
+                <button onclick="switchAITab('markitdown')" id="tab-btn-markitdown" class="ai-tab-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">📝 MarkItDown</button>
+            </div>
+
+            <!-- Tab 1: CodeRabbit -->
+            <div id="ai-tab-coderabbit" class="ai-tab-pane space-y-4">
+                <p class="text-xs text-slate-300">Audits code for OWASP vulnerabilities, SQL injection, secrets, and anti-patterns with actionable pull-request badges.</p>
+                <textarea id="cr-code-input" rows="5" class="w-full bg-slate-950/60 border border-white/20 rounded-xl p-3 font-mono text-xs text-emerald-300 focus:outline-none focus:border-amber-400" placeholder="Paste Python, JS, or SQL code here...">def query_user(user_id):
+    api_key = "sk_live_9988776655443322"
+    sql = f"SELECT * FROM users WHERE id = '{user_id}'"
+    return db.execute(sql)</textarea>
+                <button onclick="runCodeRabbitAudit()" id="cr-run-btn" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-yellow-400 text-obsidian font-bold text-xs rounded-xl shadow transition">
+                    Run CodeRabbit Review
+                </button>
+                <div id="cr-result" class="hidden p-4 rounded-xl bg-slate-950/70 border border-white/15 font-mono text-xs text-slate-200 whitespace-pre-wrap max-h-60 overflow-y-auto"></div>
+            </div>
+
+            <!-- Tab 2: AISOC Sentinel -->
+            <div id="ai-tab-aisoc" class="ai-tab-pane hidden space-y-4">
+                <div class="flex justify-between items-center">
+                    <p class="text-xs text-slate-300">Real-time AI Security Operations Center telemetry, automated honeypots & instant IP quarantine.</p>
+                    <button onclick="refreshAISOCTelemetry()" class="px-3 py-1 bg-cyan-900/60 hover:bg-cyan-800/80 text-cyan-300 border border-cyan-700 text-xs rounded-lg transition font-mono">Refresh SOC</button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono text-xs">
+                    <div class="p-3 rounded-xl bg-slate-950/40 border border-white/15">
+                        <span class="text-slate-400 block text-[10px]">SOC STATUS</span>
+                        <span id="soc-status-val" class="text-emerald-400 font-bold text-sm">ONLINE_ACTIVE</span>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-950/40 border border-white/15">
+                        <span class="text-slate-400 block text-[10px]">THREAT LEVEL</span>
+                        <span id="soc-threat-val" class="text-cyan-400 font-bold text-sm">NORMAL</span>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-950/40 border border-white/15">
+                        <span class="text-slate-400 block text-[10px]">CONTAINED IPs</span>
+                        <span id="soc-contained-val" class="text-amber-400 font-bold text-sm">0 Quarantined</span>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <input id="aisoc-ip-input" type="text" placeholder="IP address (e.g. 192.0.2.1)" class="flex-1 bg-slate-950/60 border border-white/20 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-rose-400">
+                    <button onclick="containAbusiveIP()" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl transition font-mono">Quarantine IP</button>
+                </div>
+                <div id="aisoc-log" class="p-3 rounded-xl bg-slate-950/60 border border-white/15 font-mono text-[11px] text-slate-300 max-h-48 overflow-y-auto">Loading telemetry...</div>
+            </div>
+
+            <!-- Tab 3: Free LLM Gateway -->
+            <div id="ai-tab-freellm" class="ai-tab-pane hidden space-y-4">
+                <p class="text-xs text-slate-300">Multi-provider zero-cost gateway prioritizing Gemini 1.5 Flash, GroqCloud (Llama 3.3), OpenRouter Free, with guaranteed local fallback.</p>
+                <div class="flex gap-3">
+                    <select id="llm-provider-select" class="bg-slate-950/60 border border-white/20 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none">
+                        <option value="AUTO">AUTO (Fastest Free Rail)</option>
+                        <option value="GROQ">GroqCloud (Llama 3.3-70B)</option>
+                        <option value="GEMINI">Google Gemini 1.5 Flash</option>
+                        <option value="OPENROUTER">OpenRouter (Free Meta-Llama)</option>
+                    </select>
+                </div>
+                <textarea id="llm-prompt-input" rows="3" class="w-full bg-slate-950/60 border border-white/20 rounded-xl p-3 font-mono text-xs text-white focus:outline-none focus:border-cyan-400" placeholder="Type prompt...">Underwrite pre-auction risk for a seized 2021 Sunseeker Predator 74ft yacht with damaged port stabilizer.</textarea>
+                <button onclick="runFreeLLM()" id="llm-run-btn" class="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-obsidian font-bold text-xs rounded-xl shadow transition">
+                    Generate with Free LLM
+                </button>
+                <div id="llm-result" class="hidden p-4 rounded-xl bg-slate-950/70 border border-white/15 font-mono text-xs text-slate-200 whitespace-pre-wrap max-h-60 overflow-y-auto"></div>
+            </div>
+
+            <!-- Tab 4: YouTube Agent Skill -->
+            <div id="ai-tab-youtube" class="ai-tab-pane hidden space-y-4">
+                <p class="text-xs text-slate-300">Vercel Agent Skill Protocol extractor for YouTube sea trials, cold starts, and walk-through inspections.</p>
+                <input id="yt-url-input" type="text" placeholder="https://www.youtube.com/watch?v=... or Video ID" value="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="w-full bg-slate-950/60 border border-white/20 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-amber-400">
+                <button onclick="runYouTubeAgent()" id="yt-run-btn" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-yellow-400 text-obsidian font-bold text-xs rounded-xl shadow transition">
+                    Extract Video Intelligence
+                </button>
+                <div id="yt-result" class="hidden p-4 rounded-xl bg-slate-950/70 border border-white/15 font-mono text-xs text-slate-200 whitespace-pre-wrap max-h-60 overflow-y-auto"></div>
+            </div>
+
+            <!-- Tab 5: MarkItDown -->
+            <div id="ai-tab-markitdown" class="ai-tab-pane hidden space-y-4">
+                <p class="text-xs text-slate-300">Converts messy docket text, CSV files, and records into structured LLM-ready Markdown using Microsoft MarkItDown.</p>
+                <textarea id="md-text-input" rows="4" class="w-full bg-slate-950/60 border border-white/20 rounded-xl p-3 font-mono text-xs text-white focus:outline-none focus:border-emerald-400" placeholder="Paste docket snippet or table...">Asset: 2023 Ferrari 296 GTB Assetto Fiorano
+Docket: USMS-2026-F296-FL
+Seizure: Title 18 U.S.C. 981
+Retail: $410,000
+Lien: $135,000</textarea>
+                <button onclick="runMarkItDown()" id="md-run-btn" class="px-4 py-2 bg-gradient-to-r from-emerald-500 to-cyan-400 text-obsidian font-bold text-xs rounded-xl shadow transition">
+                    Convert with MarkItDown
+                </button>
+                <div id="md-result" class="hidden p-4 rounded-xl bg-slate-950/70 border border-white/15 font-mono text-xs text-slate-200 whitespace-pre-wrap max-h-60 overflow-y-auto"></div>
             </div>
         </div>
     </div>
