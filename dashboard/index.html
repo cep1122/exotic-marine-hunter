@@ -81,7 +81,7 @@
                         <span class="text-xl font-bold tracking-tight text-white uppercase">Exotic & Marine Hunter AI</span>
                         <span class="px-2 py-0.5 text-xs font-mono font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30 rounded-full">v1.0 Sovereign</span>
                     </div>
-                    <p class="text-xs text-slate-400">Institutional Forfeiture & Admiralty Deal Sourcing Desk • <span class="text-amber-300 font-medium">IC Neural Systems LLC</span></p>
+                    <p class="text-xs text-slate-400" data-i18n="app_subtitle">Institutional Forfeiture & Admiralty Deal Sourcing Desk • <span class="text-amber-300 font-medium">IC Neural Systems LLC</span></p>
                 </div>
             </div>
 
@@ -93,19 +93,48 @@
                 <div class="hidden lg:flex items-center space-x-2 text-xs font-mono text-cyan-400 bg-cyan-950/40 border border-cyan-800/60 px-3 py-1.5 rounded-lg">
                     <span>AES-256-GCM Vault</span>
                 </div>
-                <button onclick="openDirectoryModal()" class="px-3.5 py-1.5 text-xs font-medium text-slate-300 bg-slate-800/70 hover:bg-slate-700 border border-slate-700 rounded-lg transition">
+                <button onclick="openDirectoryModal()" data-i18n="rails_btn" class="px-3.5 py-1.5 text-xs font-medium text-slate-300 bg-slate-800/70 hover:bg-slate-700 border border-slate-700 rounded-lg transition">
                     Gov & Admiralty Rails
                 </button>
                 
+                
+                <!-- Language Selector (US Core: EN Default, ES, PT, FR) -->
+                <div class="relative" id="lang-selector-container">
+                    <button type="button" onclick="toggleLanguageDropdown(event)" id="lang-menu-btn" class="px-2.5 py-1.5 text-xs font-semibold text-amber-300 bg-slate-900/90 hover:bg-slate-800 border border-amber-500/40 rounded-lg transition flex items-center space-x-1.5 shadow-sm">
+                        <span id="current-lang-flag">🇺🇸</span>
+                        <span id="current-lang-code" class="font-mono">EN</span>
+                        <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div id="lang-dropdown" class="hidden absolute right-0 mt-1.5 w-36 bg-slate-950/95 backdrop-blur-md border border-slate-700 rounded-xl shadow-xl z-50 py-1 font-sans text-xs">
+                        <button type="button" onclick="setLanguage('EN')" class="w-full text-left px-3 py-2 flex items-center space-x-2 text-white hover:bg-amber-500/20 hover:text-amber-300 transition">
+                            <span>🇺🇸</span>
+                            <span class="font-medium">English</span>
+                            <span class="text-[9px] text-emerald-400 ml-auto font-mono">DEFAULT</span>
+                        </button>
+                        <button type="button" onclick="setLanguage('ES')" class="w-full text-left px-3 py-2 flex items-center space-x-2 text-slate-300 hover:bg-amber-500/20 hover:text-amber-300 transition">
+                            <span>🇪🇸</span>
+                            <span class="font-medium">Español</span>
+                        </button>
+                        <button type="button" onclick="setLanguage('PT')" class="w-full text-left px-3 py-2 flex items-center space-x-2 text-slate-300 hover:bg-amber-500/20 hover:text-amber-300 transition">
+                            <span>🇧🇷</span>
+                            <span class="font-medium">Português</span>
+                        </button>
+                        <button type="button" onclick="setLanguage('FR')" class="w-full text-left px-3 py-2 flex items-center space-x-2 text-slate-300 hover:bg-amber-500/20 hover:text-amber-300 transition">
+                            <span>🇫🇷</span>
+                            <span class="font-medium">Français</span>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Dynamic User Portal Button in Header -->
                 <div id="user-header-container">
                     <button onclick="openUserPortalModal('LOGIN')" class="px-3.5 py-1.5 text-xs font-semibold text-cyan-300 bg-cyan-950/60 hover:bg-cyan-900/60 border border-cyan-700/60 rounded-lg transition flex items-center space-x-1.5">
-                        <span>👤 Inversionista / Acceso</span>
+                        <span data-i18n="investor_btn"><span>👤 Investor / Access</span></span>
                     </button>
                 </div>
 
                 <button onclick="openCheckoutModal('PRO_HUNTER')" class="px-4 py-1.5 text-xs font-bold text-obsidian bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 rounded-lg shadow-md shadow-amber-500/20 transition flex items-center space-x-1.5">
-                    <span>⚡ Unlock Pro Access ($199)</span>
+                    <span data-i18n="unlock_pro_btn">⚡ Unlock Pro Access ($199)</span>
                 </button>
             </div>
         </div>
@@ -118,45 +147,45 @@
         <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="glass-card p-5 rounded-2xl border-slate-800 flex flex-col justify-between">
                 <div class="flex justify-between items-start">
-                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">Active Pipeline Equity</span>
+                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider" data-i18n="stat_equity">Active Pipeline Equity</span>
                     <span class="text-amber-400 text-lg">💰</span>
                 </div>
                 <div class="mt-3">
                     <div class="text-2xl font-bold font-mono text-white" id="stat-pipeline-value">$14,899,000</div>
-                    <p class="text-xs text-slate-400 mt-1">Across 6 Seized Vessels & Exotics</p>
+                    <p class="text-xs text-slate-400 mt-1" data-i18n="stat_equity_sub">Across Seized Vessels & Exotics</p>
                 </div>
             </div>
 
             <div class="glass-card p-5 rounded-2xl border-slate-800 flex flex-col justify-between">
                 <div class="flex justify-between items-start">
-                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">Net Spread Alpha</span>
+                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider" data-i18n="stat_spread">Net Spread Alpha</span>
                     <span class="text-emerald-400 text-lg">📈</span>
                 </div>
                 <div class="mt-3">
                     <div class="text-2xl font-bold font-mono text-emerald-400" id="stat-net-spread">$8,633,700</div>
-                    <p class="text-xs text-slate-400 mt-1">Pre-Auction Equity Cushion</p>
+                    <p class="text-xs text-slate-400 mt-1" data-i18n="stat_spread_sub">Pre-Auction Equity Cushion</p>
                 </div>
             </div>
 
             <div class="glass-card p-5 rounded-2xl border-slate-800 flex flex-col justify-between">
                 <div class="flex justify-between items-start">
-                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">Underwriting Database</span>
+                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider" data-i18n="stat_db">Underwriting Database</span>
                     <span class="text-cyan-400 text-lg">🗄️</span>
                 </div>
                 <div class="mt-3">
                     <div class="text-2xl font-bold font-mono text-cyan-400">SQLite WAL Prepared</div>
-                    <p class="text-xs text-slate-400 mt-1">Zero SQL Injection Vulnerability</p>
+                    <p class="text-xs text-slate-400 mt-1" data-i18n="stat_db_sub">Zero SQL Injection Vulnerability</p>
                 </div>
             </div>
 
             <div class="glass-card p-5 rounded-2xl border-slate-800 flex flex-col justify-between">
                 <div class="flex justify-between items-start">
-                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">Evidence Storage</span>
+                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider" data-i18n="stat_storage">Evidence Storage</span>
                     <span class="text-purple-400 text-lg">🔒</span>
                 </div>
                 <div class="mt-3">
                     <div class="text-2xl font-bold font-mono text-purple-400">AES-256-GCM Vault</div>
-                    <p class="text-xs text-slate-400 mt-1">USMS Form 102 & USCG Form 1340</p>
+                    <p class="text-xs text-slate-400 mt-1" data-i18n="stat_storage_sub">USMS Form 102 & USCG Form 1340</p>
                 </div>
             </div>
         </section>
@@ -165,15 +194,15 @@
         <section class="glass-card p-5 rounded-2xl border-slate-800 space-y-4">
             <!-- Row 1: Primary Category Pills -->
             <div class="flex flex-wrap items-center gap-2" id="category-pills">
-                <button onclick="filterCategory('ALL')" class="category-btn active px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-amber-500 text-obsidian shadow-sm transition">Todos los Activos</button>
-                <button onclick="filterCategory('EXOTIC_CAR')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">🏎️ Supercars (Ferrari / Porsche / Lambo)</button>
-                <button onclick="filterCategory('SUPERYACHT')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">🛥️ Superyates (Azimut / Sunseeker / Pershing)</button>
-                <button onclick="filterCategory('COMMERCIAL_HEAVY_DUTY')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">🚛 Flota Pesada (Volvo / Peterbilt / Cat)</button>
-                <button onclick="filterCategory('LUXURY_AIRCRAFT')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">✈️ Aviación Ejecutiva (Gulfstream / Citation)</button>
-                <button onclick="filterCategory('SPORTFISHER')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">🎣 Sportfishers (Viking / Cigarette)</button>
-                <button onclick="filterCategory('LUXURY_SUV')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">🚙 SUVs / 4x4 (Brabus / Urus / Dually)</button>
+                <button onclick="filterCategory('ALL')" class="category-btn active px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-amber-500 text-obsidian shadow-sm transition" data-i18n="cat_all">All Assets</button>
+                <button onclick="filterCategory('EXOTIC_CAR')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition" data-i18n="cat_supercars">🏎️ Supercars (Ferrari / Porsche / Lambo)</button>
+                <button onclick="filterCategory('SUPERYACHT')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition" data-i18n="cat_superyachts">🛥️ Superyachts (Azimut / Sunseeker / Pershing)</button>
+                <button onclick="filterCategory('COMMERCIAL_HEAVY_DUTY')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition" data-i18n="cat_heavy">🚛 Commercial Heavy Duty (Volvo / Peterbilt / Cat)</button>
+                <button onclick="filterCategory('LUXURY_AIRCRAFT')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition" data-i18n="cat_aviation">✈️ Executive Aviation (Gulfstream / Citation)</button>
+                <button onclick="filterCategory('SPORTFISHER')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition" data-i18n="cat_sportfishers">🎣 Sportfishers (Viking / Cigarette)</button>
+                <button onclick="filterCategory('LUXURY_SUV')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition" data-i18n="cat_suvs">🚙 Luxury SUVs / 4x4 (Brabus / Urus / Dually)</button>
                 <button onclick="filterWatchlistOnly()" id="btn-watchlist-filter" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-amber-300 hover:bg-slate-700 transition flex items-center space-x-1">
-                    <span>⭐ Mi Watchlist</span>
+                    <span data-i18n="cat_watchlist">⭐ My Watchlist</span>
                 </button>
             </div>
 
@@ -181,9 +210,9 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-3 border-t border-slate-800/80 font-mono text-xs">
                 <!-- County & State Selector -->
                 <div>
-                    <label class="text-[10px] text-slate-400 block mb-1 uppercase font-bold tracking-wider">🏛️ Condado / Jurisdicción</label>
+                    <label class="text-[10px] text-slate-400 block mb-1 uppercase font-bold tracking-wider" data-i18n="filter_county_lbl">🏛️ County / Jurisdiction</label>
                     <select id="county-filter" onchange="renderLeads()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400">
-                        <option value="ALL">Todos los Condados & Estados</option>
+                        <option value="ALL" data-i18n="filter_county_all">All Counties & States</option>
                         <option value="Miami-Dade">Miami-Dade County, FL</option>
                         <option value="Broward">Broward County (Ft. Lauderdale), FL</option>
                         <option value="Palm Beach">Palm Beach County, FL</option>
@@ -203,9 +232,9 @@
 
                 <!-- Legal Process & Court Authority Selector -->
                 <div>
-                    <label class="text-[10px] text-slate-400 block mb-1 uppercase font-bold tracking-wider">⚖️ Proceso Judicial / Estatuto</label>
+                    <label class="text-[10px] text-slate-400 block mb-1 uppercase font-bold tracking-wider" data-i18n="filter_process_lbl">⚖️ Judicial Process / Statute</label>
                     <select id="process-filter" onchange="renderLeads()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400">
-                        <option value="ALL">Todos los Procesos Legales</option>
+                        <option value="ALL" data-i18n="filter_process_all">All Legal Processes</option>
                         <option value="MECHANIC_STORAGE_LIEN">Florida Stat. § 713.78 Tow & Storage Lien</option>
                         <option value="ADMIRALTY_MARSHAL_ARREST">Federal Admiralty Rule C in Rem (PACER)</option>
                         <option value="US_MARSHALS_FORFEITURE">U.S. Marshals Criminal Forfeiture (USMS)</option>
@@ -220,9 +249,9 @@
 
                 <!-- Auction Rail / Platform Selector -->
                 <div>
-                    <label class="text-[10px] text-slate-400 block mb-1 uppercase font-bold tracking-wider">🔨 Portal de Subasta / Custodio</label>
+                    <label class="text-[10px] text-slate-400 block mb-1 uppercase font-bold tracking-wider" data-i18n="filter_platform_lbl">🔨 Auction Portal / Custodian</label>
                     <select id="platform-filter" onchange="renderLeads()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400">
-                        <option value="ALL">Todos los Portales de Subasta</option>
+                        <option value="ALL" data-i18n="filter_platform_all">All Auction Rails</option>
                         <option value="Apple Towing">Apple Towing Co. (Texas Gov / HiBid)</option>
                         <option value="Apple Auctioneering">Apple Auctioneering Co. (USMS Official)</option>
                         <option value="CWS Marketing">CWS Marketing Group (Treasury / CBP)</option>
@@ -235,10 +264,10 @@
 
                 <!-- Universal Search & Reset -->
                 <div>
-                    <label class="text-[10px] text-slate-400 block mb-1 uppercase font-bold tracking-wider">🔍 Búsqueda Rápida</label>
+                    <label class="text-[10px] text-slate-400 block mb-1 uppercase font-bold tracking-wider" data-i18n="filter_search_lbl">🔍 Quick Search</label>
                     <div class="flex items-center space-x-2">
-                        <input type="text" id="search-input" onkeyup="handleSearch()" placeholder="VIN, HIN, Modelo, Expediente..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400">
-                        <button onclick="resetFilters()" class="text-xs text-amber-400 hover:text-white bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-700 transition">Reset</button>
+                        <input type="text" id="search-input" onkeyup="handleSearch()" placeholder="VIN, HIN, Model, Case #..." data-i18n-ph="filter_search_ph" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400">
+                        <button onclick="resetFilters()" class="text-xs text-amber-400 hover:text-white bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-700 transition" data-i18n="filter_reset_btn">Reset</button>
                     </div>
                 </div>
             </div>
@@ -249,10 +278,10 @@
             <div class="flex items-center justify-between">
                 <div>
                     <h2 class="text-lg font-bold text-white flex items-center space-x-2">
-                        <span>Federal Seizure & Storage Lien Docket</span>
+                        <span data-i18n="grid_title">Federal Seizure & Storage Lien Docket</span>
                         <span class="text-xs font-normal text-slate-400" id="deals-count">(6 Active Dockets)</span>
                     </h2>
-                    <p class="text-xs text-slate-400">Data ingested directly from U.S. Marshals, Treasury CWSAMS, Admiralty Rule C, and Marina Tow Registries.</p>
+                    <p class="text-xs text-slate-400" data-i18n="grid_subtitle">Data ingested directly from U.S. Marshals, Treasury CWSAMS, Admiralty Rule C, and Marina Tow Registries.</p>
                 </div>
                 <div id="unlocked-badge-container"></div>
             </div>
@@ -628,6 +657,577 @@
 
     <!-- Frontend Scripting -->
     <script>
+
+        // =========================================================================
+        // MULTI-LANGUAGE SYSTEM (US CORE: EN DEFAULT, ES, PT, FR)
+        // =========================================================================
+        let currentLang = localStorage.getItem('AEMH_LANGUAGE') || 'EN';
+
+        const I18N = {
+            EN: {
+                app_subtitle: "Institutional Forfeiture & Admiralty Deal Sourcing Desk • <span class='text-amber-300 font-medium'>IC Neural Systems LLC</span>",
+                argus_shield: "Argus WAF: SQLi & Anti-Spy Shield Active",
+                vault_badge: "AES-256-GCM Vault",
+                rails_btn: "Gov & Admiralty Rails",
+                investor_btn: "👤 Investor / Access",
+                unlock_pro_btn: "⚡ Unlock Pro Access ($199)",
+                stat_equity: "Active Pipeline Equity",
+                stat_equity_sub: "Across Seized Vessels & Exotics",
+                stat_spread: "Net Spread Alpha",
+                stat_spread_sub: "Pre-Auction Equity Cushion",
+                stat_db: "Underwriting Database",
+                stat_db_sub: "SQLite WAL Prepared • Zero SQL Injection Vulnerability",
+                stat_storage: "Evidence Storage",
+                stat_storage_sub: "AES-256-GCM Vault • USMS Form 102 & USCG Form 1340",
+                cat_all: "All Assets",
+                cat_supercars: "🏎️ Supercars (Ferrari / Porsche / Lambo)",
+                cat_superyachts: "🛥️ Superyachts (Azimut / Sunseeker / Pershing)",
+                cat_heavy: "🚛 Commercial Heavy Duty (Volvo / Peterbilt / Cat)",
+                cat_aviation: "✈️ Executive Aviation (Gulfstream / Citation)",
+                cat_sportfishers: "🎣 Sportfishers (Viking / Cigarette)",
+                cat_suvs: "🚙 Luxury SUVs / 4x4 (Brabus / Urus / Dually)",
+                cat_watchlist: "⭐ My Watchlist",
+                filter_county_lbl: "🏛️ County / Jurisdiction",
+                filter_county_all: "All Counties & States",
+                filter_process_lbl: "⚖️ Judicial Process / Statute",
+                filter_process_all: "All Legal Processes",
+                filter_platform_lbl: "🔨 Auction Portal / Custodian",
+                filter_platform_all: "All Auction Rails",
+                filter_search_lbl: "🔍 Quick Search",
+                filter_search_ph: "VIN, HIN, Model, Case #...",
+                filter_reset_btn: "Reset",
+                grid_title: "Federal Seizure & Storage Lien Docket",
+                grid_subtitle: "Data ingested directly from U.S. Marshals, Treasury CWSAMS, Admiralty Rule C, and Marina Tow Registries.",
+                pro_active_badge: "🔓 Pro Hunter License Active (Unlimited 50-State Access)",
+                single_active_badge: "🏷️ Single Asset Pass Active",
+                dossier_unlocked_suffix: "Dossier Unlocked",
+                upgrade_pro_btn: "Upgrade to Unlimited Pro ($199/mo)",
+                est_retail: "Est. Retail Value",
+                lien_opening: "Lien / Opening Bid",
+                mab: "Max Allowable Bid (MAB)",
+                net_spread: "Net Wholesale Spread",
+                custodian_lbl: "🏢 Custodian:",
+                contact_lbl: "Contact:",
+                address_lbl: "Address:",
+                judicial_docket_lbl: "Judicial Docket:",
+                redacted_pro_req: "🔒 Redacted (Requires Pro / Single Pass)",
+                btn_unlock_single: "🔑 Unlock Intelligence Dossier ($49)",
+                btn_access_granted: "✓ Sovereign Unredacted Access Granted",
+                btn_view_evidence: "📑 View Encrypted Evidence (AES-256)",
+                no_results_title: "No dockets found matching the selected filters.",
+                no_results_sub: "Try resetting the filters to view all active lots across the United States.",
+                reset_filters_btn: "Reset Filters",
+                checkout_title: "Unlock Intelligence Dossier",
+                checkout_subtitle: "Instant unredacted VIN/HIN, Custodian Phone/Email, Tow Yard GPS & Title Docket.",
+                target_prefix: "Target:",
+                tier_single_title: "Single Asset Pass",
+                tier_single_sub: "1 Full Unredacted Asset Dossier",
+                tier_pro_title: "Pro Hunter Syndicate",
+                tier_pro_sub: "Unlimited 50-State Access",
+                buyer_name_lbl: "Full Name / Institutional Entity",
+                buyer_name_ph: "Name and Surname",
+                buyer_email_lbl: "Settlement Billing Email",
+                buyer_email_ph: "billing@example.com",
+                payment_method_lbl: "Select Banking Settlement Method",
+                pm_card: "💳 Credit/Debit Card",
+                pm_ach: "🏛️ Bank Account ACH",
+                pm_vault: "🏦 API Bank Vault",
+                card_sec_badge: "🔒 256-bit Encrypted",
+                card_info_title: "Card Information (Visa, Mastercard, Amex, Discover)",
+                card_num_lbl: "Card Number",
+                card_exp_lbl: "Expiration (MM/YY)",
+                card_cvc_lbl: "CVC / CVV",
+                card_zip_lbl: "Billing ZIP Code",
+                bank_sec_badge: "🏛️ FedACH Direct",
+                bank_info_title: "Direct FedACH Transfer / US Bank Debit",
+                bank_name_lbl: "Bank Name",
+                bank_name_ph: "e.g. Chase, Bank of America, Wells Fargo",
+                bank_routing_lbl: "ABA Routing Number (9 Digits)",
+                bank_account_lbl: "Checking Account Number",
+                btn_pay_unlock: "Pay & Unlock",
+                btn_retry: "Retry Payment",
+                portal_title: "Investor Portal & Sovereign Vault",
+                portal_subtitle: "Secure Authentication, Encrypted Storage & Personal Watchlist.",
+                tab_login: "Access / Login",
+                tab_register: "Register",
+                tab_dossiers: "My Dossiers",
+                tab_watchlist: "Watchlist",
+                tab_security: "Security & WAF",
+                login_email_lbl: "Institutional Email",
+                login_email_ph: "investor@fund.com",
+                login_password_lbl: "Password",
+                login_forgot_btn: "Forgot password?",
+                btn_login_submit: "Log In",
+                btn_register_submit: "Create Account & Provision API Bank Vault",
+                reg_name_lbl: "Full Name or Entity",
+                reg_email_lbl: "Corporate Email",
+                reg_password_lbl: "Secure Password (PBKDF2-HMAC-SHA256)",
+                reg_role_lbl: "Operating Role",
+                forgot_title: "Account Recovery:",
+                forgot_sub: "Enter your institutional email to receive a 6-digit security code issued by the access oracle.",
+                forgot_email_lbl: "Registered Account Email",
+                btn_send_code: "Send Verification Code to Email",
+                btn_back_login: "← Back to Login",
+                reset_step2_title: "Security Code (6 Digits)",
+                reset_step2_sub: "The code was sent to your inbox and expires in 15 minutes.",
+                reset_new_password_lbl: "New Password",
+                reset_new_password_ph: "Minimum 6 characters",
+                btn_save_new_pass: "Save New Password & Enter",
+                btn_resend_code: "Resend code",
+                btn_cancel_return: "← Cancel and return",
+                dossiers_empty: "You have no unlocked dossiers yet.",
+                watchlist_sub: "Your saved forfeiture and admiralty auctions stored in database:",
+                security_sub: "Real-Time Security Audit Logs (Argus WAF + SQLite):",
+                security_badge: "100% Parameterized Statements",
+                footer_portal: "User Portal",
+                footer_legal: "Legal Disclosures",
+                footer_directory: "Auction Directory"
+            },
+            ES: {
+                app_subtitle: "Mesa Institucional de Decomisos y Almirantazgo • <span class='text-amber-300 font-medium'>IC Neural Systems LLC</span>",
+                argus_shield: "Argus WAF: Escudo SQLi y Anti-Espía Activo",
+                vault_badge: "Bóveda AES-256-GCM",
+                rails_btn: "Rutas Estatales y Almirantazgo",
+                investor_btn: "👤 Inversionista / Acceso",
+                unlock_pro_btn: "⚡ Desbloquear Acceso Pro ($199)",
+                stat_equity: "Patrimonio Activo en Proceso",
+                stat_equity_sub: "En embarcaciones y exóticos confiscados",
+                stat_spread: "Margen Neto Alpha",
+                stat_spread_sub: "Colchón de capital pre-subasta",
+                stat_db: "Base de Datos de Suscripción",
+                stat_db_sub: "SQLite WAL Preparado • Cero Vulnerabilidad SQL Injection",
+                stat_storage: "Almacenamiento de Evidencia",
+                stat_storage_sub: "Bóveda AES-256-GCM • Formulario USMS 102 y USCG 1340",
+                cat_all: "Todos los Activos",
+                cat_supercars: "🏎️ Supercars (Ferrari / Porsche / Lambo)",
+                cat_superyachts: "🛥️ Superyates (Azimut / Sunseeker / Pershing)",
+                cat_heavy: "🚛 Flota Pesada (Volvo / Peterbilt / Cat)",
+                cat_aviation: "✈️ Aviación Ejecutiva (Gulfstream / Citation)",
+                cat_sportfishers: "🎣 Sportfishers (Viking / Cigarette)",
+                cat_suvs: "🚙 SUVs / 4x4 (Brabus / Urus / Dually)",
+                cat_watchlist: "⭐ Mi Watchlist",
+                filter_county_lbl: "🏛️ Condado / Jurisdicción",
+                filter_county_all: "Todos los Condados & Estados",
+                filter_process_lbl: "⚖️ Proceso Judicial / Estatuto",
+                filter_process_all: "Todos los Procesos Legales",
+                filter_platform_lbl: "🔨 Portal de Subasta / Custodio",
+                filter_platform_all: "Todos los Portales de Subasta",
+                filter_search_lbl: "🔍 Búsqueda Rápida",
+                filter_search_ph: "VIN, HIN, Modelo, Expediente...",
+                filter_reset_btn: "Reiniciar",
+                grid_title: "Expedientes Federales de Decomiso y Retención",
+                grid_subtitle: "Datos obtenidos directamente del U.S. Marshals, CWSAMS del Tesoro, Regla C de Almirantazgo y Registros de Grúas.",
+                pro_active_badge: "🔓 Membresía Pro Hunter Activa (Acceso Ilimitado 50 Estados)",
+                single_active_badge: "🏷️ Pase Individual Activo",
+                dossier_unlocked_suffix: "Expediente Desbloqueado",
+                upgrade_pro_btn: "Actualizar a Pro Ilimitado ($199/mes)",
+                est_retail: "Valor Retail Estimado",
+                lien_opening: "Retención / Oferta Inicial",
+                mab: "Oferta Máxima Permisible (MAB)",
+                net_spread: "Margen Neto Mayorista",
+                custodian_lbl: "🏢 Custodio:",
+                contact_lbl: "Contacto:",
+                address_lbl: "Dirección:",
+                judicial_docket_lbl: "Expediente Judicial:",
+                redacted_pro_req: "🔒 Redactado (Requiere Pro / Pase)",
+                btn_unlock_single: "🔑 Desbloquear Expediente Unredacted ($49)",
+                btn_access_granted: "${t('btn_access_granted')}",
+                btn_view_evidence: "${t('btn_view_evidence')}",
+                no_results_title: "No se encontraron expedientes con los filtros seleccionados.",
+                no_results_sub: "Intenta reiniciar los filtros para ver todos los lotes activos en EE. UU.",
+                reset_filters_btn: "Reiniciar Filtros",
+                checkout_title: "Desbloquear Expediente de Inteligencia",
+                checkout_subtitle: "VIN/HIN oficial, Teléfono y Correo del Custodio, GPS del Depósito y Expediente Judicial.",
+                target_prefix: "Expediente:",
+                tier_single_title: "Pase de Activo Individual",
+                tier_single_sub: "1 Expediente Completo sin Redactar",
+                tier_pro_title: "Sindicato Pro Hunter",
+                tier_pro_sub: "Acceso Ilimitado a los 50 Estados",
+                buyer_name_lbl: "Nombre Completo / Entidad Institucional",
+                buyer_name_ph: "Nombre y Apellidos",
+                buyer_email_lbl: "Correo de Facturación",
+                buyer_email_ph: "facturacion@ejemplo.com",
+                payment_method_lbl: "Seleccione Método de Pago Bancario",
+                pm_card: "💳 Tarjeta Crédito/Débito",
+                pm_ach: "🏛️ Cuenta Bancaria ACH",
+                pm_vault: "🏦 Bóveda API Bank",
+                card_sec_badge: "🔒 Cifrado de 256 bits",
+                card_info_title: "Datos de Tarjeta (Visa, Mastercard, Amex, Discover)",
+                card_num_lbl: "Número de Tarjeta",
+                card_exp_lbl: "Expiración (MM/AA)",
+                card_cvc_lbl: "CVC / CVV",
+                card_zip_lbl: "Código Postal ZIP",
+                bank_sec_badge: "🏛️ FedACH Directo",
+                bank_info_title: "Transferencia Directa ACH / Débito Bancario EE. UU.",
+                bank_name_lbl: "Nombre del Banco",
+                bank_name_ph: "ej. Chase, Bank of America, Wells Fargo",
+                bank_routing_lbl: "Número de Ruta ABA (9 Dígitos)",
+                bank_account_lbl: "Número de Cuenta Corriente",
+                btn_pay_unlock: "Pagar y Desbloquear",
+                btn_retry: "Reintentar Pago",
+                portal_title: "Portal de Inversionista & Bóveda Soberana",
+                portal_subtitle: "Autenticación Segura, Almacenamiento Cifrado y Lista de Vigilancia Personal.",
+                tab_login: "Acceso / Login",
+                tab_register: "Registro",
+                tab_dossiers: "Mis Dossiers",
+                tab_watchlist: "Watchlist",
+                tab_security: "Seguridad & WAF",
+                login_email_lbl: "Email Institucional",
+                login_email_ph: "inversionista@fondo.com",
+                login_password_lbl: "Contraseña",
+                login_forgot_btn: "¿Olvidaste tu contraseña?",
+                btn_login_submit: "Iniciar Sesión",
+                btn_register_submit: "Crear Cuenta & Provisionar Bóveda API Bank",
+                reg_name_lbl: "Nombre Completo o Entidad",
+                reg_email_lbl: "Email Corporativo",
+                reg_password_lbl: "Contraseña Segura (PBKDF2-HMAC-SHA256)",
+                reg_role_lbl: "Rol de Operación",
+                forgot_title: "Recuperación de Cuenta:",
+                forgot_sub: "Ingrese su correo institucional para recibir un código de seguridad de 6 dígitos emitido por el oráculo de acceso.",
+                forgot_email_lbl: "Email Registrado de la Cuenta",
+                btn_send_code: "Enviar Código de Verificación al Email",
+                btn_back_login: "← Volver al Inicio de Sesión",
+                reset_step2_title: "Código de Seguridad (6 Dígitos)",
+                reset_step2_sub: "El código fue enviado a su bandeja de entrada y expira en 15 minutos.",
+                reset_new_password_lbl: "Nueva Contraseña",
+                reset_new_password_ph: "Mínimo 6 caracteres",
+                btn_save_new_pass: "Guardar Nueva Contraseña y Acceder",
+                btn_resend_code: "Reenviar código",
+                btn_cancel_return: "← Cancelar y volver",
+                dossiers_empty: "No tienes dossiers desbloqueados aún.",
+                watchlist_sub: "Tus confiscaciones y subastas marítimas guardadas en la base de datos:",
+                security_sub: "Registros de Seguridad en Tiempo Real (Argus WAF + SQLite):",
+                security_badge: "100% Parameterized Statements",
+                footer_portal: "Portal de Usuario",
+                footer_legal: "Avisos Legales",
+                footer_directory: "Directorio de Subastas"
+            },
+            PT: {
+                app_subtitle: "Mesa Institucional de Apreensões e Almirantado • <span class='text-amber-300 font-medium'>IC Neural Systems LLC</span>",
+                argus_shield: "Argus WAF: Escudo SQLi e Anti-Espião Ativo",
+                vault_badge: "Cofre AES-256-GCM",
+                rails_btn: "Canais Governamentais e Marítimos",
+                investor_btn: "👤 Investidor / Acesso",
+                unlock_pro_btn: "⚡ Desbloquear Acesso Pro ($199)",
+                stat_equity: "Patrimônio Ativo em Pipeline",
+                stat_equity_sub: "Em embarcações e exóticos apreendidos",
+                stat_spread: "Margem Líquida Alpha",
+                stat_spread_sub: "Reserva de capital pré-leilão",
+                stat_db: "Banco de Dados de Subscrição",
+                stat_db_sub: "SQLite WAL Preparado • Zero Vulnerabilidade SQLi",
+                stat_storage: "Armazenamento de Evidência",
+                stat_storage_sub: "Cofre AES-256-GCM • USMS Form 102 & USCG Form 1340",
+                cat_all: "Todos os Ativos",
+                cat_supercars: "🏎️ Supercarros (Ferrari / Porsche / Lambo)",
+                cat_superyachts: "🛥️ Superiates (Azimut / Sunseeker / Pershing)",
+                cat_heavy: "🚛 Frota Pesada (Volvo / Peterbilt / Cat)",
+                cat_aviation: "✈️ Aviação Executiva (Gulfstream / Citation)",
+                cat_sportfishers: "🎣 Barcos de Pesca Esportiva",
+                cat_suvs: "🚙 SUVs de Luxo / 4x4 (Brabus / Urus)",
+                cat_watchlist: "⭐ Minha Lista",
+                filter_county_lbl: "🏛️ Condado / Jurisdição",
+                filter_county_all: "Todos os Condados e Estados",
+                filter_process_lbl: "⚖️ Processo Judicial / Estatuto",
+                filter_process_all: "Todos os Processos Legais",
+                filter_platform_lbl: "🔨 Portal de Leilão / Custodiante",
+                filter_platform_all: "Todos os Portais de Leilão",
+                filter_search_lbl: "🔍 Busca Rápida",
+                filter_search_ph: "VIN, HIN, Modelo, Processo...",
+                filter_reset_btn: "Redefinir",
+                grid_title: "Processos Federais de Apreensão e Retenção",
+                grid_subtitle: "Dados integrados diretamente do U.S. Marshals, CWSAMS do Tesouro, Regra C e Registros Portuários.",
+                pro_active_badge: "🔓 Licença Pro Hunter Ativa (Acesso Ilimitado a 50 Estados)",
+                single_active_badge: "🏷️ Passe Individual Ativo",
+                dossier_unlocked_suffix: "Dossiê Desbloqueado",
+                upgrade_pro_btn: "Atualizar para Pro Ilimitado ($199/mês)",
+                est_retail: "Valor Estimado de Varejo",
+                lien_opening: "Retenção / Lance Inicial",
+                mab: "Lance Máximo Permitido (MAB)",
+                net_spread: "Margem Líquida no Atacado",
+                custodian_lbl: "🏢 Custodiante:",
+                contact_lbl: "Contato:",
+                address_lbl: "Endereço:",
+                judicial_docket_lbl: "Processo Judicial:",
+                redacted_pro_req: "🔒 Oculto (Requer Pro / Passe Individual)",
+                btn_unlock_single: "🔑 Desbloquear Dossiê Completo ($49)",
+                btn_access_granted: "✓ Acesso Soberano Concedido",
+                btn_view_evidence: "📑 Ver Evidência Criptografada (AES-256)",
+                no_results_title: "Nenhum processo encontrado com os filtros selecionados.",
+                no_results_sub: "Tente redefinir os filtros para visualizar todos os lotes ativos nos EUA.",
+                reset_filters_btn: "Redefinir Filtros",
+                checkout_title: "Desbloquear Dossiê de Inteligência",
+                checkout_subtitle: "VIN/HIN oficial, Telefone/E-mail do Custodiante, GPS do Pátio e Título Judicial.",
+                target_prefix: "Ativo Alvo:",
+                tier_single_title: "Passe de Ativo Individual",
+                tier_single_sub: "1 Dossiê Completo Desmascarado",
+                tier_pro_title: "Sindicato Pro Hunter",
+                tier_pro_sub: "Acesso Ilimitado aos 50 Estados",
+                buyer_name_lbl: "Nome Completo / Entidade",
+                buyer_name_ph: "Nome e Sobrenome",
+                buyer_email_lbl: "E-mail de Cobrança",
+                buyer_email_ph: "cobranca@exemplo.com",
+                payment_method_lbl: "Selecione o Canal de Pagamento",
+                pm_card: "💳 Cartão de Crédito/Débito",
+                pm_ach: "🏛️ Conta Bancária ACH",
+                pm_vault: "🏦 Cofre API Bank",
+                card_sec_badge: "🔒 Criptografia 256 bits",
+                card_info_title: "Dados do Cartão (Visa, Mastercard, Amex, Discover)",
+                card_num_lbl: "Número do Cartão",
+                card_exp_lbl: "Validade (MM/AA)",
+                card_cvc_lbl: "CVC / CVV",
+                card_zip_lbl: "Código Postal (ZIP)",
+                bank_sec_badge: "🏛️ FedACH Direto",
+                bank_info_title: "Transferência Bancária Direta ACH EUA",
+                bank_name_lbl: "Nome do Banco",
+                bank_name_ph: "ex. Chase, Bank of America, Wells Fargo",
+                bank_routing_lbl: "Número de Rota ABA (9 Dígitos)",
+                bank_account_lbl: "Número da Conta Corrente",
+                btn_pay_unlock: "Pagar e Desbloquear",
+                btn_retry: "Tentar Novamente",
+                portal_title: "Portal do Investidor & Cofre Soberano",
+                portal_subtitle: "Autenticação Segura, Armazenamento Criptografado e Lista Pessoal.",
+                tab_login: "Acesso / Login",
+                tab_register: "Registro",
+                tab_dossiers: "Meus Dossiês",
+                tab_watchlist: "Lista de Monitoramento",
+                tab_security: "Segurança & WAF",
+                login_email_lbl: "E-mail Institucional",
+                login_email_ph: "investidor@fundo.com",
+                login_password_lbl: "Senha",
+                login_forgot_btn: "Esqueceu a senha?",
+                btn_login_submit: "Entrar",
+                btn_register_submit: "Criar Conta & Provisionar Cofre API Bank",
+                reg_name_lbl: "Nome Completo ou Entidade",
+                reg_email_lbl: "E-mail Corporativo",
+                reg_password_lbl: "Senha Segura (PBKDF2-HMAC-SHA256)",
+                reg_role_lbl: "Função de Operação",
+                forgot_title: "Recuperação de Conta:",
+                forgot_sub: "Informe seu e-mail institucional para receber um código de 6 dígitos.",
+                forgot_email_lbl: "E-mail Registrado",
+                btn_send_code: "Enviar Código de Verificação ao E-mail",
+                btn_back_login: "← Voltar ao Login",
+                reset_step2_title: "Código de Segurança (6 Dígitos)",
+                reset_step2_sub: "O código expira em 15 minutos.",
+                reset_new_password_lbl: "Nova Senha",
+                reset_new_password_ph: "Mínimo de 6 caracteres",
+                btn_save_new_pass: "Salvar Nova Senha e Acessar",
+                btn_resend_code: "Reenviar código",
+                btn_cancel_return: "← Cancelar e voltar",
+                dossiers_empty: "Você ainda não possui dossiês desbloqueados.",
+                watchlist_sub: "Suas apreensões e leilões marítimos salvos:",
+                security_sub: "Logs de Segurança em Tempo Real (Argus WAF + SQLite):",
+                security_badge: "100% Parameterized Statements",
+                footer_portal: "Portal do Usuário",
+                footer_legal: "Divulgações Legais",
+                footer_directory: "Diretório de Leilões"
+            },
+            FR: {
+                app_subtitle: "Bureau Institutionnel de Saisie et Amirauté • <span class='text-amber-300 font-medium'>IC Neural Systems LLC</span>",
+                argus_shield: "Argus WAF: Bouclier SQLi et Anti-Espion Actif",
+                vault_badge: "Coffre AES-256-GCM",
+                rails_btn: "Canaux Fédéraux et Maritimes",
+                investor_btn: "👤 Investisseur / Accès",
+                unlock_pro_btn: "⚡ Débloquer Accès Pro ($199)",
+                stat_equity: "Actifs Sous Gestion",
+                stat_equity_sub: "Navires et véhicules de luxe saisis",
+                stat_spread: "Marge Nette Alpha",
+                stat_spread_sub: "Coussin de capitaux pré-enchères",
+                stat_db: "Base de Données de Souscription",
+                stat_db_sub: "SQLite WAL Préparé • Zéro Vulnérabilité SQLi",
+                stat_storage: "Stockage de Preuves",
+                stat_storage_sub: "Coffre AES-256-GCM • Formulaires USMS 102 & USCG 1340",
+                cat_all: "Tous les Actifs",
+                cat_supercars: "🏎️ Supercars (Ferrari / Porsche / Lambo)",
+                cat_superyachts: "🛥️ Superyachts (Azimut / Sunseeker / Pershing)",
+                cat_heavy: "🚛 Flotte Lourde (Volvo / Peterbilt / Cat)",
+                cat_aviation: "✈️ Aviation d’Affaires (Gulfstream / Citation)",
+                cat_sportfishers: "🎣 Bateaux de Pêche Sportive",
+                cat_suvs: "🚙 VUS de Luxe / 4x4 (Brabus / Urus)",
+                cat_watchlist: "⭐ Ma Liste de Suivi",
+                filter_county_lbl: "🏛️ Comté / Juridiction",
+                filter_county_all: "Tous les Comtés et États",
+                filter_process_lbl: "⚖️ Procédure Judiciaire / Statut",
+                filter_process_all: "Toutes les Procédures Légales",
+                filter_platform_lbl: "🔨 Plateforme d’Enchères / Dépositaire",
+                filter_platform_all: "Toutes les Plateformes",
+                filter_search_lbl: "🔍 Recherche Rapide",
+                filter_search_ph: "NIV, HIN, Modèle, Dossier...",
+                filter_reset_btn: "Réinitialiser",
+                grid_title: "Registre Fédéral des Saisies et Privilèges",
+                grid_subtitle: "Données transmises directement par les U.S. Marshals, CWSAMS du Trésor et Greffes Maritimes.",
+                pro_active_badge: "🔓 Licence Pro Hunter Active (Accès Illimité aux 50 États)",
+                single_active_badge: "🏷️ Passe Individuel Actif",
+                dossier_unlocked_suffix: "Dossier Débloqué",
+                upgrade_pro_btn: "Passer à Pro Illimité ($199/mois)",
+                est_retail: "Valeur Détail Estimée",
+                lien_opening: "Privilège / Enchère Initiale",
+                mab: "Enchère Maximale Autorisée (MAB)",
+                net_spread: "Marge Nette de Gros",
+                custodian_lbl: "🏢 Dépositaire:",
+                contact_lbl: "Contact:",
+                address_lbl: "Adresse:",
+                judicial_docket_lbl: "Dossier Judiciaire:",
+                redacted_pro_req: "🔒 Masqué (Requiert Pro ou Passe)",
+                btn_unlock_single: "🔑 Débloquer Dossier Complet ($49)",
+                btn_access_granted: "✓ Accès Souverain Débloqué Accordé",
+                btn_view_evidence: "📑 Voir Preuve Chiffrée (AES-256)",
+                no_results_title: "Aucun dossier trouvé avec les filtres sélectionnés.",
+                no_results_sub: "Essayez de réinitialiser les filtres pour afficher tous les lots actifs aux États-Unis.",
+                reset_filters_btn: "Réinitialiser les Filtres",
+                checkout_title: "Débloquer le Dossier de Renseignement",
+                checkout_subtitle: "NIV/HIN officiel, Téléphone/Courriel du Dépositaire, GPS du Dépôt et Titre Judiciaire.",
+                target_prefix: "Cible:",
+                tier_single_title: "Passe Actif Individuel",
+                tier_single_sub: "1 Dossier Intégral Démasqué",
+                tier_pro_title: "Syndicat Pro Hunter",
+                tier_pro_sub: "Accès Illimité aux 50 États",
+                buyer_name_lbl: "Nom Complet / Entité",
+                buyer_name_ph: "Prénom et Nom",
+                buyer_email_lbl: "Courriel de Facturation",
+                buyer_email_ph: "facturation@exemple.com",
+                payment_method_lbl: "Sélectionnez le Mode de Règlement",
+                pm_card: "💳 Carte de Crédit/Débit",
+                pm_ach: "🏛️ Compte Bancaire ACH",
+                pm_vault: "🏦 Coffre API Bank",
+                card_sec_badge: "🔒 Chiffrement 256 bits",
+                card_info_title: "Détails de Carte (Visa, Mastercard, Amex, Discover)",
+                card_num_lbl: "Numéro de Carte",
+                card_exp_lbl: "Expiration (MM/AA)",
+                card_cvc_lbl: "CVC / CVV",
+                card_zip_lbl: "Code Postal (ZIP)",
+                bank_sec_badge: "🏛️ FedACH Direct",
+                bank_info_title: "Virement Direct FedACH / Débit Bancaire É.-U.",
+                bank_name_lbl: "Nom de la Banque",
+                bank_name_ph: "ex. Chase, Bank of America, Wells Fargo",
+                bank_routing_lbl: "Numéro de Routage ABA (9 Chiffres)",
+                bank_account_lbl: "Numéro de Compte Chèque",
+                btn_pay_unlock: "Payer et Débloquer",
+                btn_retry: "Réessayer le Paiement",
+                portal_title: "Portail Investisseur & Coffre Souverain",
+                portal_subtitle: "Authentification Sécurisée, Stockage Chiffré et Liste Personnelle.",
+                tab_login: "Accès / Connexion",
+                tab_register: "Inscription",
+                tab_dossiers: "Mes Dossiers",
+                tab_watchlist: "Liste de Suivi",
+                tab_security: "Sécurité & WAF",
+                login_email_lbl: "Courriel Institutionnel",
+                login_email_ph: "investisseur@fonds.com",
+                login_password_lbl: "Mot de Passe",
+                login_forgot_btn: "Mot de passe oublié?",
+                btn_login_submit: "Se Connecter",
+                btn_register_submit: "Créer un Compte & Ouvrir Coffre API Bank",
+                reg_name_lbl: "Nom Complet ou Entité",
+                reg_email_lbl: "Courriel Professionnel",
+                reg_password_lbl: "Mot de Passe Sécurisé (PBKDF2-HMAC-SHA256)",
+                reg_role_lbl: "Rôle Opérationnel",
+                forgot_title: "Récupération de Compte:",
+                forgot_sub: "Entrez votre courriel institutionnel pour recevoir un code de sécurité à 6 chiffres.",
+                forgot_email_lbl: "Courriel Enregistré",
+                btn_send_code: "Envoyer le Code au Courriel",
+                btn_back_login: "← Retour à la Connexion",
+                reset_step2_title: "Code de Sécurité (6 Chiffres)",
+                reset_step2_sub: "Le code expire dans 15 minutes.",
+                reset_new_password_lbl: "Nouveau Mot de Passe",
+                reset_new_password_ph: "Minimum 6 caractères",
+                btn_save_new_pass: "Enregistrer et Accéder",
+                btn_resend_code: "Renvoyer le code",
+                btn_cancel_return: "← Annuler et revenir",
+                dossiers_empty: "Vous n’avez aucun dossier débloqué pour le moment.",
+                watchlist_sub: "Vos enchères et saisies enregistrées dans la base:",
+                security_sub: "Journaux de Sécurité en Temps Réel (Argus WAF + SQLite):",
+                security_badge: "100% Parameterized Statements",
+                footer_portal: "Portail Utilisateur",
+                footer_legal: "Divulgations Légales",
+                footer_directory: "Répertoire d’Enchères"
+            }
+        };
+
+        function t(key) {
+            return (I18N[currentLang] && I18N[currentLang][key]) || (I18N['EN'] && I18N['EN'][key]) || key;
+        }
+
+        function toggleLanguageDropdown(e) {
+            if (e) e.stopPropagation();
+            const dd = document.getElementById('lang-dropdown');
+            if (dd) dd.classList.toggle('hidden');
+        }
+
+        window.addEventListener('click', function(e) {
+            const dd = document.getElementById('lang-dropdown');
+            if (dd && !dd.contains(e.target) && !e.target.closest('#lang-menu-btn')) {
+                dd.classList.add('hidden');
+            }
+        });
+
+        function setLanguage(lang) {
+            if (!I18N[lang]) lang = 'EN';
+            currentLang = lang;
+            localStorage.setItem('AEMH_LANGUAGE', currentLang);
+
+            const flagMap = { EN: '🇺🇸', ES: '🇪🇸', PT: '🇧🇷', FR: '🇫🇷' };
+            const flagEl = document.getElementById('current-lang-flag');
+            const codeEl = document.getElementById('current-lang-code');
+            if (flagEl) flagEl.textContent = flagMap[lang] || '🇺🇸';
+            if (codeEl) codeEl.textContent = lang;
+
+            const dd = document.getElementById('lang-dropdown');
+            if (dd) dd.classList.add('hidden');
+
+            applyTranslations();
+            renderLeads();
+            if (currentUser) renderUserHeaderLoggedIn(); else renderUserHeaderLoggedOut();
+        }
+
+        function applyTranslations() {
+            // Static data-i18n elements
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (key) el.innerHTML = t(key);
+            });
+
+            // Inputs placeholder translations
+            document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+                const key = el.getAttribute('data-i18n-ph');
+                if (key) el.setAttribute('placeholder', t(key));
+            });
+
+            // Update Checkout Modal Elements
+            const modalTitle = document.getElementById('modal-title');
+            if (modalTitle) modalTitle.textContent = t('checkout_title');
+            const settleBtn = document.getElementById('settle-btn');
+            if (settleBtn && !settleBtn.disabled) {
+                settleBtn.textContent = `${t('btn_pay_unlock')} ($${selectedAmount}.00 USD)`;
+            }
+
+            // Update Tab Buttons in User Portal Modal
+            const tabLogin = document.getElementById('tab-btn-login');
+            if (tabLogin) tabLogin.textContent = t('tab_login');
+            const tabReg = document.getElementById('tab-btn-register');
+            if (tabReg) tabReg.textContent = t('tab_register');
+            const tabDos = document.getElementById('tab-btn-dossiers');
+            if (tabDos) tabDos.textContent = t('tab_dossiers');
+            const tabWat = document.getElementById('tab-btn-watchlist');
+            if (tabWat) tabWat.textContent = t('tab_watchlist');
+            const tabSec = document.getElementById('tab-btn-security');
+            if (tabSec) tabSec.textContent = t('tab_security');
+
+            const btnLoginSub = document.getElementById('btn-login-submit');
+            if (btnLoginSub && !btnLoginSub.disabled) btnLoginSub.textContent = t('btn_login_submit');
+
+            const btnSendCode = document.getElementById('btn-send-code');
+            if (btnSendCode && !btnSendCode.disabled) btnSendCode.textContent = t('btn_send_code');
+
+            const btnSaveNewPass = document.getElementById('btn-save-new-password');
+            if (btnSaveNewPass && !btnSaveNewPass.disabled) btnSaveNewPass.textContent = t('btn_save_new_pass');
+
+            // Update flags in selector button
+            const flagMap = { EN: '🇺🇸', ES: '🇪🇸', PT: '🇧🇷', FR: '🇫🇷' };
+            const flagEl = document.getElementById('current-lang-flag');
+            const codeEl = document.getElementById('current-lang-code');
+            if (flagEl) flagEl.textContent = flagMap[currentLang] || '🇺🇸';
+            if (codeEl) codeEl.textContent = currentLang;
+        }
+
         let allLeads = [];
         let currentFilter = 'ALL';
         let activeToken = localStorage.getItem('AEMH_ACCESS_TOKEN') || null;
@@ -666,6 +1266,7 @@
             } else {
                 renderUserHeaderLoggedOut();
             }
+            applyTranslations();
             await fetchPipeline();
             await fetchDirectory();
         }
@@ -703,7 +1304,7 @@
         function renderUserHeaderLoggedOut() {
             document.getElementById('user-header-container').innerHTML = `
                 <button onclick="openUserPortalModal('LOGIN')" class="px-3.5 py-1.5 text-xs font-semibold text-cyan-300 bg-cyan-950/60 hover:bg-cyan-900/60 border border-cyan-700/60 rounded-lg transition flex items-center space-x-1.5">
-                    <span>👤 Inversionista / Acceso</span>
+                    <span data-i18n="investor_btn"><span>👤 Investor / Access</span></span>
                 </button>
             `;
         }
@@ -1009,14 +1610,14 @@
                 if (data.tier === 'UNLOCKED_PRO_HUNTER') {
                     document.getElementById('unlocked-badge-container').innerHTML = `
                         <div class="flex items-center space-x-2 px-3 py-1 bg-emerald-950/60 border border-emerald-500/50 rounded-lg text-emerald-400 text-xs font-mono">
-                            <span>🔓 Membresía Pro Hunter Activa (Acceso Ilimitado 50 Estados)</span>
+                            <span>${t('pro_active_badge')}</span>
                         </div>
                     `;
                 } else if (data.tier === 'PARTIAL_UNLOCKED' && data.unlocked_asset_ids && data.unlocked_asset_ids.length > 0) {
                     document.getElementById('unlocked-badge-container').innerHTML = `
                         <div class="flex items-center space-x-2 px-3 py-1 bg-amber-950/60 border border-amber-500/50 rounded-lg text-amber-300 text-xs font-mono">
-                            <span>🏷️ Pase Individual Activo (${data.unlocked_asset_ids.length} Expediente Desbloqueado)</span>
-                            <button onclick="openCheckoutModal('PRO_HUNTER')" class="ml-2 text-obsidian bg-amber-400 hover:bg-amber-300 font-bold px-2 py-0.5 rounded text-[10px] transition">Actualizar a Pro Ilimitado ($199/mes)</button>
+                            <span>${t('single_active_badge')} (${data.unlocked_asset_ids.length} ${t('dossier_unlocked_suffix')})</span>
+                            <button onclick="openCheckoutModal('PRO_HUNTER')" class="ml-2 text-obsidian bg-amber-400 hover:bg-amber-300 font-bold px-2 py-0.5 rounded text-[10px] transition">${t('upgrade_pro_btn')}</button>
                         </div>
                     `;
                 } else {
@@ -1083,9 +1684,9 @@
                 grid.innerHTML = `
                     <div class="col-span-full py-16 text-center text-slate-500 font-mono text-sm space-y-2">
                         <div class="text-3xl">🔍</div>
-                        <div class="text-white font-bold">No se encontraron expedientes con los filtros seleccionados.</div>
-                        <p class="text-xs text-slate-400">Intenta reiniciar los filtros para ver todos los lotes activos en EE. UU.</p>
-                        <button onclick="resetFilters()" class="mt-2 px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-obsidian font-bold text-xs rounded-lg transition">Reiniciar Filtros</button>
+                        <div class="text-white font-bold">${t('no_results_title')}</div>
+                        <p class="text-xs text-slate-400">${t('no_results_sub')}</p>
+                        <button onclick="resetFilters()" class="mt-2 px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-obsidian font-bold text-xs rounded-lg transition">${t('reset_filters_btn')}</button>
                     </div>
                 `;
                 return;
@@ -1141,19 +1742,19 @@
                             <!-- Underwriting Metrics Grid -->
                             <div class="grid grid-cols-2 gap-2.5 p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 font-mono text-xs">
                                 <div>
-                                    <span class="text-[10px] text-slate-500 block uppercase">Est. Retail Value</span>
+                                    <span class="text-[10px] text-slate-500 block uppercase">${t('est_retail')}</span>
                                     <span class="text-slate-200 font-bold">$${retail.toLocaleString()}</span>
                                 </div>
                                 <div>
-                                    <span class="text-[10px] text-slate-500 block uppercase">Lien / Opening Bid</span>
+                                    <span class="text-[10px] text-slate-500 block uppercase">${t('lien_opening')}</span>
                                     <span class="text-amber-400 font-bold">$${lien.toLocaleString()}</span>
                                 </div>
                                 <div>
-                                    <span class="text-[10px] text-slate-500 block uppercase">Max Allowable Bid (MAB)</span>
+                                    <span class="text-[10px] text-slate-500 block uppercase">${t('mab')}</span>
                                     <span class="text-cyan-400 font-bold">$${mab.toLocaleString()}</span>
                                 </div>
                                 <div>
-                                    <span class="text-[10px] text-slate-500 block uppercase">Net Wholesale Spread</span>
+                                    <span class="text-[10px] text-slate-500 block uppercase">${t('net_spread')}</span>
                                     <span class="text-emerald-400 font-bold">+$${spread.toLocaleString()}</span>
                                 </div>
                             </div>
@@ -1166,14 +1767,14 @@
                                 </div>
                                 ${lead.custodian ? `
                                 <div class="p-2.5 rounded bg-amber-950/20 border border-amber-500/30 text-[11px] text-amber-200 space-y-0.5">
-                                    <div class="font-bold text-amber-300">🏢 Custodio: ${lead.custodian.facility_name}</div>
-                                    <div>Contacto: ${lead.custodian.contact_person} (${lead.custodian.phone})</div>
-                                    <div>Dirección: ${lead.custodian.physical_address}</div>
+                                    <div class="font-bold text-amber-300">${t('custodian_lbl')} ${lead.custodian.facility_name}</div>
+                                    <div>${t('contact_lbl')} ${lead.custodian.contact_person} (${lead.custodian.phone})</div>
+                                    <div>${t('address_lbl')} ${lead.custodian.physical_address}</div>
                                 </div>
                                 ` : `
                                 <div class="flex justify-between items-center text-slate-400">
                                     <span>Expediente Judicial:</span>
-                                    <span class="text-amber-400/80 text-[11px]">🔒 Redactado (Requiere Pro)</span>
+                                    <span class="text-amber-400/80 text-[11px]">${t('redacted_pro_req')}</span>
                                 </div>
                                 `}
                             </div>
@@ -1184,15 +1785,15 @@
                     <div class="p-5 pt-0 space-y-2">
                         ${isMasked ? `
                         <button onclick="openCheckoutModal('SINGLE_PASS', '${lead.id}', '${lead.title.replace(/'/g, "\\'")}')" class="w-full py-2.5 px-4 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-obsidian font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center space-x-2">
-                            <span>🔑 Desbloquear Expediente Unredacted ($49)</span>
+                            <span>${t('btn_unlock_single')}</span>
                         </button>
                         ` : `
                         <div class="w-full py-2 px-3 bg-emerald-950/40 border border-emerald-500/40 text-emerald-300 font-mono text-center text-xs rounded-xl">
-                            ✓ Acceso Soberano Unredacted Concedido
+                            ${t('btn_access_granted')}
                         </div>
                         `}
                         <button onclick="viewAssetEvidence('${lead.id}')" class="w-full py-1.5 text-[11px] font-mono text-slate-400 hover:text-cyan-300 transition">
-                            📑 Ver Evidencia Cifrada (AES-256)
+                            ${t('btn_view_evidence')}
                         </button>
                     </div>
                 </div>
@@ -1406,13 +2007,13 @@
             if (btn) {
                 btn.disabled = false;
                 btn.className = "w-full py-3 bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-300 hover:from-amber-400 hover:to-yellow-200 text-obsidian font-bold text-sm rounded-xl shadow-lg shadow-amber-500/25 transition";
-                btn.textContent = `Pagar y Desbloquear ($${selectedAmount}.00 USD)`;
+                btn.textContent = `${t('btn_pay_unlock')} ($${selectedAmount}.00 USD)`;
             }
 
             if (assetTitle) {
-                document.getElementById('modal-subtitle').textContent = `Expediente: ${assetTitle}`;
+                document.getElementById('modal-subtitle').textContent = `${t('target_prefix')} ${assetTitle}`;
             } else {
-                document.getElementById('modal-subtitle').textContent = 'VIN/HIN oficial, Teléfono y Correo del Custodio, GPS del Depósito y Expediente Judicial.';
+                document.getElementById('modal-subtitle').textContent = t('checkout_subtitle');
             }
 
             document.getElementById('checkout-modal').classList.remove('hidden');
@@ -1437,7 +2038,7 @@
                 activeCard.classList.add('border-amber-500', 'bg-amber-950/30');
             }
 
-            document.getElementById('settle-btn').textContent = `Pagar y Desbloquear ($${amount}.00 USD)`;
+            document.getElementById('settle-btn').textContent = `${t('btn_pay_unlock')} ($${amount}.00 USD)`;
         }
 
         function setPaymentMethod(pm) {
