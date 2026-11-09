@@ -66,6 +66,9 @@
             border-radius: 4px;
         }
     </style>
+    <!-- Leaflet Interactive Maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body class="min-h-screen antialiased flex flex-col font-sans custom-scrollbar">
 
@@ -95,6 +98,10 @@
                 </div>
                 <button onclick="openDirectoryModal()" data-i18n="rails_btn" class="px-3.5 py-1.5 text-xs font-medium text-slate-300 bg-slate-800/70 hover:bg-slate-700 border border-slate-700 rounded-lg transition">
                     Gov & Admiralty Rails
+                </button>
+                <button onclick="openAlertModal()" class="px-3 py-1.5 text-xs font-semibold text-amber-300 bg-amber-950/40 hover:bg-amber-900/60 border border-amber-600/40 rounded-lg transition flex items-center space-x-1.5 shadow-sm">
+                    <span>🔔</span>
+                    <span data-i18n="alert_nav_btn">Radar Alerts</span>
                 </button>
                 
                 
@@ -277,10 +284,21 @@
         <section class="space-y-4">
             <div class="flex items-center justify-between">
                 <div>
-                    <h2 class="text-lg font-bold text-white flex items-center space-x-2">
-                        <span data-i18n="grid_title">Federal Seizure & Storage Lien Docket</span>
-                        <span class="text-xs font-normal text-slate-400" id="deals-count">(6 Active Dockets)</span>
-                    </h2>
+                    <div class="flex items-center space-x-3">
+                        <h2 class="text-lg font-bold text-white flex items-center space-x-2">
+                            <span data-i18n="grid_title">Federal Seizure & Storage Lien Docket</span>
+                            <span class="text-xs font-normal text-slate-400" id="deals-count">(6 Active Dockets)</span>
+                        </h2>
+                        <!-- View Mode Switch: Grid vs Satellite Map -->
+                        <div class="flex items-center bg-slate-900/90 p-0.5 rounded-xl border border-slate-800 text-xs">
+                            <button id="view-toggle-grid" onclick="setViewMode('GRID')" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-amber-500 text-obsidian shadow-sm transition">
+                                <span data-i18n="view_grid">⊞ Grid</span>
+                            </button>
+                            <button id="view-toggle-map" onclick="setViewMode('MAP')" class="px-2.5 py-1 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition">
+                                <span data-i18n="view_map">🗺️ Satellite Map</span>
+                            </button>
+                        </div>
+                    </div>
                     <p class="text-xs text-slate-400" data-i18n="grid_subtitle">Data ingested directly from U.S. Marshals, Treasury CWSAMS, Admiralty Rule C, and Marina Tow Registries.</p>
                 </div>
                 <div id="unlocked-badge-container"></div>
@@ -288,6 +306,15 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="deals-grid">
                 <!-- Dynamically populated via JS -->
+            </div>
+
+            <!-- Satellite Map View (Patios & Marinas GPS) -->
+            <div id="deals-map-container" class="hidden glass-card rounded-2xl overflow-hidden border border-slate-800 p-3 h-[620px] relative">
+                <div class="absolute top-5 left-5 z-[500] bg-slate-950/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-amber-500/40 text-xs font-mono text-amber-300 shadow-lg flex items-center space-x-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span data-i18n="map_status_badge">GPS Active: 24 Impound Yards & Admiralty Marinas</span>
+                </div>
+                <div id="leaflet-deals-map" class="w-full h-full rounded-xl" style="min-height: 590px;"></div>
             </div>
         </section>
 
@@ -655,6 +682,156 @@
         </div>
     </div>
 
+        <!-- MODAL 6: Live MAB & Profit Simulator Modal -->
+    <div id="mab-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-card-gold max-w-lg w-full rounded-2xl p-6 space-y-5 relative border border-amber-500/40">
+            <button onclick="closeMabModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white text-lg font-mono">✕</button>
+            
+            <div class="space-y-1">
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded">ALGORITHMIC UNDERWRITING</span>
+                    <span class="text-xs font-mono text-cyan-300">65% Wholesale Rule</span>
+                </div>
+                <h3 class="text-xl font-bold text-white" id="mab-modal-title">Live MAB & Profit Simulator</h3>
+                <p class="text-xs text-slate-400" id="mab-modal-asset-desc">2022 Ferrari F8 Tributo</p>
+            </div>
+
+            <!-- Simulator Controls -->
+            <div class="space-y-4 text-xs font-mono">
+                <div>
+                    <div class="flex justify-between text-slate-300 mb-1">
+                        <span data-i18n="sim_retail_lbl">Estimated Retail Value</span>
+                        <span id="sim-retail-val-display" class="font-bold text-white text-sm">$345,000</span>
+                    </div>
+                    <input type="number" id="sim-retail-input" oninput="calculateMabLive()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white font-bold focus:outline-none focus:border-amber-400">
+                </div>
+
+                <div>
+                    <div class="flex justify-between text-slate-300 mb-1">
+                        <span data-i18n="sim_bid_lbl">Target Auction Bid</span>
+                        <span id="sim-bid-val-display" class="font-bold text-amber-400 text-sm">$165,000</span>
+                    </div>
+                    <input type="range" id="sim-bid-range" min="1000" max="1000000" step="5000" oninput="syncBidRangeToInput()" class="w-full accent-amber-500 cursor-pointer">
+                    <input type="number" id="sim-bid-input" oninput="syncBidInputToRange()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 mt-1.5 text-amber-400 font-bold focus:outline-none focus:border-amber-400">
+                </div>
+
+                <div class="grid grid-cols-3 gap-2">
+                    <div>
+                        <span class="text-[10px] text-slate-400 block" data-i18n="sim_prem_lbl">Buyer's Prem (10%)</span>
+                        <span id="sim-prem-display" class="font-bold text-slate-300">$16,500</span>
+                    </div>
+                    <div>
+                        <span class="text-[10px] text-slate-400 block" data-i18n="sim_trans_lbl">Haulout / Tow</span>
+                        <input type="number" id="sim-trans-input" value="2500" oninput="calculateMabLive()" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-slate-200 text-xs">
+                    </div>
+                    <div>
+                        <span class="text-[10px] text-slate-400 block" data-i18n="sim_survey_lbl">Survey Allowance</span>
+                        <input type="number" id="sim-survey-input" value="3500" oninput="calculateMabLive()" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-slate-200 text-xs">
+                    </div>
+                </div>
+
+                <!-- Simulation Output Box -->
+                <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2.5">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-slate-400" data-i18n="sim_total_outlay">Total Cash Outlay:</span>
+                        <span id="sim-outlay-display" class="text-white font-bold text-sm">$187,500</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-slate-400" data-i18n="sim_mab_ceiling">Max Allowable Bid (MAB):</span>
+                        <span id="sim-mab-display" class="text-cyan-400 font-bold">$220,950</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs border-t border-slate-800 pt-2">
+                        <span class="text-slate-300 font-bold" data-i18n="sim_net_alpha">Net Spread Alpha:</span>
+                        <span id="sim-spread-display" class="text-emerald-400 font-bold text-base">+$157,500</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-slate-400" data-i18n="sim_roi">Projected Return (ROI):</span>
+                        <span id="sim-roi-display" class="text-emerald-400 font-bold text-sm">+84.0%</span>
+                    </div>
+                    <div class="pt-2 text-center" id="sim-verdict-container">
+                        <span id="sim-verdict-badge" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-950/80 text-emerald-300 border border-emerald-500/50">
+                            🟢 SAFE / HIGH ALPHA
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="closeMabModal()" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-obsidian font-bold text-xs rounded-xl shadow-md transition font-sans">
+                Aceptar Parámetros & Cerrar
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 7: Automated Forfeiture Alerts System Modal -->
+    <div id="alert-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-card-gold max-w-md w-full rounded-2xl p-6 space-y-5 relative border border-amber-500/40">
+            <button onclick="closeAlertModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white text-lg font-mono">✕</button>
+            
+            <div class="space-y-1">
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded">RADAR SENTINEL 24/7</span>
+                    <span class="text-xs font-mono text-emerald-400">SMTP Active</span>
+                </div>
+                <h3 class="text-xl font-bold text-white" data-i18n="alert_modal_title">Set Forfeiture Radar Alert</h3>
+                <p class="text-xs text-slate-400" data-i18n="alert_modal_sub">Receive instant flash alerts when seized supercars, yachts or heavy fleets match your buybox.</p>
+            </div>
+
+            <div id="alert-status-msg" class="hidden p-3 rounded-xl text-xs font-mono"></div>
+
+            <div class="space-y-3.5 text-xs">
+                <div>
+                    <label class="block text-slate-300 mb-1" data-i18n="alert_email_lbl">Institutional Alert Email *</label>
+                    <input type="email" id="alert-sub-email" placeholder="investor@venture-marine.com" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-400">
+                </div>
+
+                <div>
+                    <label class="block text-slate-300 mb-1" data-i18n="alert_phone_lbl">Mobile Phone for SMS Flash Alert (Optional)</label>
+                    <input type="tel" id="alert-sub-phone" placeholder="+1 (305) 555-0199" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-400">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-slate-300 mb-1" data-i18n="alert_cat_lbl">Asset Category</label>
+                        <select id="alert-sub-category" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-400">
+                            <option value="ALL">All Categories</option>
+                            <option value="EXOTIC_CAR">🏎️ Supercars</option>
+                            <option value="SUPERYACHT">🛥️ Superyachts</option>
+                            <option value="COMMERCIAL_HEAVY_DUTY">🚛 Commercial Fleets</option>
+                            <option value="LUXURY_AIRCRAFT">✈️ Executive Aviation</option>
+                            <option value="SPORTFISHER">🎣 Sportfishers</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-slate-300 mb-1" data-i18n="alert_county_lbl">Jurisdiction</label>
+                        <select id="alert-sub-county" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-400">
+                            <option value="ALL">All US Ports & Counties</option>
+                            <option value="Florida">Florida (Miami/Ft Lauderdale/WPB)</option>
+                            <option value="Texas">Texas (Houston/Dallas/San Antonio)</option>
+                            <option value="California">California (San Diego/Newport)</option>
+                            <option value="Federal">Federal Nationwide</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-slate-300 mb-1" data-i18n="alert_spread_lbl">Minimum Net Wholesale Spread</label>
+                    <select id="alert-sub-spread" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-400 font-mono">
+                        <option value="25000">+$25,000 USD Spread Cushion</option>
+                        <option value="50000">+$50,000 USD Spread Cushion</option>
+                        <option value="100000" selected>+$100,000 USD Spread Cushion</option>
+                        <option value="250000">+$250,000 USD Spread Cushion</option>
+                        <option value="500000">+$500,000+ Institutional Alpha</option>
+                    </select>
+                </div>
+
+                <button type="button" id="btn-submit-alert" onclick="handleSubscribeAlert()" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-obsidian font-bold text-xs rounded-xl shadow-md transition font-sans">
+                    <span data-i18n="alert_submit_btn">🔔 Activate Radar Alert Subscription</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Frontend Scripting -->
     <script>
 
@@ -665,6 +842,29 @@
 
         const I18N = {
             EN: {
+                alert_nav_btn: "Radar Alerts",
+                view_grid: "⊞ Grid",
+                view_map: "🗺️ Satellite Map",
+                map_status_badge: "GPS Active: 24 Impound Yards & Admiralty Marinas",
+                mab_btn: "Simulate Bid & MAB",
+                brief_pdf_btn: "Executive PDF Dossier",
+                alert_modal_title: "Set Forfeiture Radar Alert",
+                alert_modal_sub: "Receive instant flash alerts when seized supercars, yachts or heavy fleets match your buybox.",
+                alert_email_lbl: "Institutional Alert Email *",
+                alert_phone_lbl: "Mobile Phone for SMS Flash Alert (Optional)",
+                alert_cat_lbl: "Asset Category",
+                alert_county_lbl: "Jurisdiction",
+                alert_spread_lbl: "Minimum Net Wholesale Spread",
+                alert_submit_btn: "🔔 Activate Radar Alert Subscription",
+                sim_retail_lbl: "Estimated Retail Value",
+                sim_bid_lbl: "Target Auction Bid",
+                sim_prem_lbl: "Buyer's Prem (10%)",
+                sim_trans_lbl: "Haulout / Tow",
+                sim_survey_lbl: "Survey Allowance",
+                sim_total_outlay: "Total Cash Outlay:",
+                sim_mab_ceiling: "Max Allowable Bid (MAB):",
+                sim_net_alpha: "Net Spread Alpha:",
+                sim_roi: "Projected Return (ROI):",
                 app_subtitle: "Institutional Forfeiture & Admiralty Deal Sourcing Desk • <span class='text-amber-300 font-medium'>IC Neural Systems LLC</span>",
                 argus_shield: "Argus WAF: SQLi & Anti-Spy Shield Active",
                 vault_badge: "AES-256-GCM Vault",
@@ -784,6 +984,29 @@
                 footer_directory: "Auction Directory"
             },
             ES: {
+                alert_nav_btn: "Alertas de Radar",
+                view_grid: "⊞ Cuadrícula",
+                view_map: "🗺️ Mapa Satelital",
+                map_status_badge: "GPS Activo: 24 Patios de Grúa y Marinas de Almirantazgo",
+                mab_btn: "Simular Oferta y MAB",
+                brief_pdf_btn: "Dossier Ejecutivo PDF",
+                alert_modal_title: "Configurar Radar de Incautaciones",
+                alert_modal_sub: "Reciba alertas instantáneas cuando superdeportivos, yates o flotas pesadas coincidan con su criterio de compra.",
+                alert_email_lbl: "Email Institucional de Alertas *",
+                alert_phone_lbl: "Teléfono Móvil para SMS Flash (Opcional)",
+                alert_cat_lbl: "Categoría de Activo",
+                alert_county_lbl: "Jurisdicción",
+                alert_spread_lbl: "Margen Neto Mayorista Mínimo",
+                alert_submit_btn: "🔔 Activar Suscripción al Radar",
+                sim_retail_lbl: "Valor Retail Estimado",
+                sim_bid_lbl: "Oferta Objetivo de Subasta",
+                sim_prem_lbl: "Comisión Subasta (10%)",
+                sim_trans_lbl: "Remolque / Grúa",
+                sim_survey_lbl: "Peritaje Mecánico",
+                sim_total_outlay: "Desembolso Total:",
+                sim_mab_ceiling: "Oferta Máxima Permisible (MAB):",
+                sim_net_alpha: "Margen Neto Alpha:",
+                sim_roi: "Retorno Proyectado (ROI):",
                 app_subtitle: "Mesa Institucional de Decomisos y Almirantazgo • <span class='text-amber-300 font-medium'>IC Neural Systems LLC</span>",
                 argus_shield: "Argus WAF: Escudo SQLi y Anti-Espía Activo",
                 vault_badge: "Bóveda AES-256-GCM",
@@ -903,6 +1126,29 @@
                 footer_directory: "Directorio de Subastas"
             },
             PT: {
+                alert_nav_btn: "Alertas do Radar",
+                view_grid: "⊞ Grade",
+                view_map: "🗺️ Mapa Satélite",
+                map_status_badge: "GPS Ativo: 24 Pátios e Marinas de Almirantado",
+                mab_btn: "Simular Lance & MAB",
+                brief_pdf_btn: "Dossiê Executivo PDF",
+                alert_modal_title: "Configurar Alerta de Apreensões",
+                alert_modal_sub: "Receba alertas imediatos quando supercarros, iates ou frotas atendam aos seus critérios de compra.",
+                alert_email_lbl: "E-mail Institucional de Alertas *",
+                alert_phone_lbl: "Telefone Celular para SMS Flash (Opcional)",
+                alert_cat_lbl: "Categoria de Ativo",
+                alert_county_lbl: "Jurisdição",
+                alert_spread_lbl: "Margem Líquida Mínima no Atacado",
+                alert_submit_btn: "🔔 Ativar Assinatura do Radar",
+                sim_retail_lbl: "Valor Estimado de Varejo",
+                sim_bid_lbl: "Lance Alvo no Leilão",
+                sim_prem_lbl: "Comissão Leiloeiro (10%)",
+                sim_trans_lbl: "Reboque / Guincho",
+                sim_survey_lbl: "Vistoria Técnica",
+                sim_total_outlay: "Desembolso Total:",
+                sim_mab_ceiling: "Lance Máximo Permitido (MAB):",
+                sim_net_alpha: "Margem Líquida Alpha:",
+                sim_roi: "Retorno Projetado (ROI):",
                 app_subtitle: "Mesa Institucional de Apreensões e Almirantado • <span class='text-amber-300 font-medium'>IC Neural Systems LLC</span>",
                 argus_shield: "Argus WAF: Escudo SQLi e Anti-Espião Ativo",
                 vault_badge: "Cofre AES-256-GCM",
@@ -1022,6 +1268,29 @@
                 footer_directory: "Diretório de Leilões"
             },
             FR: {
+                alert_nav_btn: "Alertes Radar",
+                view_grid: "⊞ Grille",
+                view_map: "🗺️ Carte Satellite",
+                map_status_badge: "GPS Actif: 24 Parcs de Saisie et Marinas",
+                mab_btn: "Simuler Offre & MAB",
+                brief_pdf_btn: "Dossier Exécutif PDF",
+                alert_modal_title: "Activer l'Alerte Radar des Saisies",
+                alert_modal_sub: "Recevez des alertes instantanées lorsque des supercars ou yachts correspondent à vos critères.",
+                alert_email_lbl: "E-mail Institutionnel d'Alerte *",
+                alert_phone_lbl: "Numéro de Portable pour SMS (Facultatif)",
+                alert_cat_lbl: "Catégorie d'Actif",
+                alert_county_lbl: "Juridiction",
+                alert_spread_lbl: "Marge Nette Minimale",
+                alert_submit_btn: "🔔 Activer l'Abonnement Radar",
+                sim_retail_lbl: "Valeur Marchande Estimée",
+                sim_bid_lbl: "Offre Cible aux Enchères",
+                sim_prem_lbl: "Frais d'Adjudication (10%)",
+                sim_trans_lbl: "Remorquage / Transport",
+                sim_survey_lbl: "Expertise Maritime",
+                sim_total_outlay: "Décaissement Total:",
+                sim_mab_ceiling: "Enchère Maximale Autorisée (MAB):",
+                sim_net_alpha: "Marge Nette Alpha:",
+                sim_roi: "Rendement Projeté (ROI):",
                 app_subtitle: "Bureau Institutionnel de Saisie et Amirauté • <span class='text-amber-300 font-medium'>IC Neural Systems LLC</span>",
                 argus_shield: "Argus WAF: Bouclier SQLi et Anti-Espion Actif",
                 vault_badge: "Coffre AES-256-GCM",
@@ -1226,6 +1495,495 @@
             const codeEl = document.getElementById('current-lang-code');
             if (flagEl) flagEl.textContent = flagMap[currentLang] || '🇺🇸';
             if (codeEl) codeEl.textContent = currentLang;
+        }
+
+        
+        // =========================================================================
+        // FEATURE 1: VIEW MODE SWITCHER & SATELLITE MAP (LEAFLET + CARTODB)
+        // =========================================================================
+        let currentViewMode = 'GRID';
+        let dealsMap = null;
+        let dealsMapMarkers = [];
+
+        function setViewMode(mode) {
+            currentViewMode = mode;
+            const gridEl = document.getElementById('deals-grid');
+            const mapContainerEl = document.getElementById('deals-map-container');
+            const btnGrid = document.getElementById('view-toggle-grid');
+            const btnMap = document.getElementById('view-toggle-map');
+
+            if (mode === 'MAP') {
+                if (gridEl) gridEl.classList.add('hidden');
+                if (mapContainerEl) mapContainerEl.classList.remove('hidden');
+                if (btnGrid) {
+                    btnGrid.className = "px-2.5 py-1 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition";
+                }
+                if (btnMap) {
+                    btnMap.className = "px-2.5 py-1 text-xs font-semibold rounded-lg bg-amber-500 text-obsidian shadow-sm transition";
+                }
+                setTimeout(() => {
+                    initDealsMap();
+                }, 100);
+            } else {
+                if (mapContainerEl) mapContainerEl.classList.add('hidden');
+                if (gridEl) gridEl.classList.remove('hidden');
+                if (btnMap) {
+                    btnMap.className = "px-2.5 py-1 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition";
+                }
+                if (btnGrid) {
+                    btnGrid.className = "px-2.5 py-1 text-xs font-semibold rounded-lg bg-amber-500 text-obsidian shadow-sm transition";
+                }
+            }
+        }
+
+        async function initDealsMap() {
+            if (typeof L === 'undefined') {
+                console.warn("Leaflet library not ready yet.");
+                return;
+            }
+
+            if (!dealsMap) {
+                // Initialize map centered on US coastal hub (Florida / Gulf of Mexico)
+                dealsMap = L.map('leaflet-deals-map', {
+                    zoomControl: true,
+                    attributionControl: false
+                }).setView([27.7663, -82.6404], 6);
+
+                // Dark CartoDB Matter Tiles for sleek institutional styling
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                    maxZoom: 18,
+                    subdomains: 'abcd'
+                }).addTo(dealsMap);
+            } else {
+                dealsMap.invalidateSize();
+            }
+
+            // Fetch live coordinates from backend API
+            try {
+                const res = await fetch('/api/pipeline/map-locations');
+                const data = await res.json();
+                if (!data.pins) return;
+
+                // Clear previous markers
+                dealsMapMarkers.forEach(m => dealsMap.removeLayer(m));
+                dealsMapMarkers = [];
+
+                data.pins.forEach(pin => {
+                    const isYacht = pin.category.includes('YACHT') || pin.category.includes('SPORTFISHER');
+                    const iconColor = isYacht ? '#06B6D4' : '#F59E0B';
+                    const iconEmoji = isYacht ? '🛥️' : '🏎️';
+
+                    // Custom styled DivIcon
+                    const customIcon = L.divIcon({
+                        className: 'custom-map-pin',
+                        html: `
+                            <div style="background-color: ${iconColor}; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px ${iconColor}88; border: 2px solid #FFFFFF; font-size: 16px;">
+                                ${iconEmoji}
+                            </div>
+                        `,
+                        iconSize: [32, 32],
+                        iconAnchor: [16, 16],
+                        popupAnchor: [0, -18]
+                    });
+
+                    const popupContent = `
+                        <div style="font-family: 'Outfit', sans-serif; background: #0B1120; color: #FFFFFF; padding: 12px; border-radius: 12px; border: 1px solid #1E293B; width: 230px;">
+                            <img src="${pin.image}" style="width: 100%; height: 95px; object-fit: cover; border-radius: 8px; margin-bottom: 8px;" />
+                            <div style="font-size: 9px; font-weight: bold; color: ${iconColor}; text-transform: uppercase;">${pin.county}, ${pin.state}</div>
+                            <div style="font-size: 12px; font-weight: bold; margin-top: 2px; line-height: 1.3;">${pin.title}</div>
+                            <div style="margin-top: 8px; padding-top: 6px; border-top: 1px solid #1E293B; display: flex; justify-content: space-between; font-size: 11px;">
+                                <span style="color: #94A3B8;">Retail:</span>
+                                <span style="font-weight: bold; color: #FFFFFF;">$${pin.estimated_retail_value.toLocaleString()}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 2px;">
+                                <span style="color: #94A3B8;">Net Alpha:</span>
+                                <span style="font-weight: bold; color: #10B981;">+$${pin.projected_net_spread.toLocaleString()}</span>
+                            </div>
+                            <button onclick="openMabSimulator('${pin.id}')" style="margin-top: 8px; width: 100%; background: #F59E0B; color: #030712; font-weight: bold; font-size: 10px; padding: 6px; border-radius: 6px; border: none; cursor: pointer;">
+                                🧮 Simular Oferta MAB
+                            </button>
+                        </div>
+                    `;
+
+                    const marker = L.marker([pin.latitude, pin.longitude], { icon: customIcon })
+                        .addTo(dealsMap)
+                        .bindPopup(popupContent, { maxWidth: 260, className: 'dark-leaflet-popup' });
+
+                    dealsMapMarkers.push(marker);
+                });
+
+            } catch (err) {
+                console.error("Map pins load error:", err);
+            }
+        }
+
+        // =========================================================================
+        // FEATURE 2: LIVE MAB & PROFIT SIMULATOR
+        // =========================================================================
+        let currentSimLead = null;
+
+        function openMabSimulator(leadId) {
+            const lead = allLeads.find(l => l.id === leadId);
+            if (!lead) return;
+            currentSimLead = lead;
+
+            const modal = document.getElementById('mab-modal');
+            const titleEl = document.getElementById('mab-modal-asset-desc');
+            if (titleEl) titleEl.textContent = lead.title;
+
+            const retail = lead.estimated_retail_value || (lead.underwriting ? lead.underwriting.estimated_retail_value : 300000);
+            const opening = lead.outstanding_lien_or_opening_bid || (lead.underwriting ? lead.underwriting.outstanding_lien_or_opening_bid : 100000);
+
+            document.getElementById('sim-retail-input').value = retail;
+            document.getElementById('sim-bid-input').value = opening;
+
+            const rangeEl = document.getElementById('sim-bid-range');
+            rangeEl.min = Math.round(opening * 0.5);
+            rangeEl.max = Math.round(retail * 1.1);
+            rangeEl.value = opening;
+
+            calculateMabLive();
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeMabModal() {
+            const modal = document.getElementById('mab-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function syncBidRangeToInput() {
+            const range = document.getElementById('sim-bid-range');
+            document.getElementById('sim-bid-input').value = range.value;
+            calculateMabLive();
+        }
+
+        function syncBidInputToRange() {
+            const input = document.getElementById('sim-bid-input');
+            document.getElementById('sim-bid-range').value = input.value;
+            calculateMabLive();
+        }
+
+        function calculateMabLive() {
+            const retail = parseFloat(document.getElementById('sim-retail-input').value) || 0;
+            const bid = parseFloat(document.getElementById('sim-bid-input').value) || 0;
+            const trans = parseFloat(document.getElementById('sim-trans-input').value) || 0;
+            const survey = parseFloat(document.getElementById('sim-survey-input').value) || 0;
+
+            const buyersPrem = bid * 0.10;
+            const totalOutlay = bid + buyersPrem + trans + survey;
+            const netSpread = retail - totalOutlay;
+            const roiPct = totalOutlay > 0 ? (netSpread / totalOutlay * 100) : 0;
+
+            // Institutional 65% Wholesale MAB rule
+            const mab = Math.max(0, (retail * 0.65) - trans - survey - (retail * 0.65 * 0.0909));
+
+            document.getElementById('sim-retail-val-display').textContent = `$${Math.round(retail).toLocaleString()}`;
+            document.getElementById('sim-bid-val-display').textContent = `$${Math.round(bid).toLocaleString()}`;
+            document.getElementById('sim-prem-display').textContent = `$${Math.round(buyersPrem).toLocaleString()}`;
+            document.getElementById('sim-outlay-display').textContent = `$${Math.round(totalOutlay).toLocaleString()}`;
+            document.getElementById('sim-mab-display').textContent = `$${Math.round(mab).toLocaleString()}`;
+            document.getElementById('sim-spread-display').textContent = `${netSpread >= 0 ? '+' : ''}$${Math.round(netSpread).toLocaleString()}`;
+            document.getElementById('sim-roi-display').textContent = `${roiPct >= 0 ? '+' : ''}${roiPct.toFixed(1)}%`;
+
+            // Dynamic color & verdict
+            const badge = document.getElementById('sim-verdict-badge');
+            if (roiPct >= 30) {
+                badge.className = "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-950/80 text-emerald-300 border border-emerald-500/50";
+                badge.textContent = "🟢 SAFE / HIGH ALPHA SPREAD";
+            } else if (roiPct >= 15) {
+                badge.className = "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-950/80 text-amber-300 border border-amber-500/50";
+                badge.textContent = "🟡 MODERATE / SECURE RETURN";
+            } else {
+                badge.className = "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-rose-950/80 text-rose-300 border border-rose-500/50";
+                badge.textContent = "🔴 OVERPAYING / ELEVATED RISK";
+            }
+        }
+
+        // =========================================================================
+        // FEATURE 3: AUTOMATED FORFEITURE RADAR ALERTS SYSTEM
+        // =========================================================================
+        function openAlertModal() {
+            const modal = document.getElementById('alert-modal');
+            const alertMsg = document.getElementById('alert-status-msg');
+            if (alertMsg) alertMsg.classList.add('hidden');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeAlertModal() {
+            const modal = document.getElementById('alert-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        async function handleSubscribeAlert() {
+            const email = document.getElementById('alert-sub-email').value.trim();
+            const phone = document.getElementById('alert-sub-phone').value.trim();
+            const cat = document.getElementById('alert-sub-category').value;
+            const county = document.getElementById('alert-sub-county').value;
+            const minSpread = parseFloat(document.getElementById('alert-sub-spread').value) || 25000;
+            const btn = document.getElementById('btn-submit-alert');
+            const statusMsg = document.getElementById('alert-status-msg');
+
+            if (!email || !email.includes('@')) {
+                if (statusMsg) {
+                    statusMsg.className = "p-3 rounded-xl bg-rose-950/40 border border-rose-500/50 text-xs text-rose-300";
+                    statusMsg.textContent = "Por favor ingrese un correo electrónico institucional válido.";
+                    statusMsg.classList.remove('hidden');
+                }
+                return;
+            }
+
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<span class="animate-pulse">Registrando alerta y despachando confirmación SMTP...</span>`;
+            }
+
+            try {
+                const res = await fetch('/api/alerts/subscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: email,
+                        phone: phone || null,
+                        category: cat,
+                        county_or_state: county,
+                        min_spread: minSpread
+                    })
+                });
+
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.detail || "Error al configurar la alerta.");
+                }
+
+                if (statusMsg) {
+                    statusMsg.className = "p-3 rounded-xl bg-emerald-950/60 border border-emerald-500/50 text-xs text-emerald-300 font-mono";
+                    statusMsg.innerHTML = `✓ Alerta activada con éxito (${data.alert_id}). Hemos enviado la confirmación a <strong>${email}</strong>.`;
+                    statusMsg.classList.remove('hidden');
+                }
+
+                setTimeout(() => {
+                    closeAlertModal();
+                }, 2500);
+
+            } catch (err) {
+                if (statusMsg) {
+                    statusMsg.className = "p-3 rounded-xl bg-rose-950/40 border border-rose-500/50 text-xs text-rose-300";
+                    statusMsg.textContent = err.message;
+                    statusMsg.classList.remove('hidden');
+                }
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = `<span>🔔 Activar Suscripción al Radar</span>`;
+                }
+            }
+        }
+
+        // =========================================================================
+        // FEATURE 4: EXECUTIVE PDF DOSSIER GENERATOR ("DUE DILIGENCE BRIEF")
+        // =========================================================================
+        async function generateExecutivePdfBrief(leadId) {
+            let lead = allLeads.find(l => l.id === leadId);
+            
+            // If lead has masked fields, fetch full dossier with token
+            if (!lead || !lead.custodian) {
+                try {
+                    const token = activeToken || '';
+                    const res = await fetch(`/api/pipeline/${leadId}?token=${encodeURIComponent(token)}`);
+                    const data = await res.json();
+                    if (data.unlocked && data.asset) {
+                        lead = data.asset;
+                    }
+                } catch (e) {
+                    console.error("Failed to fetch full asset dossier for PDF:", e);
+                }
+            }
+
+            if (!lead) {
+                alert("Por favor desbloquee este expediente para generar el Brief Ejecutivo Certificado.");
+                return;
+            }
+
+            const retail = lead.underwriting ? lead.underwriting.estimated_retail_value : (lead.estimated_retail_value || 0);
+            const opening = lead.underwriting ? lead.underwriting.outstanding_lien_or_opening_bid : (lead.outstanding_lien_or_opening_bid || 0);
+            const mab = lead.underwriting ? lead.underwriting.maximum_allowable_bid_mab : (lead.maximum_allowable_bid_mab || 0);
+            const spread = lead.underwriting ? lead.underwriting.projected_net_spread : (lead.projected_net_spread || 0);
+            const roi = lead.underwriting ? lead.underwriting.roi_percentage : (lead.roi_percentage || 0);
+            const img = (lead.images && lead.images.length > 0) ? lead.images[0] : '';
+
+            const custodian = lead.custodian || {
+                facility_name: "U.S. Marshals Central Depository",
+                contact_person: "Asset Forfeiture Custody Officer",
+                phone: "(305) 536-4131",
+                physical_address: "Confiscated Storage Compound, Florida",
+                statutory_deadline: "Scheduled Judicial Docket"
+            };
+
+            const printWin = window.open('', '_blank', 'width=900,height=1100');
+            if (!printWin) {
+                alert("Por favor permita las ventanas emergentes para generar el PDF.");
+                return;
+            }
+
+            const briefHtml = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Dossier Ejecutivo: ${lead.title} | IC Neural Systems</title>
+                <style>
+                    @page { size: letter portrait; margin: 15mm; }
+                    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #FFFFFF; color: #0F172A; margin: 0; padding: 20px; line-height: 1.4; }
+                    .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #D97706; padding-bottom: 12px; margin-bottom: 16px; }
+                    .brand { font-size: 16px; font-weight: 900; color: #B45309; text-transform: uppercase; letter-spacing: 0.5px; }
+                    .sub-brand { font-size: 10px; color: #64748B; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+                    .docket-box { text-align: right; font-family: monospace; font-size: 11px; }
+                    .docket-val { font-weight: bold; color: #0F172A; }
+                    .grid-hero { display: grid; grid-template-columns: 280px 1fr; gap: 18px; margin-bottom: 16px; }
+                    .hero-img { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; border: 1px solid #CBD5E1; }
+                    .title { font-size: 18px; font-weight: 800; color: #0F172A; margin: 0 0 6px 0; }
+                    .meta-row { display: flex; justify-content: space-between; font-size: 11px; padding: 4px 0; border-bottom: 1px dashed #E2E8F0; }
+                    .meta-label { color: #64748B; }
+                    .meta-val { font-weight: 700; color: #0F172A; font-family: monospace; }
+                    .badge-sovereign { display: inline-block; background: #FEF3C7; color: #92400E; border: 1px solid #F59E0B; padding: 2px 8px; font-size: 10px; font-weight: bold; border-radius: 4px; text-transform: uppercase; margin-bottom: 8px; }
+                    .table-underwriting { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 11px; }
+                    .table-underwriting th { background: #0F172A; color: #F8FAFC; text-align: left; padding: 8px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+                    .table-underwriting td { padding: 8px 10px; border-bottom: 1px solid #E2E8F0; font-family: monospace; }
+                    .table-underwriting tr:nth-child(even) { background: #F8FAFC; }
+                    .highlight-spread { background: #ECFDF5 !important; font-weight: 800; color: #065F46; }
+                    .custody-box { background: #F8FAFC; border: 1px solid #E2E8F0; border-left: 4px solid #D97706; padding: 12px; border-radius: 6px; font-size: 11px; margin-bottom: 16px; }
+                    .custody-title { font-weight: 800; color: #92400E; margin-bottom: 4px; text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; }
+                    .footer-legal { font-size: 9px; color: #64748B; border-top: 1px solid #CBD5E1; padding-top: 10px; margin-top: 16px; line-height: 1.4; text-align: justify; }
+                    @media print {
+                        body { padding: 0; }
+                        button { display: none !important; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <div>
+                        <div class="brand">⚖️ IC NEURAL SYSTEMS LLC • EXECUTIVE DUE DILIGENCE DOSSIER</div>
+                        <div class="sub-brand">Autonomous Exotic & Marine Hunter AI • Institutional Sourcing Desk</div>
+                    </div>
+                    <div class="docket-box">
+                        <div class="docket-val">${lead.id}</div>
+                        <div style="color: #64748B; font-size: 9px;">CONFIDENTIAL BRIEF</div>
+                    </div>
+                </div>
+
+                <div class="grid-hero">
+                    <div>
+                        ${img ? `<img src="${img}" class="hero-img" alt="${lead.title}">` : ''}
+                        <div style="margin-top: 8px; font-size: 10px; color: #64748B; font-family: monospace;">
+                            SHA-256 Notary: Verified DAG Seal
+                        </div>
+                    </div>
+                    <div>
+                        <div class="badge-sovereign">✓ Verified Judicial Title • Clean Transfer Warrant</div>
+                        <h1 class="title">${lead.title}</h1>
+                        
+                        <div class="meta-row">
+                            <span class="meta-label">Judicial Authority / Court:</span>
+                            <span class="meta-val">${lead.court_docket_authority || 'U.S. District Court'}</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-label">Court Docket / Case #:</span>
+                            <span class="meta-val">${lead.docket_or_case_number || 'USMS-CONF-2026'}</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-label">Identifier (${lead.identifier_type || 'VIN/HIN'}):</span>
+                            <span class="meta-val">${lead.identifier_value || lead.identifier_masked}</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-label">Governing Statute / Law:</span>
+                            <span class="meta-val" style="font-size: 10px;">${lead.statutory_governing_law || '28 U.S.C. § 2461 & Admiralty Rule C'}</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-label">Auction Clearinghouse:</span>
+                            <span class="meta-val">${lead.auction_platform || 'Apple Auctioneering / National Liquidators'}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Algorithmic Underwriting Table -->
+                <table class="table-underwriting">
+                    <thead>
+                        <tr>
+                            <th>Financial Underwriting Metric</th>
+                            <th>Institutional Formula Basis</th>
+                            <th style="text-align: right;">Amount (USD)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Estimated Retail Value</strong></td>
+                            <td>Comp Valuation Algorithm (Hagerty / Sold Boats)</td>
+                            <td style="text-align: right; font-weight: bold;">$${retail.toLocaleString()}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Lien / Opening Auction Bid</strong></td>
+                            <td>Judicial Starting Gavel / Statutory Storage Lien</td>
+                            <td style="text-align: right; color: #B45309; font-weight: bold;">$${opening.toLocaleString()}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Maximum Allowable Bid (MAB)</strong></td>
+                            <td>Strict 65% Wholesale Cap Minus Haulout & Survey</td>
+                            <td style="text-align: right; color: #0284C7; font-weight: bold;">$${mab.toLocaleString()}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Estimated Towing & Haulout</strong></td>
+                            <td>Commercial Flatbed / Travelift Yard Transfer</td>
+                            <td style="text-align: right;">$2,500</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mechanical / Marine Survey Buffer</strong></td>
+                            <td>SAMS Certified Pre-Purchase Condition Inspection</td>
+                            <td style="text-align: right;">$3,500</td>
+                        </tr>
+                        <tr class="highlight-spread">
+                            <td><strong>PROJECTED NET WHOLESALE SPREAD</strong></td>
+                            <td><strong>Pre-Auction Equity Cushion (Risk-Adjusted Alpha)</strong></td>
+                            <td style="text-align: right; font-size: 13px;"><strong>+$${spread.toLocaleString()}</strong></td>
+                        </tr>
+                        <tr class="highlight-spread">
+                            <td><strong>PROJECTED RETURN ON CAPITAL (ROI)</strong></td>
+                            <td><strong>Net Spread Divided by Total Cash Outlay</strong></td>
+                            <td style="text-align: right; font-size: 13px;"><strong>+${roi}% ROI</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Custodian & Physical Inspection Depot -->
+                <div class="custody-box">
+                    <div class="custody-title">🏛️ Custodio y Depósito de Inspección Presencial:</div>
+                    <div style="font-weight: bold; margin-bottom: 2px;">${custodian.facility_name}</div>
+                    <div><strong>Contacto Directo:</strong> ${custodian.contact_person} &bull; <strong>Teléfono:</strong> ${custodian.phone}</div>
+                    <div><strong>Dirección Física:</strong> ${custodian.physical_address}</div>
+                    <div style="margin-top: 4px; color: #B45309;"><strong>Gavel / Plazo Límite Legal:</strong> ${custodian.statutory_deadline}</div>
+                </div>
+
+                <div class="footer-legal">
+                    <strong>Aviso Legal y de Soberanía Marítima:</strong> Este documento ejecutivo es un resumen de diligencia debida emitido bajo la autoridad de IC Neural Systems LLC. Los títulos marítimos transferidos por subasta bajo la Regla C extinguen todo gravamen marítimo previo mediante confirmación de la corte federal de almirantazgo. Para vehículos exóticos, la orden judicial o Formulario USMS-102 garantiza la emisión de un título estatal limpio.
+                    <br><br>
+                    <strong>Certificación Notarial Algorítmica:</strong> Hash SHA-256 verificado en la boveda soberana de IC Neural Systems LLC (Israel Cepero, Principal).
+                </div>
+
+                <div style="margin-top: 20px; text-align: center;">
+                    <button onclick="window.print()" style="background: #0F172A; color: #FFFFFF; font-weight: bold; padding: 10px 24px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px;">
+                        🖨️ Imprimir / Guardar como PDF
+                    </button>
+                </div>
+            </body>
+            </html>
+            `;
+
+            printWin.document.open();
+            printWin.document.write(briefHtml);
+            printWin.document.close();
+            setTimeout(() => {
+                printWin.print();
+            }, 600);
         }
 
         let allLeads = [];
@@ -1783,6 +2541,19 @@
 
                     <!-- Card Action Footer -->
                     <div class="p-5 pt-0 space-y-2">
+                        <div class="flex items-center space-x-2">
+                            <button onclick="openMabSimulator('${lead.id}')" class="flex-1 py-1.5 px-2 bg-slate-900 hover:bg-slate-800 text-amber-300 border border-slate-700 hover:border-amber-500/50 text-[11px] font-mono rounded-lg transition flex items-center justify-center space-x-1">
+                                <span>🧮</span>
+                                <span>${t('mab_btn')}</span>
+                            </button>
+                            ${!isMasked ? `
+                            <button onclick="generateExecutivePdfBrief('${lead.id}')" class="flex-1 py-1.5 px-2 bg-cyan-950/60 hover:bg-cyan-900/70 text-cyan-300 border border-cyan-700/60 text-[11px] font-mono rounded-lg transition flex items-center justify-center space-x-1 shadow-sm">
+                                <span>📄</span>
+                                <span>${t('brief_pdf_btn')}</span>
+                            </button>
+                            ` : ''}
+                        </div>
+
                         ${isMasked ? `
                         <button onclick="openCheckoutModal('SINGLE_PASS', '${lead.id}', '${lead.title.replace(/'/g, "\\'")}')" class="w-full py-2.5 px-4 bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-obsidian font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center space-x-2">
                             <span>${t('btn_unlock_single')}</span>

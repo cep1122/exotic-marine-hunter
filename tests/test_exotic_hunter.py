@@ -510,5 +510,68 @@ class TestExoticMarineHunter(unittest.TestCase):
         code_reset, _ = DB.create_password_reset_code(test_email)
         DB.verify_and_reset_password(test_email, code_reset, "Sovereign2026!")
 
+    def test_20_map_pins_and_simulator_and_alerts(self):
+        """Verify Map GPS Pins endpoint, MAB Simulator, and Forfeiture Alerts system"""
+        # 1. Map locations
+        res_map = self.client.get(
+            "/api/pipeline/map-locations",
+            headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+        )
+        self.assertEqual(res_map.status_code, 200)
+        map_data = res_map.json()
+        self.assertEqual(map_data["total_pins"], 24)
+        first_pin = map_data["pins"][0]
+        self.assertIn("latitude", first_pin)
+        self.assertIn("longitude", first_pin)
+        self.assertIn("title", first_pin)
+        self.assertGreater(first_pin["estimated_retail_value"], 0)
+
+        # 2. MAB Simulator
+        sim_payload = {
+            "retail_value": 345000.0,
+            "target_bid": 150000.0,
+            "buyers_premium_pct": 10.0,
+            "transport_cost": 2500.0,
+            "survey_buffer": 3500.0
+        }
+        res_sim = self.client.post(
+            "/api/underwriting/simulate-mab",
+            json=sim_payload,
+            headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+        )
+        self.assertEqual(res_sim.status_code, 200)
+        sim_data = res_sim.json()
+        self.assertEqual(sim_data["buyers_premium"], 15000.0)
+        self.assertEqual(sim_data["total_cash_outlay"], 171000.0)
+        self.assertEqual(sim_data["projected_net_spread"], 174000.0)
+        self.assertTrue(sim_data["is_safe"])
+        self.assertEqual(sim_data["verdict"], "SAFE_HIGH_ALPHA")
+
+        # 3. Forfeiture Alerts Subscription
+        alert_payload = {
+            "email": "investor@venture-marine.com",
+            "phone": "+13055550199",
+            "category": "SUPERYACHT",
+            "county_or_state": "Florida",
+            "min_spread": 100000.0
+        }
+        res_alert = self.client.post(
+            "/api/alerts/subscribe",
+            json=alert_payload,
+            headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+        )
+        self.assertEqual(res_alert.status_code, 200)
+        alert_data = res_alert.json()
+        self.assertEqual(alert_data["status"], "ACTIVE")
+        self.assertTrue(alert_data["alert_id"].startswith("ALT-"))
+
+        # Verify query user alerts
+        res_user_alerts = self.client.get(
+            f"/api/alerts/{alert_payload['email']}",
+            headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+        )
+        self.assertEqual(res_user_alerts.status_code, 200)
+        self.assertGreaterEqual(res_user_alerts.json()["count"], 1)
+
 if __name__ == "__main__":
     unittest.main()

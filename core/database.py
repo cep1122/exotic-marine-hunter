@@ -130,6 +130,19 @@ class DatabaseManager:
             );
             """)
 
+            # 5c. Automated Forfeiture Alerts Table
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS user_alerts (
+                id TEXT PRIMARY KEY,
+                email TEXT NOT NULL,
+                phone TEXT,
+                category TEXT NOT NULL DEFAULT 'ALL',
+                county_or_state TEXT NOT NULL DEFAULT 'ALL',
+                min_spread REAL DEFAULT 25000.0,
+                created_at INTEGER NOT NULL
+            );
+            """)
+
             # 6. Master Asset Leads Pipeline Table
             cursor.execute("""
             CREATE TABLE IF NOT EXISTS asset_leads (
@@ -448,6 +461,35 @@ class DatabaseManager:
             SELECT id, ip_address, action, status, details, timestamp
             FROM security_audit_logs ORDER BY timestamp DESC LIMIT ?
             """, (limit,))
+            return [dict(row) for row in cursor.fetchall()]
+
+    # Automated Forfeiture Alerts
+    def subscribe_alert(self, email: str, phone: Optional[str] = None, category: str = "ALL", county_or_state: str = "ALL", min_spread: float = 25000.0) -> Dict[str, Any]:
+        alert_id = f"ALT-{uuid.uuid4().hex[:10].upper()}"
+        email_clean = email.lower().strip()
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+            INSERT INTO user_alerts (id, email, phone, category, county_or_state, min_spread, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (alert_id, email_clean, phone.strip() if phone else None, category, county_or_state, float(min_spread), int(time.time())))
+            conn.commit()
+        return {
+            "alert_id": alert_id,
+            "email": email_clean,
+            "category": category,
+            "county_or_state": county_or_state,
+            "min_spread": min_spread,
+            "status": "ACTIVE"
+        }
+
+    def get_user_alerts(self, email: str) -> List[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+            SELECT id, email, phone, category, county_or_state, min_spread, created_at
+            FROM user_alerts WHERE email = ? ORDER BY created_at DESC
+            """, (email.lower().strip(),))
             return [dict(row) for row in cursor.fetchall()]
 
 DB = DatabaseManager.get_instance()

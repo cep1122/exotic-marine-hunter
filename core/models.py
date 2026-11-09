@@ -217,3 +217,19 @@ class ResetPasswordRequest(BaseModel):
     code: str
     new_password: str
 
+class AlertSubscriptionRequest(BaseModel):
+    email: str
+    phone: Optional[str] = None
+    category: str = "ALL"
+    county_or_state: str = "ALL"
+    min_spread: float = 25000.0
+
+class MABCalculationRequest(BaseModel):
+    retail_value: float
+    target_bid: float
+    buyers_premium_pct: float = 10.0
+    transport_cost: float = 2500.0
+    survey_buffer: float = 3500.0
+    wholesale_discount_rate: float = 0.65
+
+

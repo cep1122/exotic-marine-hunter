@@ -26,7 +26,9 @@ from core.models import (
     UserAuthResponse,
     WatchlistToggleRequest,
     ForgotPasswordRequest,
-    ResetPasswordRequest
+    ResetPasswordRequest,
+    AlertSubscriptionRequest,
+    MABCalculationRequest
 )
 from core.auction_rails import AuctionRailsFeeder, AuctionRailsDirectory
 from core.underwriting import ExoticMarineUnderwriter
@@ -35,7 +37,7 @@ from core.security import ArgusSentinelShield
 from core.database import DB
 from core.storage import DOCUMENT_STORAGE
 from core.crypto_vault_256 import CRYPTO_VAULT_256
-from core.email_service import send_password_reset_email
+from core.email_service import send_password_reset_email, send_forfeiture_alert_confirmation
 
 app = FastAPI(
     title=SYSTEM_CONFIG.app_name,
@@ -348,6 +350,70 @@ async def get_pipeline(
             "leads": result_leads
         }
 
+# ---------------------------------------------------------
+# SATELLITE MAP GPS LOCATIONS (Must precede /{asset_id})
+# ---------------------------------------------------------
+
+COUNTY_COORDINATES = {
+    "Miami-Dade County": (25.7617, -80.1918),
+    "Broward County": (26.1224, -80.1373),
+    "Palm Beach County": (26.7153, -80.0534),
+    "Harris County": (29.7604, -95.3698),
+    "Orange County": (33.6411, -117.9187),
+    "Monroe County": (24.5551, -81.7800),
+    "Bexar County": (29.4241, -98.4936),
+    "Dallas County": (32.7767, -96.7970),
+    "San Diego County": (32.7157, -117.1611),
+    "Duval County": (30.3322, -81.6557),
+    "Los Angeles County": (34.0736, -118.4004),
+    "Tarrant County": (32.7555, -97.3308),
+    "Hidalgo County": (26.2034, -98.2300),
+    "Clark County": (36.1699, -115.1398),
+    "Hillsborough County": (27.9506, -82.4572)
+}
+
+@app.get("/api/pipeline/map-locations")
+async def get_pipeline_map_locations():
+    """
+    Returns GPS coordinates and high-level card metadata for all 24 seized assets
+    to populate the dark Leaflet/CartoDB interactive satellite map.
+    """
+    leads = AuctionRailsFeeder.get_seed_inventory()
+    map_pins = []
+
+    for i, lead in enumerate(leads):
+        base_lat, base_lng = COUNTY_COORDINATES.get(lead.county, (25.7617, -80.1918))
+        # Deterministic micro-offset to prevent visual pin overlap in the same depot/county
+        lat_offset = ((i % 5) - 2) * 0.018
+        lng_offset = (((i * 3) % 5) - 2) * 0.018
+
+        map_pins.append({
+            "id": lead.id,
+            "title": lead.title,
+            "category": lead.category.value,
+            "make": lead.make,
+            "model": lead.model,
+            "year": lead.year,
+            "county": lead.county,
+            "state": lead.state,
+            "location_port_city": lead.location_port_city,
+            "latitude": round(base_lat + lat_offset, 5),
+            "longitude": round(base_lng + lng_offset, 5),
+            "estimated_retail_value": lead.underwriting.estimated_retail_value,
+            "outstanding_lien_or_opening_bid": lead.underwriting.outstanding_lien_or_opening_bid,
+            "maximum_allowable_bid_mab": lead.underwriting.maximum_allowable_bid_mab,
+            "projected_net_spread": lead.underwriting.projected_net_spread,
+            "roi_percentage": lead.underwriting.roi_percentage,
+            "deal_stage": lead.deal_stage.value,
+            "image": lead.images[0] if lead.images else ""
+        })
+
+    return {
+        "status": "SUCCESS",
+        "total_pins": len(map_pins),
+        "pins": map_pins
+    }
+
 @app.get("/api/pipeline/{asset_id}")
 async def get_asset_dossier(
     asset_id: str,
@@ -450,6 +516,84 @@ async def verify_payment(
             tx_hash=verification.merkle_dag_seal
         )
     return verification
+
+# ---------------------------------------------------------
+# NEW CAPABILITIES: MAB Simulator & Alerts
+# ---------------------------------------------------------
+
+@app.post("/api/underwriting/simulate-mab")
+async def simulate_mab_calculation(req: MABCalculationRequest):
+    """
+    Real-time Maximum Allowable Bid (MAB) and Net Wholesale Profit Simulator.
+    Calculates total cash outlay, spread cushion, and institutional ROI verdict.
+    """
+    if req.retail_value <= 0:
+        raise HTTPException(status_code=400, detail="Estimated retail value must be positive.")
+    if req.target_bid < 0:
+        raise HTTPException(status_code=400, detail="Target bid cannot be negative.")
+
+    buyers_premium = req.target_bid * (req.buyers_premium_pct / 100.0)
+    total_acquisition = req.target_bid + buyers_premium + req.transport_cost + req.survey_buffer
+    net_spread = req.retail_value - total_acquisition
+    roi_pct = (net_spread / total_acquisition * 100.0) if total_acquisition > 0 else 0.0
+
+    # Institutional MAB at 65% wholesale target: (Retail * 0.65) - transport - survey - buyer's premium
+    gross_ceiling = req.retail_value * req.wholesale_discount_rate
+    mab = max(0.0, gross_ceiling - (req.transport_cost + req.survey_buffer) - (gross_ceiling * 0.0909))
+
+    verdict = "SAFE_HIGH_ALPHA" if roi_pct >= 30.0 else ("MODERATE_RETURN" if roi_pct >= 15.0 else "OVERPAYING_HIGH_RISK")
+
+    return {
+        "retail_value": req.retail_value,
+        "target_bid": req.target_bid,
+        "buyers_premium": round(buyers_premium, 2),
+        "transport_cost": round(req.transport_cost, 2),
+        "survey_buffer": round(req.survey_buffer, 2),
+        "total_cash_outlay": round(total_acquisition, 2),
+        "maximum_allowable_bid_mab": round(mab, 2),
+        "projected_net_spread": round(net_spread, 2),
+        "roi_percentage": round(roi_pct, 1),
+        "verdict": verdict,
+        "is_safe": roi_pct >= 15.0
+    }
+
+@app.post("/api/alerts/subscribe")
+async def subscribe_forfeiture_alerts(alert_req: AlertSubscriptionRequest):
+    """
+    Registers a new alert filter for federal seized luxury supercars and yachts.
+    Stores record in SQLite database and delivers instant email notification via Gmail SMTP.
+    """
+    if "@" not in alert_req.email or "." not in alert_req.email:
+        raise HTTPException(status_code=400, detail="A valid institutional email is required.")
+
+    alert_record = DB.subscribe_alert(
+        email=alert_req.email,
+        phone=alert_req.phone,
+        category=alert_req.category,
+        county_or_state=alert_req.county_or_state,
+        min_spread=alert_req.min_spread
+    )
+
+    # Deliver Gmail SMTP confirmation
+    email_delivered = send_forfeiture_alert_confirmation(
+        to_email=alert_req.email,
+        category=alert_req.category,
+        county_or_state=alert_req.county_or_state,
+        min_spread=alert_req.min_spread
+    )
+
+    return {
+        "status": "ACTIVE",
+        "alert_id": alert_record["alert_id"],
+        "email": alert_record["email"],
+        "email_notified": email_delivered,
+        "message": f"Radar alert configured for {alert_req.category} in {alert_req.county_or_state}."
+    }
+
+@app.get("/api/alerts/{email}")
+async def list_user_alerts(email: str):
+    alerts = DB.get_user_alerts(email)
+    return {"email": email, "count": len(alerts), "alerts": alerts}
 
 @app.get("/api/legal", response_model=LegalDisclosure)
 async def get_legal_notice():
