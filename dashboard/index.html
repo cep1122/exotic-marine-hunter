@@ -35,37 +35,35 @@
     </script>
     <style>
         body {
-            background-color: #031024;
+            background-color: #020b18;
             background-image: 
-                radial-gradient(ellipse at 50% 8%, rgba(14, 165, 233, 0.35) 0%, rgba(6, 182, 212, 0.18) 45%, transparent 75%),
-                linear-gradient(to bottom, rgba(2, 9, 23, 0.25) 0%, rgba(2, 8, 20, 0.38) 40%, rgba(2, 8, 20, 0.60) 100%),
-                url('https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?auto=format&fit=crop&w=2560&q=95');
+                radial-gradient(ellipse at 50% 12%, rgba(6, 182, 212, 0.38) 0%, rgba(14, 165, 233, 0.22) 40%, transparent 75%),
+                linear-gradient(to bottom, rgba(2, 9, 23, 0.42) 0%, rgba(2, 8, 20, 0.58) 35%, rgba(2, 8, 20, 0.78) 100%),
+                url('https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?auto=format&fit=crop&w=2560&q=95&sat=20');
             background-size: cover;
-            background-position: center top;
+            background-position: center 20%;
             background-attachment: fixed;
             background-repeat: no-repeat;
             color: #F8FAFC;
         }
         .glass-card {
-            background: rgba(15, 23, 42, 0.55);
-            backdrop-filter: blur(24px) saturate(190%);
-            -webkit-backdrop-filter: blur(24px) saturate(190%);
+            background: rgba(11, 20, 38, 0.45);
+            backdrop-filter: blur(20px) saturate(190%);
+            -webkit-backdrop-filter: blur(20px) saturate(190%);
             border: 1px solid rgba(255, 255, 255, 0.16);
-            box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.28), inset 0 1px 1px 0 rgba(255, 255, 255, 0.22);
-            border-radius: 20px;
+            box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.35), inset 0 1px 1px 0 rgba(255, 255, 255, 0.25);
         }
         .glass-card:hover {
-            background: rgba(15, 23, 42, 0.68);
+            background: rgba(11, 20, 38, 0.58);
             border-color: rgba(245, 158, 11, 0.55);
-            box-shadow: 0 15px 35px 0 rgba(6, 182, 212, 0.25), inset 0 1px 2px 0 rgba(255, 255, 255, 0.35);
+            box-shadow: 0 15px 35px 0 rgba(6, 182, 212, 0.25), inset 0 1px 2px 0 rgba(255, 255, 255, 0.4);
         }
         .glass-card-gold {
             background: rgba(20, 24, 38, 0.65);
             backdrop-filter: blur(24px) saturate(190%);
             -webkit-backdrop-filter: blur(24px) saturate(190%);
             border: 1px solid rgba(245, 158, 11, 0.40);
-            box-shadow: 0 12px 35px 0 rgba(0, 0, 0, 0.35), inset 0 1px 1px 0 rgba(251, 191, 36, 0.3);
-            border-radius: 20px;
+            box-shadow: 0 12px 35px 0 rgba(0, 0, 0, 0.45), inset 0 1px 1px 0 rgba(251, 191, 36, 0.3);
         }
         .neon-glow-gold {
             box-shadow: 0 0 25px -5px rgba(245, 158, 11, 0.35);
@@ -91,38 +89,50 @@
 <body class="min-h-screen antialiased flex flex-col font-sans custom-scrollbar">
 
     <!-- Top Institutional Banner -->
-        <!-- Top Institutional Banner (Floating Glass Pill Navbar) -->
-    <header class="sticky top-0 z-40 px-3 sm:px-6 lg:px-8 py-3">
-        <div class="max-w-7xl mx-auto glass-card px-4 py-2.5 flex items-center justify-between border border-white/20 shadow-xl">
-            <!-- Brand -->
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-teal-400 to-amber-300 flex items-center justify-center font-bold text-slate-950 text-xl shadow-lg">
+    <header class="border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-xl border-b border-white/10 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-400 to-yellow-200 flex items-center justify-center font-bold text-obsidian text-2xl shadow-lg shadow-amber-500/20">
                     ⚓
                 </div>
                 <div>
                     <div class="flex items-center space-x-2">
-                        <span class="text-sm font-extrabold tracking-tight text-white uppercase">EXOTIC & MARINE HUNTER</span>
-                        <span class="px-2 py-0.5 text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 rounded-full flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> LIVE
-                        </span>
+                        <span class="text-xl font-bold tracking-tight text-white uppercase">Exotic & Marine Hunter AI</span>
+                        <span class="px-2 py-0.5 text-xs font-mono font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30 rounded-full">v1.0 Sovereign</span>
                     </div>
-                    <p class="text-[10px] text-slate-300 font-medium">Institutional Forfeiture • Admiralty Rule C • USMS & Treasury</p>
+                    <p class="text-xs text-slate-400" data-i18n="app_subtitle">Institutional Forfeiture & Admiralty Deal Sourcing Desk • <span class="text-amber-300 font-medium">IC Neural Systems LLC</span></p>
                 </div>
             </div>
 
-            <!-- Center Action Pills (Matching Screenshot) -->
-            <div class="hidden xl:flex items-center space-x-2 font-mono text-xs">
-                <!-- Language Selector -->
+            <div class="flex items-center space-x-3">
+                <div class="hidden md:flex items-center space-x-2 text-xs font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-800/60 px-3 py-1.5 rounded-lg">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>Argus WAF: SQLi & Anti-Spy Shield Active</span>
+                </div>
+                <div class="hidden lg:flex items-center space-x-2 text-xs font-mono text-cyan-400 bg-cyan-950/40 border border-cyan-800/60 px-3 py-1.5 rounded-lg">
+                    <span>AES-256-GCM Vault</span>
+                </div>
+                <button onclick="openDirectoryModal()" data-i18n="rails_btn" class="px-3.5 py-1.5 text-xs font-medium text-slate-300 bg-slate-800/70 hover:bg-slate-700 border border-slate-700 rounded-lg transition">
+                    Gov & Admiralty Rails
+                </button>
+                <button onclick="openAlertModal()" class="px-3 py-1.5 text-xs font-semibold text-amber-300 bg-amber-950/40 hover:bg-amber-900/60 border border-amber-600/40 rounded-lg transition flex items-center space-x-1.5 shadow-sm">
+                    <span>🔔</span>
+                    <span data-i18n="alert_nav_btn">Radar Alerts</span>
+                </button>
+                
+                
+                <!-- Language Selector (US Core: EN Default, ES, PT, FR) -->
                 <div class="relative" id="lang-selector-container">
-                    <button type="button" onclick="toggleLanguageDropdown(event)" id="lang-menu-btn" class="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-white/10 text-slate-200 flex items-center space-x-1 transition">
+                    <button type="button" onclick="toggleLanguageDropdown(event)" id="lang-menu-btn" class="px-2.5 py-1.5 text-xs font-semibold text-amber-300 bg-slate-900/90 hover:bg-slate-800 border border-amber-500/40 rounded-lg transition flex items-center space-x-1.5 shadow-sm">
                         <span id="current-lang-flag">🇺🇸</span>
-                        <span id="current-lang-code" class="text-xs">us English</span>
-                        <span class="text-[10px] text-slate-400">▾</span>
+                        <span id="current-lang-code" class="font-mono">EN</span>
+                        <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </button>
-                    <div id="lang-dropdown" class="hidden absolute left-0 mt-1.5 w-36 bg-slate-950/95 backdrop-blur-md border border-slate-700 rounded-xl shadow-xl z-50 py-1 font-sans text-xs">
+                    <div id="lang-dropdown" class="hidden absolute right-0 mt-1.5 w-36 bg-slate-950/95 backdrop-blur-md border border-slate-700 rounded-xl shadow-xl z-50 py-1 font-sans text-xs">
                         <button type="button" onclick="setLanguage('EN')" class="w-full text-left px-3 py-2 flex items-center space-x-2 text-white hover:bg-amber-500/20 hover:text-amber-300 transition">
                             <span>🇺🇸</span>
                             <span class="font-medium">English</span>
+                            <span class="text-[9px] text-emerald-400 ml-auto font-mono">DEFAULT</span>
                         </button>
                         <button type="button" onclick="setLanguage('ES')" class="w-full text-left px-3 py-2 flex items-center space-x-2 text-slate-300 hover:bg-amber-500/20 hover:text-amber-300 transition">
                             <span>🇪🇸</span>
@@ -139,60 +149,15 @@
                     </div>
                 </div>
 
-                <!-- Green Pill: Consign -->
-                <button onclick="openCheckoutModal('SINGLE_PASS')" class="px-3.5 py-1.5 rounded-xl bg-emerald-500/90 hover:bg-emerald-400 text-slate-950 font-bold transition flex items-center space-x-1.5 shadow-sm">
-                    <span>🌴</span>
-                    <span>CONSIGN SEIZED ASSET</span>
-                </button>
-
-                <!-- Purple Pill: 65% Rule Simulator -->
-                <button onclick="scrollToSimulator()" class="px-3.5 py-1.5 rounded-xl bg-purple-600/90 hover:bg-purple-500 text-white font-bold transition flex items-center space-x-1.5 shadow-sm">
-                    <span>⚡</span>
-                    <span>65% MAB SIMULATOR</span>
-                </button>
-
-                <!-- Cyan Pill: US Courts & Dockets -->
-                <button onclick="openDirectoryModal()" class="px-3.5 py-1.5 rounded-xl bg-cyan-600/90 hover:bg-cyan-500 text-white font-bold transition flex items-center space-x-1.5 shadow-sm">
-                    <span>🏛️</span>
-                    <span>US COURTS & COUNTIES</span>
-                </button>
-
-                <!-- Orange Pill: Gov Auctions -->
-                <button onclick="openDirectoryModal()" class="px-3.5 py-1.5 rounded-xl bg-amber-500/90 hover:bg-amber-400 text-slate-950 font-bold transition flex items-center space-x-1.5 shadow-sm">
-                    <span>🔨</span>
-                    <span>GOV AUCTIONS (24)</span>
-                </button>
-
-                <!-- County Dropdown Pill -->
-                <div class="relative">
-                    <select id="header-county-select" onchange="syncHeaderCounty(this.value)" class="appearance-none px-3.5 py-1.5 rounded-xl bg-slate-900/90 border border-amber-500/40 text-amber-300 font-bold text-xs pr-7 cursor-pointer focus:outline-none">
-                        <option value="ALL">🌴 Miami-Dade & All Ports (FL/TX/CA)</option>
-                        <option value="Miami-Dade">🌴 Miami-Dade County (FL)</option>
-                        <option value="Broward">🌴 Broward / Ft. Lauderdale (FL)</option>
-                        <option value="Palm Beach">🌴 Palm Beach (FL)</option>
-                        <option value="Monroe">🌴 Florida Keys (FL)</option>
-                        <option value="Harris">🤠 Houston (TX)</option>
-                        <option value="Dallas">🤠 Dallas (TX)</option>
-                        <option value="San Diego">🌴 San Diego (CA)</option>
-                        <option value="Orange">🌴 Newport Beach (CA)</option>
-                    </select>
-                    <span class="absolute right-2.5 top-2 text-amber-400 text-[10px] pointer-events-none">▾</span>
+                <!-- Dynamic User Portal Button in Header -->
+                <div id="user-header-container">
+                    <button onclick="openUserPortalModal('LOGIN')" class="px-3.5 py-1.5 text-xs font-semibold text-cyan-300 bg-cyan-950/60 hover:bg-cyan-900/60 border border-cyan-700/60 rounded-lg transition flex items-center space-x-1.5">
+                        <span data-i18n="investor_btn"><span>👤 Investor / Access</span></span>
+                    </button>
                 </div>
 
-                <!-- Glowing Radar Pill -->
-                <button onclick="openAlertModal()" class="px-3.5 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/60 text-emerald-300 font-bold transition flex items-center space-x-1.5">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span>RADAR ALERTS</span>
-                </button>
-            </div>
-
-            <!-- Right: User Portal / Sign In / Sign Up -->
-            <div class="flex items-center space-x-2" id="user-header-container">
-                <button onclick="openUserPortalModal('LOGIN')" class="px-3 py-1.5 text-xs font-semibold text-slate-200 hover:text-white transition">
-                    Sign In
-                </button>
-                <button onclick="openUserPortalModal('REGISTER')" class="px-4 py-1.5 text-xs font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 rounded-xl shadow-md transition">
-                    Sign Up
+                <button onclick="openCheckoutModal('PRO_HUNTER')" class="px-4 py-1.5 text-xs font-bold text-obsidian bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 rounded-lg shadow-md shadow-amber-500/20 transition flex items-center space-x-1.5">
+                    <span data-i18n="unlock_pro_btn">⚡ Unlock Pro Access ($199)</span>
                 </button>
             </div>
         </div>
@@ -201,136 +166,161 @@
     <!-- Main Content Area -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         
-                <!-- Interactive 65% MAB Rule Simulator (Matching Reference Design) -->
-        <section class="glass-card p-6 sm:p-7 border border-white/20 space-y-6" id="simulator-section">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 font-mono">
-                <!-- Slider 1: Retail Comp (Cyan) -->
-                <div>
-                    <div class="flex justify-between items-center text-xs mb-1.5">
-                        <span class="text-slate-300 font-bold uppercase tracking-wider">ARV / Retail Comp (Valor Mercado):</span>
-                        <span id="main-retail-val" class="text-cyan-400 font-extrabold text-base">$420,000</span>
-                    </div>
-                    <input type="range" id="main-retail-range" min="50000" max="2500000" step="10000" value="420000" oninput="runMainCalcLive()" class="w-full accent-cyan-400 cursor-pointer h-2 bg-slate-900/80 rounded-lg">
-                    <div class="flex justify-between text-[10px] text-slate-400 mt-1">
-                        <span>$50k</span>
-                        <span>$1.2M</span>
-                        <span>$2.5M+</span>
-                    </div>
+        <!-- Hero & Market Telemetry Banner -->
+        <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="glass-card p-5 rounded-2xl border-slate-800 flex flex-col justify-between">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider" data-i18n="stat_equity">Active Pipeline Equity</span>
+                    <span class="text-amber-400 text-lg">💰</span>
                 </div>
-
-                <!-- Slider 2: Rehab / Haulout & Survey (Yellow) -->
-                <div>
-                    <div class="flex justify-between items-center text-xs mb-1.5">
-                        <span class="text-slate-300 font-bold uppercase tracking-wider">Costo Remolque & Peritaje (Rehab):</span>
-                        <span id="main-rehab-val" class="text-amber-400 font-extrabold text-base">$35,000</span>
-                    </div>
-                    <input type="range" id="main-rehab-range" min="5000" max="150000" step="2500" value="35000" oninput="runMainCalcLive()" class="w-full accent-amber-400 cursor-pointer h-2 bg-slate-900/80 rounded-lg">
-                    <div class="flex justify-between text-[10px] text-slate-400 mt-1">
-                        <span>$5k</span>
-                        <span>$75k</span>
-                        <span>$150k</span>
-                    </div>
-                </div>
-
-                <!-- Slider 3: Wholesale Fee Deseado (Green) -->
-                <div>
-                    <div class="flex justify-between items-center text-xs mb-1.5">
-                        <span class="text-slate-300 font-bold uppercase tracking-wider">Tu Wholesale Fee Deseado:</span>
-                        <span id="main-fee-val" class="text-emerald-400 font-extrabold text-base">$20,000</span>
-                    </div>
-                    <input type="range" id="main-fee-range" min="5000" max="200000" step="5000" value="20000" oninput="runMainCalcLive()" class="w-full accent-emerald-400 cursor-pointer h-2 bg-slate-900/80 rounded-lg">
-                    <div class="flex justify-between text-[10px] text-slate-400 mt-1">
-                        <span>$5k</span>
-                        <span>$100k</span>
-                        <span>$200k</span>
-                    </div>
+                <div class="mt-3">
+                    <div class="text-2xl font-bold font-mono text-white" id="stat-pipeline-value">$14,899,000</div>
+                    <p class="text-xs text-slate-400 mt-1" data-i18n="stat_equity_sub">Across Seized Vessels & Exotics</p>
                 </div>
             </div>
 
-            <!-- 4 Frosted Clear Glass Metric Boxes (Exact layout as screenshot) -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <!-- Metric 1: MAO / MAB -->
-                <div class="p-4 rounded-2xl bg-slate-900/50 backdrop-blur-md border border-white/10 flex flex-col justify-between">
-                    <span class="text-[10px] font-mono font-bold text-emerald-400 uppercase tracking-wider">OFERTA MÁXIMA EFECTIVO (MAO)</span>
-                    <div class="text-2xl font-extrabold font-mono text-white mt-1" id="main-mao-display">$239,000</div>
-                    <p class="text-[10px] text-slate-400 mt-1 font-mono">Fórmula: (ARV × 70%) - Rehab - Fee</p>
+            <div class="glass-card p-5 rounded-2xl border-slate-800 flex flex-col justify-between">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider" data-i18n="stat_spread">Net Spread Alpha</span>
+                    <span class="text-emerald-400 text-lg">📈</span>
                 </div>
-
-                <!-- Metric 2: Net Spread Fix & Flip -->
-                <div class="p-4 rounded-2xl bg-slate-900/50 backdrop-blur-md border border-white/10 flex flex-col justify-between">
-                    <span class="text-[10px] font-mono font-bold text-cyan-400 uppercase tracking-wider">GANANCIA NETA FIX & FLIP</span>
-                    <div class="text-2xl font-extrabold font-mono text-cyan-300 mt-1" id="main-spread-display">$112,400</div>
-                    <p class="text-[10px] text-slate-400 mt-1 font-mono" id="main-roi-display">Retorno proyectado (ROI): 41.0%</p>
+                <div class="mt-3">
+                    <div class="text-2xl font-bold font-mono text-emerald-400" id="stat-net-spread">$8,633,700</div>
+                    <p class="text-xs text-slate-400 mt-1" data-i18n="stat_spread_sub">Pre-Auction Equity Cushion</p>
                 </div>
+            </div>
 
-                <!-- Metric 3: Proyección Charter / Airbnb -->
-                <div class="p-4 rounded-2xl bg-slate-900/50 backdrop-blur-md border border-white/10 flex flex-col justify-between">
-                    <span class="text-[10px] font-mono font-bold text-amber-300 uppercase tracking-wider">PROYECCIÓN CHARTER / MES</span>
-                    <div class="text-2xl font-extrabold font-mono text-amber-400 mt-1" id="main-charter-display">$4,620</div>
-                    <p class="text-[10px] text-slate-400 mt-1 font-mono">Ocupación estimada: 72% en FL/TX</p>
+            <div class="glass-card p-5 rounded-2xl border-slate-800 flex flex-col justify-between">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider" data-i18n="stat_db">Underwriting Database</span>
+                    <span class="text-cyan-400 text-lg">🗄️</span>
                 </div>
+                <div class="mt-3">
+                    <div class="text-2xl font-bold font-mono text-cyan-400">SQLite WAL Prepared</div>
+                    <p class="text-xs text-slate-400 mt-1" data-i18n="stat_db_sub">Zero SQL Injection Vulnerability</p>
+                </div>
+            </div>
 
-                <!-- Metric 4: Cap Rate Inmobiliario / Descuento Judicial -->
-                <div class="p-4 rounded-2xl bg-slate-900/50 backdrop-blur-md border border-white/10 flex flex-col justify-between">
-                    <span class="text-[10px] font-mono font-bold text-purple-300 uppercase tracking-wider">CAP RATE / DESCUENTO</span>
-                    <div class="text-2xl font-extrabold font-mono text-white mt-1" id="main-caprate-display">13.2%</div>
-                    <p class="text-[10px] text-slate-400 mt-1 font-mono">Flujo anualizado neto proyectado</p>
+            <div class="glass-card p-5 rounded-2xl border-slate-800 flex flex-col justify-between">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider" data-i18n="stat_storage">Evidence Storage</span>
+                    <span class="text-purple-400 text-lg">🔒</span>
+                </div>
+                <div class="mt-3">
+                    <div class="text-2xl font-bold font-mono text-purple-400">AES-256-GCM Vault</div>
+                    <p class="text-xs text-slate-400 mt-1" data-i18n="stat_storage_sub">USMS Form 102 & USCG Form 1340</p>
                 </div>
             </div>
         </section>
 
-        <!-- Deals Detected Bar & Active Zone Pills (Exact layout as screenshot) -->
-        <section class="space-y-3">
-            <div class="glass-card p-4 sm:p-5 border border-white/20 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h2 class="text-lg font-bold text-white flex items-center space-x-2">
-                        <span class="text-rose-400">🎯</span>
-                        <span>Off-Market Deals Detected</span>
-                        <span class="px-2.5 py-0.5 text-xs font-mono font-bold bg-slate-800/80 text-slate-300 border border-white/10 rounded-full" id="deals-count">24 Oportunidades</span>
-                    </h2>
-                    <p class="text-xs text-slate-300 mt-1">Registros públicos analizados: Sucesiones, Deuda de Impuestos, Lis Pendens, U.S. Marshals y Regla C</p>
-                </div>
-
-                <div class="flex items-center space-x-3">
-                    <!-- View Mode Toggle -->
-                    <div class="flex items-center bg-slate-900/80 p-1 rounded-xl border border-white/10 text-xs font-mono">
-                        <button id="view-toggle-grid" onclick="setViewMode('GRID')" class="px-3 py-1 font-bold rounded-lg bg-amber-400 text-slate-950 shadow-sm transition">
-                            ⊞ Grid
-                        </button>
-                        <button id="view-toggle-map" onclick="setViewMode('MAP')" class="px-3 py-1 font-semibold rounded-lg text-slate-400 hover:text-white transition">
-                            🗺️ Map
-                        </button>
-                    </div>
-
-                    <!-- Subscribe Pro Button (Green Pill matching screenshot) -->
-                    <button onclick="openCheckoutModal('PRO_HUNTER')" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl shadow-lg transition flex items-center space-x-1">
-                        <span>★</span>
-                        <span>Subscribe Pro ($199/mo)</span>
-                    </button>
-                </div>
+        <!-- Advanced Multi-Axis Search & Jurisdictional Filters -->
+        <section class="glass-card p-5 rounded-2xl border-slate-800 space-y-4">
+            <!-- Row 1: Primary Category Pills -->
+            <div class="flex flex-wrap items-center gap-2" id="category-pills">
+                <button onclick="filterCategory('ALL')" class="category-btn active px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-amber-500 text-obsidian shadow-sm transition" data-i18n="cat_all">All Assets</button>
+                <button onclick="filterCategory('EXOTIC_CAR')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition" data-i18n="cat_supercars">🏎️ Supercars (Ferrari / Porsche / Lambo)</button>
+                <button onclick="filterCategory('SUPERYACHT')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition" data-i18n="cat_superyachts">🛥️ Superyachts (Azimut / Sunseeker / Pershing)</button>
+                <button onclick="filterCategory('COMMERCIAL_HEAVY_DUTY')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition" data-i18n="cat_heavy">🚛 Commercial Heavy Duty (Volvo / Peterbilt / Cat)</button>
+                <button onclick="filterCategory('LUXURY_AIRCRAFT')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition" data-i18n="cat_aviation">✈️ Executive Aviation (Gulfstream / Citation)</button>
+                <button onclick="filterCategory('SPORTFISHER')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition" data-i18n="cat_sportfishers">🎣 Sportfishers (Viking / Cigarette)</button>
+                <button onclick="filterCategory('LUXURY_SUV')" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition" data-i18n="cat_suvs">🚙 Luxury SUVs / 4x4 (Brabus / Urus / Dually)</button>
+                <button onclick="filterWatchlistOnly()" id="btn-watchlist-filter" class="category-btn px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-amber-300 hover:bg-slate-700 transition flex items-center space-x-1">
+                    <span data-i18n="cat_watchlist">⭐ My Watchlist</span>
+                </button>
             </div>
 
-            <!-- Active Zone Filter (Pills with Palm Trees & States) -->
-            <div class="glass-card p-3.5 border border-white/20 flex flex-wrap items-center gap-2 text-xs font-mono">
-                <span class="text-amber-400 font-bold uppercase text-[11px] flex items-center gap-1 mr-1">
-                    📍 ZONA ACTIVA:
-                </span>
-                <button onclick="filterZone('ALL', this)" class="zone-pill active px-3.5 py-1.5 rounded-xl bg-amber-400 text-slate-950 font-bold shadow-sm transition">Todas</button>
-                <button onclick="filterZone('Miami-Dade', this)" class="zone-pill px-3.5 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-white/10 transition">🌴 Miami (FL)</button>
-                <button onclick="filterZone('Broward', this)" class="zone-pill px-3.5 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-white/10 transition">🌴 Ft. Lauderdale (FL)</button>
-                <button onclick="filterZone('Palm Beach', this)" class="zone-pill px-3.5 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-white/10 transition">🌴 Palm Beach (FL)</button>
-                <button onclick="filterZone('Monroe', this)" class="zone-pill px-3.5 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-white/10 transition">🌴 Florida Keys (FL)</button>
-                <button onclick="filterZone('Hillsborough', this)" class="zone-pill px-3.5 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-white/10 transition">🌴 Tampa (FL)</button>
-                <button onclick="filterZone('Harris', this)" class="zone-pill px-3.5 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-white/10 transition">🤠 Houston (TX)</button>
-                <button onclick="filterZone('Dallas', this)" class="zone-pill px-3.5 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-white/10 transition">🤠 Dallas (TX)</button>
-                <button onclick="filterZone('Bexar', this)" class="zone-pill px-3.5 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-white/10 transition">🤠 San Antonio (TX)</button>
-                <button onclick="filterZone('San Diego', this)" class="zone-pill px-3.5 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-white/10 transition">🌴 San Diego (CA)</button>
-                <button onclick="filterZone('Orange', this)" class="zone-pill px-3.5 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-white/10 transition">🌴 Newport Beach (CA)</button>
-                <button onclick="filterZone('Clark', this)" class="zone-pill px-3.5 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-white/10 transition">🎲 Las Vegas (NV)</button>
+            <!-- Row 2: Jurisdictional County, Legal Process & Auction Rail Selectors -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-3 border-t border-slate-800/80 font-mono text-xs">
+                <!-- County & State Selector -->
+                <div>
+                    <label class="text-[10px] text-slate-400 block mb-1 uppercase font-bold tracking-wider" data-i18n="filter_county_lbl">🏛️ County / Jurisdiction</label>
+                    <select id="county-filter" onchange="renderLeads()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400">
+                        <option value="ALL" data-i18n="filter_county_all">All Counties & States</option>
+                        <option value="Miami-Dade">Miami-Dade County, FL</option>
+                        <option value="Broward">Broward County (Ft. Lauderdale), FL</option>
+                        <option value="Palm Beach">Palm Beach County, FL</option>
+                        <option value="Monroe">Monroe County (Florida Keys), FL</option>
+                        <option value="Hillsborough">Hillsborough County (Tampa), FL</option>
+                        <option value="Duval">Duval County (Jacksonville), FL</option>
+                        <option value="Harris">Harris County (Houston), TX</option>
+                        <option value="Dallas">Dallas County, TX</option>
+                        <option value="Bexar">Bexar County (San Antonio), TX</option>
+                        <option value="Hidalgo">Hidalgo County (McAllen / Border), TX</option>
+                        <option value="Orange County">Orange County (Newport Beach), CA</option>
+                        <option value="Los Angeles">Los Angeles County (Beverly Hills), CA</option>
+                        <option value="San Diego">San Diego County, CA</option>
+                        <option value="Clark">Clark County (Las Vegas), NV</option>
+                    </select>
+                </div>
+
+                <!-- Legal Process & Court Authority Selector -->
+                <div>
+                    <label class="text-[10px] text-slate-400 block mb-1 uppercase font-bold tracking-wider" data-i18n="filter_process_lbl">⚖️ Judicial Process / Statute</label>
+                    <select id="process-filter" onchange="renderLeads()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400">
+                        <option value="ALL" data-i18n="filter_process_all">All Legal Processes</option>
+                        <option value="MECHANIC_STORAGE_LIEN">Florida Stat. § 713.78 Tow & Storage Lien</option>
+                        <option value="ADMIRALTY_MARSHAL_ARREST">Federal Admiralty Rule C in Rem (PACER)</option>
+                        <option value="US_MARSHALS_FORFEITURE">U.S. Marshals Criminal Forfeiture (USMS)</option>
+                        <option value="TREASURY_IRS_SEIZURE">U.S. Treasury / IRS-CI Forfeiture (CWS)</option>
+                        <option value="TEXAS_STORAGE_LIEN">Texas Occupations Code § 2303 Storage Lien</option>
+                        <option value="CALIFORNIA_STORAGE_LIEN">California Civil Code § 3071 Impound Lien</option>
+                        <option value="COUNTY_SHERIFF_SALE">Sheriff's Levy & Execution Sale</option>
+                        <option value="CUSTOMS_BORDER_SEIZURE">CBP Customs & Border Seizure</option>
+                        <option value="BANK_REPOSSESSION">Bank Repossession (UCC Article 9)</option>
+                    </select>
+                </div>
+
+                <!-- Auction Rail / Platform Selector -->
+                <div>
+                    <label class="text-[10px] text-slate-400 block mb-1 uppercase font-bold tracking-wider" data-i18n="filter_platform_lbl">🔨 Auction Portal / Custodian</label>
+                    <select id="platform-filter" onchange="renderLeads()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400">
+                        <option value="ALL" data-i18n="filter_platform_all">All Auction Rails</option>
+                        <option value="Apple Towing">Apple Towing Co. (Texas Gov / HiBid)</option>
+                        <option value="Apple Auctioneering">Apple Auctioneering Co. (USMS Official)</option>
+                        <option value="CWS Marketing">CWS Marketing Group (Treasury / CBP)</option>
+                        <option value="National Liquidators">National Liquidators (YachtAuctions.com)</option>
+                        <option value="GSA Federal">GSA Federal Surplus & Seized Property</option>
+                        <option value="GovDeals">GovDeals Liquidity Services (Police/Muni)</option>
+                        <option value="County Municipal">County Municipal Tow & Storage Yards</option>
+                    </select>
+                </div>
+
+                <!-- Universal Search & Reset -->
+                <div>
+                    <label class="text-[10px] text-slate-400 block mb-1 uppercase font-bold tracking-wider" data-i18n="filter_search_lbl">🔍 Quick Search</label>
+                    <div class="flex items-center space-x-2">
+                        <input type="text" id="search-input" onkeyup="handleSearch()" placeholder="VIN, HIN, Model, Case #..." data-i18n-ph="filter_search_ph" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400">
+                        <button onclick="resetFilters()" class="text-xs text-amber-400 hover:text-white bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-700 transition" data-i18n="filter_reset_btn">Reset</button>
+                    </div>
+                </div>
             </div>
         </section>
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="deals-grid">
+        <!-- Live Intelligence Deal Pipeline Grid -->
+        <section class="space-y-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="flex items-center space-x-3">
+                        <h2 class="text-lg font-bold text-white flex items-center space-x-2">
+                            <span data-i18n="grid_title">Federal Seizure & Storage Lien Docket</span>
+                            <span class="text-xs font-normal text-slate-400" id="deals-count">(6 Active Dockets)</span>
+                        </h2>
+                        <!-- View Mode Switch: Grid vs Satellite Map -->
+                        <div class="flex items-center bg-slate-900/90 p-0.5 rounded-xl border border-slate-800 text-xs">
+                            <button id="view-toggle-grid" onclick="setViewMode('GRID')" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-amber-500 text-obsidian shadow-sm transition">
+                                <span data-i18n="view_grid">⊞ Grid</span>
+                            </button>
+                            <button id="view-toggle-map" onclick="setViewMode('MAP')" class="px-2.5 py-1 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition">
+                                <span data-i18n="view_map">🗺️ Satellite Map</span>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400" data-i18n="grid_subtitle">Data ingested directly from U.S. Marshals, Treasury CWSAMS, Admiralty Rule C, and Marina Tow Registries.</p>
+                </div>
+                <div id="unlocked-badge-container"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="deals-grid">
                 <!-- Dynamically populated via JS -->
             </div>
 
